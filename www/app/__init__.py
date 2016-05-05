@@ -10,7 +10,7 @@ from aiohttp import web
 logging.basicConfig(level=logging.INFO)
 
 def index(request):
-    return web.Response(body=b'<h1>hi world</h1>')
+    return web.Response(body=b'<h1>hello world</h1>')
 
 
 async def create_server(loop):
