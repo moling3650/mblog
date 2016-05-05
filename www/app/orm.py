@@ -5,30 +5,31 @@
 # @Link    : #
 # @Version : 0.1
 
-import aiomysql, asyncio, logging
-
-from .fields import Field
-
+import logging
 logging.basicConfig(level=logging.INFO)
 
-def log(sql, args=[]):
-    logging.info('SQL: [%s] args: %s]' %(sql, str(args)))
+import aiomysql, asyncio
+from .fields import Field
 
-async def create_pool(loop, *, user, password, db, **kw):
+def log(sql, args=[]):
+    logging.info('SQL: [%s] args: %s' % (sql, str(args)))
+
+async def create_pool(loop, user, password, db, **kw):
+    # 该函数用于创建连接池
     global __pool
     __pool = await aiomysql.create_pool(
-            loop=loop,
-            user=user,
-            password=password,
-            db=db,
-            host=kw.get('host', 'localhost'),
-            port=kw.get('port', 3306),
-            charset=kw.get('charset', 'utf8'),
-            autocommit=kw.get('autocommit', True),
-            maxsize=kw.get('maxsize', 10),
-            minsize=kw.get('minsize', 1)
-        )
-
+        loop=loop,                               # 传递消息循环对象loop用于异步执行
+        user=user,                               # user是通过关键字参数传进来的
+        password=password,                       # 密码也是通过关键字参数传进来的
+        db=db,                                   # 数据库名字
+        host=kw.get('host', 'localhost'),        # 默认定义host名字为localhost
+        port=kw.get('port', 3306),               # 默认定义mysql的默认端口是3306
+        charset=kw.get('charset', 'utf8'),       # 默认数据库字符集是utf8
+        autocommit=kw.get('autocommit', True),   # 默认自动提交事务
+        maxsize=kw.get('maxsize', 10),           # 连接池最多同时处理10个请求
+        minsize=kw.get('minsize', 1)             # 连接池最少1个请求
+    )
+# 用于SQL的SELECT语句
 async def select(sql, args, size=None):
     log(sql, args)
     async with __pool.get() as conn:
@@ -41,22 +42,23 @@ async def select(sql, args, size=None):
         logging.info('rows returned: %s' % len(resultset))
         return resultset
 
+# 用于SQL的INSERT INTO，UPDATE，DELETE语句
 async def execute(sql, args, autocommit=True):
     log(sql, args)
     async with __pool.get() as conn:
         if not autocommit:
             await conn.begin()
-            try:
-                async with conn.cursor(aiomysql.DictCursor) as cur:
-                    await cur.execute(sql.replace('?', '%s'), args)
-                    affected = cur.rowcount
-                if not autocommit:
-                    await conn.commit()
-            except BaseException as e:
-                if not autocommit:
-                    await conn.rollback()
-                raise e
-            return affected
+        try:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                await cur.execute(sql.replace('?', '%s'), args)
+                affected = cur.rowcount
+            if not autocommit:
+                await conn.commit()
+        except BaseException as e:
+            if not autocommit:
+                await conn.rollback()
+            raise e
+        return affected
 
 class ModelMetaclass(type):
 
@@ -142,33 +144,33 @@ class Model(dict, metaclass=ModelMetaclass):
                 args.extend(limit)
             else:
                 raise ValueError('Invalid limit value: %s' % str(limit))
-        rs = await select(' '.join(sql), args)
-        return [cls(**r) for r in rs]
+        resultset = await select(' '.join(sql), args)
+        return [cls(**r) for r in resultset]
 
     # 根据列名和条件查看数据库有多少条信息
     @classmethod
-    async def countRows(cls, selectField, where=None):
+    async def countRows(cls, selectField, where=None, args=None):
         ' find number by select and where. '
         sql = ['select count(%s) _num_ from `%s`' % (selectField, cls.__table__)]
         if where:
             sql.append('where %s' % (where))
-        rs = await select(' '.join(sql), [], 1)
-        if len(rs) == 0:
-            return None
-        return rs[0]['_num_']
+        resultset = await select(' '.join(sql), args, 1)
+        if len(resultset) == 0:
+            return 0
+        return resultset[0]['_num_']
 
     # 根据主键查找一个实例的信息
     @classmethod
     async def find(cls, pk):
         ' find object by primary key. '
-        rs = await select('%s where `%s`= ?' % (cls.__select__, cls.__primary_key__), [pk], 1)
-        return cls(**rs[0]) if len(rs) else None
+        resultset = await select('%s where `%s`= ?' % (cls.__select__, cls.__primary_key__), [pk], 1)
+        return cls(**resultset[0]) if len(resultset) else None
 
     # 把一个实例保存到数据库
     async def save(self):
         args = list(map(self.getValueOrDefault, self.__mappings__))
-        rows = await execute(self.__insert__, args)  # 使用默认插入函数
-        if rows != 1: # rows != 1 就是插入失败
+        rows = await execute(self.__insert__, args) # 使用默认插入函数
+        if rows != 1: # rows != 1就是插入失败
             logging.warn('failed to insert record: affected rows: %s' % rows)
 
     # 更改一个实例在数据库的信息
