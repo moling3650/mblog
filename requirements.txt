@@ -2,6 +2,8 @@ aiohttp==0.21.5
 aiomysql==0.0.7
 argh==0.26.1
 chardet==2.3.0
+Jinja2==2.8
+MarkupSafe==0.23
 pathtools==0.1.2
 PyMySQL==0.6.7
 PyYAML==3.11
