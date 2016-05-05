@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Date    : 2016-05-05 14:32:46
-# @Author  : Your Name (you@example.org)
-# @Link    : http://example.org
-# @Version : $Id$
+# @Author  : moling (365024424@qq.com)
+# @Link    : #
+# @Version : 0.1
 import logging
 from aiohttp import web
 
 logging.basicConfig(level=logging.INFO)
 
 def index(request):
-    return web.Response(body=b'<h1>hello world</h1>')
+    return web.Response(body=b'<h1>hi world</h1>')
+
 
 async def create_server(loop):
 
