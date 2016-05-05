@@ -7,14 +7,14 @@
 
 import asyncio, logging
 
-from app.orm import create_pool
+from app.frame.orm import create_pool
 from app.models import User
 from config.orm_test import db_config
 
 async def test():
     await create_pool(loop, **db_config)
 
-    # --------------------测试count rows语句---------------------
+    # --------------------测试count rows语句----------------------
     rows = await User.countRows('id')
     logging.info('rows is: %s' % rows)
 

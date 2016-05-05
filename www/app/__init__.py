@@ -6,17 +6,15 @@
 # @Version : 0.1
 import logging
 from aiohttp import web
+from .frame import add_routes, add_static
 
 logging.basicConfig(level=logging.INFO)
-
-def index(request):
-    return web.Response(body=b'<h1>hello world</h1>')
-
 
 async def create_server(loop):
 
     app = web.Application(loop=loop)
-    app.router.add_route('GET', '/', index)
+    add_routes(app, 'app.routes')
+    add_static(app)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')
     return server

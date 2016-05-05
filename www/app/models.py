@@ -6,8 +6,8 @@
 # @Version : 0.1
 
 import functools, hashlib, time, uuid
-from .fields import *
-from .orm import Model
+from .frame.fields import *
+from .frame.orm import Model
 
 StringField = functools.partial(StringField, ddl='varchar(50)')
 
