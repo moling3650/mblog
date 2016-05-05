@@ -66,5 +66,4 @@ if __name__ == '__main__':
     if argv[0] != 'python':
         argv.insert(0, 'python')
     command = argv
-    path = os.path.abspath('.')
-    start_watch(path, None)
+    start_watch(os.getcwd(), None)

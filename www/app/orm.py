@@ -5,9 +5,9 @@
 # @Link    : #
 # @Version : 0.1
 
-import aiohttp, asyncio, logging
+import aiomysql, asyncio, logging
 
-from fields import Field
+from .fields import Field
 
 logging.basicConfig(level=logging.INFO)
 
@@ -30,7 +30,7 @@ async def create_pool(loop, *, user, password, db, **kw):
         )
 
 async def select(sql, args, size=None):
-    log(sql. args)
+    log(sql, args)
     async with __pool.get() as conn:
         async with conn.cursor(aiomysql.DictCursor) as cur:
             await cur.execute(sql.replace('?', '%s'), args)
@@ -38,8 +38,8 @@ async def select(sql, args, size=None):
                 resultset = await cur.fetchmany(size)
             else:
                 resultset = await cur.fetchall()
-    logging.info('rows returned: %s' % len(resultset))
-    return resultset
+        logging.info('rows returned: %s' % len(resultset))
+        return resultset
 
 async def execute(sql, args, autocommit=True):
     log(sql, args)
@@ -56,7 +56,7 @@ async def execute(sql, args, autocommit=True):
                 if not autocommit:
                     await conn.rollback()
                 raise e
-    return affected
+            return affected
 
 class ModelMetaclass(type):
 
