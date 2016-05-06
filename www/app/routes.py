@@ -10,8 +10,9 @@ from aiohttp import web
 
 from app import COOKIE_NAME
 from app.frame import get, post
-from app.frame.halper import Page, get_page_index
-from app.frame.errors import APIValueError
+from app.frame.halper import *
+from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
+from app.frame.markdown2 import markdown
 from app.models import User, Blog, Comment
 
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
@@ -55,7 +56,7 @@ async def api_register_user(*, email, name, password):
     users = await User.findAll('email = ?', [email])
     if len(users) > 0:
         raise ('register:failed', 'email', 'Email is already in use.')
-    user = User(name=name.strip(), email=email, password=password, image='empty')
+    user = User(name=name.strip(), email=email, password=password, image='/static/img/user.png')
     await user.register()
     # make session cookie
     r = web.Response()
@@ -106,3 +107,109 @@ def signout(request):
     r.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
     logging.info('user signed out')
     return r
+
+@get('/blog/{id}')
+async def get_bolg(id):
+    blog = await Blog.find(id)
+    comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
+    for c in comments:
+        c.html_content = text2html(c.content)
+    blog.html_content = markdown(blog.content)
+    return {
+        '__template__': 'blog.html',
+        'blog': blog,
+        'comments': comments
+    }
+
+@get('/api/blogs/{id}')
+async def api_get_blog(id):
+    return await Blog.find(id)
+
+@post('/api/blogs/{id}/comments')
+async def api_create_comment(id, request, *, content):
+    user = request.__user__
+    if user is None:
+        raise APIPermissionError('Please signin first.')
+    if not content or not content.strip():
+        raise APIValueError('content')
+    blog = await Blog.find(id)
+    if blog is None:
+        raise APIResourceNotFoundError('Blog')
+    comment = Comment(blog_id=blog.id, user_id=user.id, user_name=user.name, user_image=user.image, content=content.strip())
+    await comment.save()
+    return comment
+
+# 管理页面
+@get('/manage')
+def manage():
+    return 'redirect:/manage/blogs'
+
+@get('/manage/{table}')
+def manage_table(table, *, page='1'):
+    return {
+        '__template__': 'manage_%s.html' % table,
+        'page_index': get_page_index(page)
+    }
+
+@get('/api/{table}')
+async def api_model(table, *, page=1):
+    models = {'users': User, 'blogs': Blog, 'comments': Comment}
+    num = await models[table].countRows('id')
+    page_info = Page(num, get_page_index(page))
+    if num == 0:
+        return { 'page': page_info, table: () }
+    items = await models[table].findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
+    return { 'page': page_info, table: items }
+
+# 创建博客
+@get('/manage/blogs/create')
+def manage_create_blog():
+    return {
+        '__template__': 'manage_blog_edit.html',
+        'id': '',
+        'action': '/api/blogs'
+    }
+
+@post('/api/blogs')
+async def api_create_blog(request, *, name, summary, content):
+    check_admin(request)
+    check_string(name=name, summary=summary, content=content)
+    blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__.image,
+                        name=name.strip(), summary=summary.strip(), content=content.strip())
+    await blog.save()
+    return blog
+
+# 更改或删除博客
+@get('/manage/blogs/edit')
+def manage_edit_blog(id):
+    return {
+        '__template__': 'manage_blog_edit.html',
+        'id': id,
+        'action': '/api/blogs/%s' % id
+    }
+
+@post('/api/blogs/{id}')
+async def api_update_blog(id, request, *, name, summary, content):
+    check_admin(request)
+    check_string(name=name, summary=summary, content=content)
+    blog = await Blog.find(id)
+    blog.name = name.strip()
+    blog.summary = summary.strip()
+    blog.content = content.strip()
+    await blog.update()
+    return blog
+
+@post('/api/{table}/{id}/delete')
+async def api_delete_item(table, id, request):
+    models = {'blogs': Blog, 'comments': Comment}
+    check_admin(request)
+    item = await models[table].find(id)
+    if item:
+        await item.remove()
+    else:
+        logging.warn('id: %s not exist in %s' %(id, table))
+    if table == 'blogs':
+        comments = await Blog.findAll('blog_id = ?', [id])
+        for comment in comments:
+            await comment.remove()
+    return dict(id=id)

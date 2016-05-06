@@ -9,7 +9,7 @@ import asyncio, logging
 
 from app.frame.orm import create_pool
 from app.models import User
-from config.orm_test import db_config
+from config import db_config
 
 async def test():
     await create_pool(loop, **db_config)
@@ -22,7 +22,7 @@ async def test():
     if rows < 2:
         for idx in range(5):
             u = User(name='test%s'%(idx), email='test%s@orm.org'%(idx),
-                        password='pw', image='test.jpg')
+                        password='pw', image='/static/img/user.png')
             rows = await User.countRows('id', 'email = ?', u.email)
             if rows == 0:
                 await u.register()
@@ -45,10 +45,10 @@ async def test():
     logging.info('name: %s, email: %s' %(user.name, user.email))
 
     #--------------------测试delete语句-------------------------
-    users = await User.findAll(orderBy='created_at', limit=(2, 1))
-    for user in users:
-        logging.info('delete user: %s' % (user.name))
-        await user.remove()
+    # users = await User.findAll(orderBy='created_at', limit=(2, 1))
+    # for user in users:
+    #     logging.info('delete user: %s' % (user.name))
+    #     await user.remove()
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
