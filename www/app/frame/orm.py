@@ -29,6 +29,7 @@ async def create_pool(loop, user, password, db, **kw):
         maxsize=kw.get('maxsize', 10),           # 连接池最多同时处理10个请求
         minsize=kw.get('minsize', 1)             # 连接池最少1个请求
     )
+
 # 用于SQL的SELECT语句
 async def select(sql, args, size=None):
     log(sql, args)

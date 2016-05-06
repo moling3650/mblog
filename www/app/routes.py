@@ -56,7 +56,7 @@ async def api_register_user(*, email, name, password):
     users = await User.findAll('email = ?', [email])
     if len(users) > 0:
         raise ('register:failed', 'email', 'Email is already in use.')
-    user = User(name=name.strip(), email=email, password=password, image='/static/img/user.png')
+    user = User(name=name.strip(), email=email, password=password, admin=True, image='/static/img/user.png')
     await user.register()
     # make session cookie
     r = web.Response()
