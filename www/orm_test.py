@@ -9,7 +9,7 @@ import asyncio, logging
 
 from app.frame.orm import create_pool
 from app.models import User
-from config import db_config
+from config.orm_test import db_config
 
 async def test():
     await create_pool(loop, **db_config)
@@ -18,7 +18,7 @@ async def test():
     rows = await User.countRows('id')
     logging.info('rows is: %s' % rows)
 
-    # #-------------------测试insert into语句---------------------
+    #-------------------测试insert into语句---------------------
     if rows < 2:
         for idx in range(5):
             u = User(name='test%s'%(idx), email='test%s@orm.org'%(idx),
@@ -29,26 +29,26 @@ async def test():
             else:
                 print('the email was already registered...')
 
-    # #--------------------测试select语句--------------------------
+    #--------------------测试select语句--------------------------
     users = await User.findAll(orderBy='created_at')
     for user in users:
         logging.info('name: %s, email: %s' %(user.name, user.email))
 
-    # #--------------------测试update语句--------------------------
+    #--------------------测试update语句--------------------------
     user = users[1]
     user.email = 'guest@orm.com'
     user.name = 'guest'
     await user.update()
 
-    # #--------------------测试查找指定用户-------------------------
+    #--------------------测试查找指定用户-------------------------
     test_user = await User.find(user.id)
     logging.info('name: %s, email: %s' %(user.name, user.email))
 
     #--------------------测试delete语句-------------------------
-    # users = await User.findAll(orderBy='created_at', limit=(2, 1))
-    # for user in users:
-    #     logging.info('delete user: %s' % (user.name))
-    #     await user.remove()
+    users = await User.findAll(orderBy='created_at', limit=(2, 1))
+    for user in users:
+        logging.info('delete user: %s' % (user.name))
+        await user.remove()
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()

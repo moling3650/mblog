@@ -209,7 +209,7 @@ async def api_delete_item(table, id, request):
     else:
         logging.warn('id: %s not exist in %s' %(id, table))
     if table == 'blogs':
-        comments = await Blog.findAll('blog_id = ?', [id])
+        comments = await Comment.findAll('blog_id = ?', [id])
         for comment in comments:
             await comment.remove()
     return dict(id=id)
