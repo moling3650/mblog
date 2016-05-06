@@ -7,8 +7,10 @@
 import logging, os
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
-from .frame import add_routes, add_static
-from app.factorys import logger_factory, auth_factory, response_factory
+
+from app.frame import add_routes, add_static
+from app.frame.orm import create_pool
+from app.factorys import logger_factory, auth_factory, response_factory, datetime_filter
 
 logging.basicConfig(level=logging.INFO)
 
@@ -31,14 +33,18 @@ def init_jinja2(app, **kw):
             env.filters[name] = ftr
     app['__templating__'] = env
 
-async def create_server(loop):
-
+async def create_server(loop, config_mod):
+    try:
+        config = __import__(config_mod, fromlist=['get_config'])
+    except ImportError as e:
+        raise e
+    await create_pool(loop, **config.db_config)
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory])
-    add_routes(app, 'app.routes')
+    for mod in config.modules:
+        add_routes(app, mod)
     add_static(app)
-    init_jinja2(app)
+    init_jinja2(app, filters=dict(datetime=datetime_filter), **config.jinja2_config)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')
     return server
-

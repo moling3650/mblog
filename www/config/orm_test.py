@@ -5,8 +5,14 @@
 # @Link    : #
 # @Version : 0.1
 
+modules = ['app.routes']
+
 db_config = {
-    'user': 'root',
+    'user': 'orm',
     'password': 'test',
     'db': 'orm_test'
+}
+
+jinja2_config = {
+
 }

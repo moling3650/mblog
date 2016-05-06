@@ -81,7 +81,7 @@ class RequestHandler(object):
 # 添加一个模块的所有路由
 def add_routes(app, module_name):
     try:
-        mod = __import__(module_name, fromlist=['blah'])
+        mod = __import__(module_name, fromlist=['get_submodule'])
         for attr in dir(mod):
             if attr.startswith('_'):
                 continue
@@ -94,8 +94,8 @@ def add_routes(app, module_name):
                     args = ', '.join(inspect.signature(func).parameters.keys())
                     logging.info('add route %s %s => %s(%s)' % (method, path, func.__name__, args))
                     app.router.add_route(method, path, RequestHandler(func))
-    except ImportError:
-        pass
+    except ImportError as e:
+        raise e
 
 # 添加静态文件夹的路径
 def add_static(app):

@@ -5,12 +5,17 @@
 # @Link    : #
 # @Version : 0.1
 #
-from .frame import get, post
+from app.frame import get, post
+from app.models import User
 from aiohttp import web
 
 @get('/')
-def index():
-    return web.Response(body=b'<h1>hello world</h1>')
+async def index():
+    users = await User.findAll()
+    return {
+        '__template__': 'test.html',
+        'users': users
+    }
 
 @get('/404')
 def not_found():

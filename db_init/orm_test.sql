@@ -1,5 +1,5 @@
 /*
-* @Author: anchen
+* @Author: moling
 * @Date:   2016-05-05 19:58:41
 */
 
@@ -9,7 +9,7 @@ create database orm_test;
 
 use orm_test;
 
-grant select, insert, update, delete on orm_test.* to 'root'@'localhost' identified by 'test';
+grant select, insert, update, delete on orm_test.* to 'orm'@'localhost' identified by 'test';
 
 create table users (
     `id` varchar(50) not null,
