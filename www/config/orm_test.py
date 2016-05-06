@@ -4,8 +4,7 @@
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
 # @Version : 0.1
-
-modules = ['app.routes']
+from config import modules, jinja2_config
 
 db_config = {
     'user': 'orm',
@@ -13,6 +12,3 @@ db_config = {
     'db': 'orm_test'
 }
 
-jinja2_config = {
-
-}

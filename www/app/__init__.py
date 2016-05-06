@@ -38,6 +38,7 @@ async def create_server(loop, config_mod):
         config = __import__(config_mod, fromlist=['get_config'])
     except ImportError as e:
         raise e
+
     await create_pool(loop, **config.db_config)
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory])

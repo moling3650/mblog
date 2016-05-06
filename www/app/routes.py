@@ -6,15 +6,23 @@
 # @Version : 0.1
 #
 from app.frame import get, post
-from app.models import User
+from app.frame.halper import Page, get_page_index
+from app.models import User, Blog, Comment
 from aiohttp import web
 
+
 @get('/')
-async def index():
-    users = await User.findAll()
+async def index(*, page='1'):
+    num = await Blog.countRows('id')
+    page_info = Page(num, get_page_index(page))
+    if num == 0:
+        blogs = []
+    else:
+        blogs = await Blog.findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
     return {
-        '__template__': 'test.html',
-        'users': users
+        '__template__': 'blogs.html',
+        'page': page_info,
+        'blogs': blogs
     }
 
 @get('/404')
