@@ -8,9 +8,11 @@ import logging, os
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 
+from config import COOKIE_NAME, COOKIE_KEY
 from app.frame import add_routes, add_static
 from app.frame.orm import create_pool
 from app.factorys import logger_factory, auth_factory, response_factory, datetime_filter
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,7 +26,7 @@ def init_jinja2(app, **kw):
         variable_end_string = kw.get('variable_end_string', '}}'),
         auto_reload = kw.get('auto_reload', True)
     )
-    path = kw.get('path', os.path.join(os.getcwd(), 'app', 'templates'))
+    path = kw.get('path', os.path.join(__path__[0], 'templates'))
     logging.info('set jinja2 template path: %s' % path)
     env = Environment(loader=FileSystemLoader(path), **options)
     filters = kw.get('filters')

@@ -8,7 +8,10 @@
 import logging, json, time
 from datetime import datetime
 from aiohttp import web
-# from models import User
+
+from app import COOKIE_NAME
+from app.models import User
+
 
 #--------------------------工厂函数------------------------------------
 # 在每个响应之前打印日志
@@ -23,12 +26,12 @@ async def auth_factory(app, handler):
     async def auth(request):
         logging.info('check user: %s %s' % (request.method, request.path))
         request.__user__ = None
-        # cookie_str = request.cookies.get(COOKIE_NAME)
-        # if cookie_str:
-        #     user = await cookie2user(cookie_str)
-        #     if user:
-        #         logging.info('set current user: %s' % user.email)
-        #         request.__user__ = user
+        cookie_str = request.cookies.get(COOKIE_NAME)
+        if cookie_str:
+            user = await User.find_by_cookie(cookie_str)
+            if user:
+                logging.info('set current user: %s' % user.email)
+                request.__user__ = user
         if request.path.startswith('/manage/') and (request.__user__ is None or not request.__user__.admin):
             return web.HTTPFound('/')
         return await handler(request)

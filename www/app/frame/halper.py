@@ -5,13 +5,6 @@
 # @Link    : #
 # @Version : 0.1
 
-# 获取合法的页面引索
-def get_page_index(page_str):
-    try:
-        return max(int(page_str), 1)
-    except ValueError:
-        return 1
-
 # 网页翻页信息类
 class Page(object):
     '''
@@ -42,3 +35,14 @@ class Page(object):
         return s
 
     __repr__ = __str__
+
+# 获取合法的页面引索
+def get_page_index(page_str):
+    try:
+        return max(int(page_str), 1)
+    except ValueError:
+        return 1
+
+def text2html(text):
+    lines = map(lambda s: '<p>%s</p>' % s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'), filter(lambda s: s.strip() != '', text.split('\n')))
+    return ''.join(lines)

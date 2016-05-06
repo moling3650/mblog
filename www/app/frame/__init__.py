@@ -99,7 +99,6 @@ def add_routes(app, module_name):
 
 # 添加静态文件夹的路径
 def add_static(app):
-    print(os.getcwd())
-    path = os.path.join(os.getcwd(), 'app', 'static')
+    path = os.path.join(os.path.dirname(__path__[0]), 'static')
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))

@@ -4,7 +4,7 @@
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
 # @Version : 0.1
-from config import modules, jinja2_config
+from config import *
 
 db_config = {
     'user': 'orm',

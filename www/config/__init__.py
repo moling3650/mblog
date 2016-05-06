@@ -5,6 +5,7 @@
 # @Link    : #
 # @Version : 0.1
 #
+
 modules = ['app.routes']
 
 db_config = {
@@ -16,3 +17,6 @@ db_config = {
 jinja2_config = {
 
 }
+
+COOKIE_NAME = 'aweSession'
+COOKIE_KEY = 'MbLog'
