@@ -45,7 +45,7 @@ async def test():
     logging.info('name: %s, email: %s' %(user.name, user.email))
 
     #--------------------测试delete语句-------------------------
-    users = await User.findAll(orderBy='created_at', limit=(2, 2))
+    users = await User.findAll(orderBy='created_at', limit=(1, 2))
     for user in users:
         logging.info('delete user: %s' % (user.name))
         await user.remove()

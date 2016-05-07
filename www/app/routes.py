@@ -10,7 +10,7 @@ from aiohttp import web
 
 from app import COOKIE_NAME
 from app.frame import get, post
-from app.frame.halper import *
+from app.frame.halper import Page, get_page_index, check_admin, check_string
 from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
 from app.frame.markdown2 import markdown
 from app.models import User, Blog, Comment
@@ -113,7 +113,7 @@ async def get_bolg(id):
     blog = await Blog.find(id)
     comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
     for c in comments:
-        c.html_content = text2html(c.content)
+        c.html_content = markdown(c.content)
     blog.html_content = markdown(blog.content)
     return {
         '__template__': 'blog.html',

@@ -1,5 +1,5 @@
 server {
-    listen      900;
+    listen     80;
     root       /home/ubuntu/mblog/www;
     access_log /home/ubuntu/mblog/log/access.log;
     error_log  /home/ubuntu/mblog/log/error.log;
@@ -16,11 +16,11 @@ server {
     sendfile on;
 
     location /favicon.ico {
-        root /home/ubuntu/mblog/www;
+        root /home/ubuntu/mblog/www/app/static/img;
     }
 
     location ~ ^\/static\/.*$ {
-        root /home/ubuntu/mblog/www;
+        root /home/ubuntu/mblog/www/app;
     }
 
     location / {
