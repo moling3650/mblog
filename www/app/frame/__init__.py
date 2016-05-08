@@ -52,12 +52,12 @@ class RequestHandler(object):
             # 如果函数的参数表有这参数名就加入
             if arg in required_args:
                 kw[arg] = value
-            else:
-                logging.warn('param %s not in args list' % arg)
+
         # 如果有request参数的话也加入
         if 'request' in required_args:
             kw['request'] = request
 
+        self.check_args(required_args, kw)
         logging.info('call with args: %s' % str(kw))
         try:
             return await self._func(**kw)
@@ -71,11 +71,19 @@ class RequestHandler(object):
                 return await request.json()
             elif request.content_type.startswith('application/x-www-form-urlencoded'):
                 return await request.post()
-        # 从GET方法截取数据
+        # 从GET方法截取数据，例如/?page=2
         elif request.method == 'GET':
             qs = request.query_string
             return {k: v[0] for k, v in parse.parse_qs(qs, True).items()}
         return dict()
+
+    def check_args(self, required_args, args):
+        for arg in required_args.values():
+            # 如果参数类型不是变长列表和变长字典，变长参数是可缺省的
+            if arg.kind not in (arg.VAR_POSITIONAL, arg.VAR_KEYWORD):
+                # 如果还是没有默认值，而且还没有传值的话就报错
+                if arg.default == arg.empty and arg.name not in args:
+                    return web.HTTPBadRequest('Missing argument: %s' % arg.name)
 
 
 # 添加一个模块的所有路由
