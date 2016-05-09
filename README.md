@@ -53,3 +53,15 @@
 		pymonitor.py          <--监视器
 		|
 		run.py                <--主运行文件
+## 难点讲解  
+* ORM  
+我相信大多数新手遇到的第一道坎就是ORM（Object Relational Mapping），虽然不太了解ORM，但python的`dict`还是知道的吧，`dict`本身就是一种对象关系映射。
+还有这里面涉及数据库的操作，而大多数初次写web程序的人都是都是不太了解SQL(Structured Query Language)。所以大多数人就卡在这里了。
+	1.  ORM，说白了就是一个名字=>列对象的字典，想通过某一个名字就能找相对的值，所在ModelMetaclass中第一任务就是生成一个关系对应映射，以便在以后每个创建的类中都会自动生成一张关系对应表，代码里的`attrs['__mappings__']`就是这样的一个东西。
+	2.  SQL，除`attrs['__mappings__']`以外的新建属性都是为SQL操作存在的。
+		- `attrs['__table__']`： 在某一数据库中的表名
+		- `attrs['__primary_key__']`： 在某张表中的主键（主键都是唯一的，通常作为查询的依据
+		- `attrs['__select__']`： SQL的查询语句，例如 `SELECT * FROM (%table) WHERE (%s) ORDERBY (%s) LIMIT (%s)` (WHERE:条件限定，ORDERBY：排序方法，LIMIT：查询位置与个数，这三个都是可选的参数而已）
+		- `attrs['__insert__']`： SQL的插入语句，例如 `INSERT INTO (%table) (%keys) VALUES (%values)`，刚才创建的`attrs['__mappings__']`就可以发挥它作用了，`keys`和`values`都是`attrs['__mappings__']`这个字典的属性
+		- `attrs['__update__']`： SQL的更改语句，例如`UPDATE (%table) SET (% keys = new values) WHERE (% condition)`，WHERE并不是必须的，但没有条件限制的话，一个表所有内容都会被更改了，所以一般情况下是只改某一处，条件当然就是独一无二的主键匹配了
+		- `attrs['__delete__']`： SQL的删除语句，如果`DELETE FROM (%table) WHERE (%condition)`，`condition`可以是多变的，但这里只考虑删除某一特定的对象，所以通常是用`(%primary_key) = ?`来限定唯一的删除对象
