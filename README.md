@@ -67,10 +67,10 @@
 		- `attrs['__delete__']`： SQL的删除语句，如果`DELETE FROM (%table) WHERE (%condition)`，`condition`可以是多变的，但这里只考虑删除某一特定的对象，所以通常是用`(%primary_key) = ?`来限定唯一的删除对象
 * RequestHandler   
 我遇到的第二个难点就是`RequestHandler`，因为`RequestHandler`看起来是一个类，但又不是一个类，从本质上来说，它是一个函数，那问题来了，这个函数的作用到底是为了什么呢？  
-	1. 如果大家有仔细看day2的`hello world`的例子的话，就会发现在那个`index`函数里是包含了一个`request`参数的，但我们新定义的很多函数中，`request`参数都是可以被省略掉的，那是因为新定义的函数最终都是被`RequestHandler`处理，自动加上一个`request`参数，从而符合`app.router.add_route`第三个参数的要求，所以说`RequestHandler`起到统一标准化接口的作用。
-	2. 接口是统一了，但每个函数要求的参数都是不一样的，那又要如何解决呢？得益于**factory**的理念，我们很容易找一种解决方案，就如同`response_factory`一样把任何类型的返回值最后都统一封装成一个`web.Response`对象。`RequestHandler`也可以把任何参数都变成`self._func(**kw)`的形式。那问题来了，那`kw`的参数到底要去哪里去获取呢？
-		- `request.match_info`的参数： match_info主要是保存像`@get('/blog/{id}')`里面的id，就是路由路径里的参数  
-		- `GET`的参数： 像例如`/?page=2`  
-		- `POST`的参数： api的`json`或者是网页中`from`  
-		- `request`参数： 有时需要验证用户信息就需要获取`request`里面的数据   
-说到这里应该很清楚了吧，`RequestHandler`的主要作用就是构成标准的`app.router.add_route`第三个参数，还有就是获取不同的函数的对应的参数，就这两个主要作用。只要你实现了这个作用基本上是随你怎么写都行的，当然最好加上参数验证的功能，否则出错了却找不到出错的消息是一件很头痛的是事情。在这个难点的我没少参考同学的注释，但觉得还是把这部分的代码太过复杂化了，所以我用自己的方式重写了`RequestHandler`，从老师的*先检验再获取*转换成*先获取再统一验证*，从逻辑上应该是没有问题，但大幅度简化了程序。
+	- 如果大家有仔细看day2的`hello world`的例子的话，就会发现在那个`index`函数里是包含了一个`request`参数的，但我们新定义的很多函数中，`request`参数都是可以被省略掉的，那是因为新定义的函数最终都是被`RequestHandler`处理，自动加上一个`request`参数，从而符合`app.router.add_route`第三个参数的要求，所以说`RequestHandler`起到统一标准化接口的作用。
+	- 接口是统一了，但每个函数要求的参数都是不一样的，那又要如何解决呢？得益于**factory**的理念，我们很容易找一种解决方案，就如同`response_factory`一样把任何类型的返回值最后都统一封装成一个`web.Response`对象。`RequestHandler`也可以把任何参数都变成`self._func(**kw)`的形式。那问题来了，那`kw`的参数到底要去哪里去获取呢？
+		1. `request.match_info`的参数： match_info主要是保存像`@get('/blog/{id}')`里面的id，就是路由路径里的参数  
+		2. `GET`的参数： 像例如`/?page=2`  
+		3. `POST`的参数： api的`json`或者是网页中`from`  
+		4. `request`参数： 有时需要验证用户信息就需要获取`request`里面的数据   
+	- 说到这里应该很清楚了吧，`RequestHandler`的主要作用就是构成标准的`app.router.add_route`第三个参数，还有就是获取不同的函数的对应的参数，就这两个主要作用。只要你实现了这个作用基本上是随你怎么写都行的，当然最好加上参数验证的功能，否则出错了却找不到出错的消息是一件很头痛的是事情。在这个难点的我没少参考同学的注释，但觉得还是把这部分的代码太过复杂化了，所以我用自己的方式重写了`RequestHandler`，从老师的*先检验再获取*转换成*先获取再统一验证*，从逻辑上应该是没有问题，但大幅度简化了程序。
