@@ -44,14 +44,14 @@ class RequestHandler(object):
         # 获取函数的参数表
         required_args = inspect.signature(self._func).parameters
         logging.info('required args: %s' % str(required_args))
-        # 获取match_info的参数值，例如@get('/blog/{id}')之类的参数值
-        kw = dict(**request.match_info)
-        # 获取从data_factory函数处理过的参数值
+
+        kw = dict()
+        # 获取从GET或POST传进来的参数值，如果函数参数表有这参数名就加入
         args = await self.get_args(request)
-        for arg, value in args.items():
-            # 如果函数的参数表有这参数名就加入
-            if arg in required_args:
-                kw[arg] = value
+        kw = {arg: value for arg, value in args.items() if arg in required_args}
+
+        # 获取match_info的参数值，例如@get('/blog/{id}')之类的参数值
+        kw.update(dict(**request.match_info))
 
         # 如果有request参数的话也加入
         if 'request' in required_args:
