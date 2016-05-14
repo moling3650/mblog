@@ -14,7 +14,7 @@ class Field(object):
         self.default = default
 
     def __str__(self):
-        return '<%s, %s: %s>' % (self.__class__.__name__, self.column_type, self.name)
+        return '<{0.__class__.__name__}, {0.column_type}: {0.name}>'.format(self)
 
 class BooleanField(Field):
 

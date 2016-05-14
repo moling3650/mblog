@@ -11,8 +11,8 @@ logging.basicConfig(level=logging.INFO)
 import aiomysql, asyncio
 from .fields import Field
 
-def log(sql, args=[]):
-    logging.info('SQL: [%s] args: %s' % (sql, str(args)))
+def log(sql, args=None):
+    logging.info('SQL: [%s] args: %s' % (sql, str(args or [])))
 
 async def create_pool(loop, user, password, db, **kw):
     # 该函数用于创建连接池
@@ -127,7 +127,8 @@ class Model(dict, metaclass=ModelMetaclass):
         ' find objects by where clause. '
         # 初始化SQL语句和参数列表
         sql = [cls.__select__]
-        args = args or []
+        if args is None:
+            args = []
         # WHERE查找条件的关键字
         if where:
             sql.append('where %s' % (where))

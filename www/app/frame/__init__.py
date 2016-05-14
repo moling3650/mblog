@@ -45,7 +45,6 @@ class RequestHandler(object):
         required_args = inspect.signature(self._func).parameters
         logging.info('required args: %s' % str(required_args))
 
-        kw = dict()
         # 获取从GET或POST传进来的参数值，如果函数参数表有这参数名就加入
         args = await self.get_args(request)
         kw = {arg: value for arg, value in args.items() if arg in required_args}
