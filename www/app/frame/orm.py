@@ -7,7 +7,6 @@
 
 import logging
 import aiomysql
-import asyncio
 from .fields import Field
 
 logging.basicConfig(level=logging.INFO)
@@ -75,6 +74,7 @@ class ModelMetaclass(type):
         logging.info('found model: %s (table: %s)' % (name, table))
         # 建立映射关系表和找到主键
         mappings = {}
+        escaped_fields = []
         primary_key = None
         for key, val in attrs.copy().items():
             if isinstance(val, Field):
@@ -86,16 +86,19 @@ class ModelMetaclass(type):
                     if primary_key:
                         raise KeyError('Duplicate primary key for field: %s' % key)
                     primary_key = key
+                else:
+                    escaped_fields.append(key)
         if not primary_key:
             raise KeyError('Primary key not found.')
         # 创建新的类的属性
-        attrs['__table__'] = table                   # 保存表名
-        attrs['__mappings__'] = mappings             # 映射关系表
-        attrs['__primary_key__'] = primary_key       # 主键属性名
-        #-----------------------默认SQL语句--------------------------
+        attrs['__table__'] = table                            # 保存表名
+        attrs['__mappings__'] = mappings                      # 映射关系表
+        attrs['__primary_key__'] = primary_key                # 主键属性名
+        attrs['__fields__'] = escaped_fields + [primary_key]  # 所有字段名
+        # -----------------------默认SQL语句--------------------------
         attrs['__select__'] = 'select * from `%s`' % (table)
         attrs['__insert__'] = 'insert into `%s` (%s) values (%s)' % (table, ', '.join('`%s`'%f for f in mappings), ', '.join(['?'] * len(mappings)))
-        attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (table, ', '.join('`%s` = ?'%f for f in mappings), primary_key)
+        attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (table, ', '.join('`%s` = ?'%f for f in escaped_fields), primary_key)
         attrs['__delete__'] = 'delete from `%s` where `%s`= ?' % (table, primary_key)
 
         return type.__new__(cls, name, bases, attrs)
@@ -162,7 +165,7 @@ class Model(dict, metaclass=ModelMetaclass):
         if where:
             sql.append('where %s' % (where))
         resultset = await select(' '.join(sql), args, 1)
-        if len(resultset) != 1:
+        if not resultset:
             return 0
         return resultset[0].get('_num_', 0)
 
@@ -171,7 +174,7 @@ class Model(dict, metaclass=ModelMetaclass):
     async def find(cls, pk):
         ' find object by primary key. '
         resultset = await select('%s where `%s`= ?' % (cls.__select__, cls.__primary_key__), [pk], 1)
-        return cls(**resultset[0]) if len(resultset) else None
+        return cls(**resultset[0]) if resultset else None
 
     # 把一个实例保存到数据库
     async def save(self):
@@ -182,7 +185,7 @@ class Model(dict, metaclass=ModelMetaclass):
 
     # 更改一个实例在数据库的信息
     async def update(self):
-        args = list(map(self.get, list(self.__mappings__) + [self.__primary_key__]))
+        args = list(map(self.get, self.__fields__))
         rows = await execute(self.__update__, args)
         if rows != 1:
             logging.warn('failed to update by primary key: affected rows: %s' % rows)
