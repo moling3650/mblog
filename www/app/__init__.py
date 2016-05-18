@@ -13,8 +13,8 @@ from app.frame import add_routes, add_static
 from app.frame.orm import create_pool
 from app.factorys import logger_factory, auth_factory, response_factory, datetime_filter
 
-
 logging.basicConfig(level=logging.INFO)
+
 
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
@@ -35,6 +35,7 @@ def init_jinja2(app, **kw):
             env.filters[name] = ftr
     app['__templating__'] = env
 
+
 async def create_server(loop, config_mod):
     try:
         config = __import__(config_mod, fromlist=['get_config'])
@@ -51,3 +52,4 @@ async def create_server(loop, config_mod):
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 9900)
     logging.info('server started at http://127.0.0.1:9900...')
     return server
+

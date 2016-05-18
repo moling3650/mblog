@@ -13,8 +13,10 @@ from app.frame.orm import Model
 
 StringField = functools.partial(StringField, ddl='varchar(50)')
 
+
 def next_id():
     return '%015d%s000' % (int(time.time() * 1000), uuid.uuid4().hex)
+
 
 # 定义用户类
 class User(Model):
@@ -30,7 +32,7 @@ class User(Model):
 
     async def register(self):
         self.id = next_id()
-        sha1_pw = '%s:%s'%(self.id, self.password)
+        sha1_pw = '%s:%s' % (self.id, self.password)
         self.password = hashlib.sha1(sha1_pw.encode('utf-8')).hexdigest()
         await self.save()
 
@@ -64,6 +66,7 @@ class User(Model):
             logging.exception(e)
             return None
 
+
 # 定义博客类
 class Blog(Model):
     __table__ = 'blogs'
@@ -76,6 +79,7 @@ class Blog(Model):
     summary = StringField(ddl='varchar(200)')
     content = TextField()
     created_at = FloatField(default=time.time)
+
 
 # 定义评论类
 class Comment(Model):

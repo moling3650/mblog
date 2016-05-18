@@ -7,8 +7,10 @@
 
 import asyncio, functools, inspect, logging, os
 from urllib import parse
+from aiohttp import web
 
 from .errors import APIError
+
 
 def get(path):
     '''
@@ -23,6 +25,7 @@ def get(path):
         return wrapper
     return decorator
 
+
 def post(path):
     '''
     Define decorator @post('/path')
@@ -36,7 +39,9 @@ def post(path):
         return wrapper
     return decorator
 
+
 class RequestHandler(object):
+
     def __init__(self, func):
         self._func = func
 
@@ -103,6 +108,7 @@ def add_routes(app, module_name):
                     app.router.add_route(method, path, RequestHandler(func))
     except ImportError as e:
         raise e
+
 
 # 添加静态文件夹的路径
 def add_static(app):

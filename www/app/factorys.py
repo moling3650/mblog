@@ -17,7 +17,7 @@ from app.models import User
 # 在每个响应之前打印日志
 async def logger_factory(app, handler):
     async def logger(request):
-        logging.info('Response: %s %s' %(request.method, request.path))
+        logging.info('Response: %s %s' % (request.method, request.path))
         return await handler(request)
     return logger
 
@@ -42,7 +42,7 @@ async def response_factory(app, handler):
     async def response(request):
         logging.info('Response handler...')
         r = await handler(request)
-        if  isinstance(r, web.StreamResponse):
+        if isinstance(r, web.StreamResponse):
             return r
         if isinstance(r, bytes):
             resp = web.Response(body=r)
@@ -58,7 +58,7 @@ async def response_factory(app, handler):
             template = r.get('__template__')
             if template is None:
                 resp = web.Response(body=json.dumps(r, ensure_ascii=False,
-                        default=lambda o: o.__dict__).encode('utf-8'))
+                                    default=lambda o: o.__dict__).encode('utf-8'))
                 resp.content_type = 'application/json;charset=utf-8'
                 return resp
             else:
@@ -78,6 +78,7 @@ async def response_factory(app, handler):
         resp.content_type = 'text/plain;charset=utf-8'
         return resp
     return response
+
 
 def datetime_filter(t):
     delta = int(time.time() - t)

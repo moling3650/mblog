@@ -6,10 +6,12 @@
 # @Version : 0.1
 
 import logging
+import aiomysql
+import asyncio
+from .fields import Field
+
 logging.basicConfig(level=logging.INFO)
 
-import aiomysql, asyncio
-from .fields import Field
 
 def log(sql, args=None):
     logging.info('SQL: [%s] args: %s' % (sql, str(args or [])))
@@ -61,6 +63,7 @@ async def execute(sql, args, autocommit=True):
             raise e
         return affected
 
+
 class ModelMetaclass(type):
 
     def __new__(cls, name, bases, attrs):
@@ -97,7 +100,9 @@ class ModelMetaclass(type):
 
         return type.__new__(cls, name, bases, attrs)
 
+
 class Model(dict, metaclass=ModelMetaclass):
+
     def __init__(self, **kw):
         super(Model, self).__init__(**kw)
 
@@ -151,15 +156,15 @@ class Model(dict, metaclass=ModelMetaclass):
 
     # 根据列名和条件查看数据库有多少条信息
     @classmethod
-    async def countRows(cls, selectField, where=None, args=None):
+    async def countRows(cls, where=None, args=None):
         ' find number by select and where. '
-        sql = ['select count(%s) _num_ from `%s`' % (selectField, cls.__table__)]
+        sql = ['select count(*) _num_ from `%s`' % (cls.__table__)]
         if where:
             sql.append('where %s' % (where))
         resultset = await select(' '.join(sql), args, 1)
-        if len(resultset) == 0:
+        if len(resultset) != 1:
             return 0
-        return resultset[0]['_num_']
+        return resultset[0].get('_num_', 0)
 
     # 根据主键查找一个实例的信息
     @classmethod
@@ -171,8 +176,8 @@ class Model(dict, metaclass=ModelMetaclass):
     # 把一个实例保存到数据库
     async def save(self):
         args = list(map(self.getValueOrDefault, self.__mappings__))
-        rows = await execute(self.__insert__, args) # 使用默认插入函数
-        if rows != 1: # rows != 1就是插入失败
+        rows = await execute(self.__insert__, args)
+        if rows != 1:
             logging.warn('failed to insert record: affected rows: %s' % rows)
 
     # 更改一个实例在数据库的信息

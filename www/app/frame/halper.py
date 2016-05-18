@@ -4,12 +4,16 @@
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
 # @Version : 0.1
+from .errors import APIPermissionError, APIValueError
+
 
 # 网页翻页信息类
 class Page(object):
+
     '''
     Page object for display pages.
     '''
+
     def __init__(self, item_count, page_index=1, page_size=10):
         self.item_count = item_count
         self.page_size = page_size
@@ -36,6 +40,7 @@ class Page(object):
 
     __repr__ = __str__
 
+
 # 获取合法的页面引索
 def get_page_index(page_str):
     try:
@@ -43,9 +48,11 @@ def get_page_index(page_str):
     except ValueError:
         return 1
 
+
 def check_admin(request):
     if request.__user__ is None or not request.__user__.admin:
         raise APIPermissionError()
+
 
 def check_string(**kw):
     for field, string in kw.items():
