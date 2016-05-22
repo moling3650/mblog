@@ -97,8 +97,8 @@ class ModelMetaclass(type):
         attrs['__fields__'] = escaped_fields + [primary_key]  # 所有字段名
         # -----------------------默认SQL语句--------------------------
         attrs['__select__'] = 'select * from `%s`' % (table)
-        attrs['__insert__'] = 'insert into `%s` (%s) values (%s)' % (table, ', '.join('`%s`'%f for f in mappings), ', '.join(['?'] * len(mappings)))
-        attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (table, ', '.join('`%s` = ?'%f for f in escaped_fields), primary_key)
+        attrs['__insert__'] = 'insert into `%s` (%s) values (%s)' % (table, ', '.join('`%s`' % f for f in mappings), ', '.join('?' * len(mappings)))
+        attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (table, ', '.join('`%s` = ?' % f for f in escaped_fields), primary_key)
         attrs['__delete__'] = 'delete from `%s` where `%s`= ?' % (table, primary_key)
 
         return type.__new__(cls, name, bases, attrs)

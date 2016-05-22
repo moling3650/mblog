@@ -5,7 +5,10 @@
 # @Link    : #
 # @Version : 0.1
 
-import hashlib, json, logging, re
+import hashlib
+import json
+import logging
+import re
 from aiohttp import web
 
 from app import COOKIE_NAME
@@ -58,10 +61,10 @@ async def api_register_user(*, email, name, password):
     if not password or not _RE_SHA1.match(password):
         raise APIValueError('password')
     users = await User.findAll('email = ?', [email])
-    if len(users) > 0:
-        raise ('register:failed', 'email', 'Email is already in use.')
-    user = User(name=name.strip(), email=email, password=password, admin=True, image='/static/img/user.png')
-    await user.register()
+    if users:
+        raise ('register:failed', 'email', 'Email is already in used.')
+    user = User(name=name.strip(), email=email, password=password, image='/static/img/user.png')
+    await user.save()
     # make session cookie
     r = web.Response()
     r.set_cookie(COOKIE_NAME, user.generate_cookie(86400), max_age=86400, httponly=True)

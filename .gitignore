@@ -2,6 +2,8 @@
 Thumbs.db
 ehthumbs.db
 
+dist/*
+
 # Folder config file
 Desktop.ini
 

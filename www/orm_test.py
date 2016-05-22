@@ -5,7 +5,8 @@
 # @Link    : #
 # @Version : 0.1
 
-import asyncio, logging
+import asyncio
+import logging
 
 from app.frame.orm import create_pool
 from app.models import User
@@ -21,18 +22,22 @@ async def test():
     # 测试insert into语句
     if rows < 2:
         for idx in range(5):
-            u = User(name='test%s'%(idx), email='test%s@orm.org'%(idx),
-                        password='pw', image='/static/img/user.png')
+            u = User(
+                name='test%s' % (idx),
+                email='test%s@orm.org' % (idx),
+                password='pw',
+                image='/static/img/user.png'
+            )
             rows = await User.countRows('email = ?', u.email)
             if rows == 0:
-                await u.register()
+                await u.save()
             else:
                 print('the email was already registered...')
 
     # 测试select语句
     users = await User.findAll(orderBy='created_at')
     for user in users:
-        logging.info('name: %s, email: %s' % (user.name, user.email))
+        logging.info('name: %s, password: %s' % (user.name, user.password))
 
     # 测试update语句
     user = users[1]
@@ -42,7 +47,7 @@ async def test():
 
     # 测试查找指定用户
     test_user = await User.find(user.id)
-    logging.info('name: %s, email: %s' % (user.name, user.email))
+    logging.info('name: %s, email: %s' % (test_user.name, test_user.email))
 
     # 测试delete语句
     users = await User.findAll(orderBy='created_at', limit=(1, 2))

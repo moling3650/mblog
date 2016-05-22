@@ -5,7 +5,10 @@
 # @Link    : #
 # @Version : 0.1
 
-import functools, hashlib, time, uuid
+import functools
+import hashlib
+import time
+import uuid
 
 from app import COOKIE_KEY
 from app.frame.fields import *
@@ -30,11 +33,11 @@ class User(Model):
     image = StringField(ddl='varchar(500)')
     created_at = FloatField(default=time.time)
 
-    async def register(self):
+    async def save(self):
         self.id = next_id()
         sha1_pw = '%s:%s' % (self.id, self.password)
         self.password = hashlib.sha1(sha1_pw.encode('utf-8')).hexdigest()
-        await self.save()
+        await super().save()
 
     def generate_cookie(self, max_age):
         expires = str(int(time.time() + max_age))

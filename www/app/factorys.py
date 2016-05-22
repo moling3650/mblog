@@ -5,15 +5,15 @@
 # @Link    : #
 # @Version : 0.1
 
-import logging, json, time
+import logging
+import json
+import time
 from datetime import datetime
 from aiohttp import web
 
 from app import COOKIE_NAME
 from app.models import User
-
-
-#--------------------------工厂函数------------------------------------
+# -------------------------工厂函数------------------------------------
 # 在每个响应之前打印日志
 async def logger_factory(app, handler):
     async def logger(request):
@@ -57,8 +57,7 @@ async def response_factory(app, handler):
         if isinstance(r, dict):
             template = r.get('__template__')
             if template is None:
-                resp = web.Response(body=json.dumps(r, ensure_ascii=False,
-                                    default=lambda o: o.__dict__).encode('utf-8'))
+                resp = web.Response(body=json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8'))
                 resp.content_type = 'application/json;charset=utf-8'
                 return resp
             else:

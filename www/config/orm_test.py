@@ -11,4 +11,3 @@ db_config = {
     'password': 'test',
     'db': 'orm_test'
 }
-

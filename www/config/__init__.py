@@ -4,9 +4,6 @@
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
 # @Version : 0.1
-#
-
-modules = ['app.routes']
 
 db_config = {
     'user': 'moling',
@@ -20,3 +17,5 @@ jinja2_config = {
 
 COOKIE_NAME = 'aweSession'
 COOKIE_KEY = 'MbLog'
+
+__all__ = ['db_config', 'jinja2_config', 'COOKIE_NAME', 'COOKIE_KEY']
