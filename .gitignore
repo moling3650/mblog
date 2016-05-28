@@ -3,7 +3,7 @@ Thumbs.db
 ehthumbs.db
 
 dist/*
-
+py3env/*
 # Folder config file
 Desktop.ini
 

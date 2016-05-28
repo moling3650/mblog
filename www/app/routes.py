@@ -25,7 +25,7 @@ _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 @get('/boot')
 def bootbase():
     return {
-        '__template__': 'bootbase.html'
+        '__template__': 'bootstrap-base.html'
     }
 
 
@@ -37,8 +37,10 @@ async def index(*, page='1'):
         blogs = []
     else:
         blogs = await Blog.findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
+    for blog in blogs:
+        blog.html_content = markdown(blog.content)
     return {
-        '__template__': 'blogs.html',
+        '__template__': 'bootstrap-blogs.html',
         'page': page_info,
         'blogs': blogs
     }

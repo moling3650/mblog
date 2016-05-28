@@ -5,10 +5,53 @@
  * @date    2016-05-27 20:34:36
  * @version $Id$
  */
-body {
-  padding-top: 50px;
-}
 .starter-template {
-  padding: 40px 15px;
   text-align: center;
+}
+
+#navbar .nav > li .dropdown-menu {
+    left: 0;
+    right: auto;
+}
+#navbar .nav > li:hover .dropdown-menu {
+    display: block;
+}
+
+.form-signin {
+  max-width: 300px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: 5px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 15px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.blog-post-meta {
+margin-bottom: 25px;
+color: #999;
 }

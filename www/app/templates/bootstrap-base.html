@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -16,15 +15,13 @@
     <!-- <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> -->
     <link rel="stylesheet" href="../static/css/mblog.css">
 
-
-
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     {% block beforehead %}<!-- before head  -->{% endblock %}
+
   </head>
 
 
@@ -48,25 +45,42 @@
               <li><a href="/manage"><span class="glyphicon glyphicon-wrench"> Manage</span></a></li>
               <li><a href="//github.com/moling3650/mblog" target="_blank"><span class="glyphicon glyphicon-flash"> Code</span></a></li>
             </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+              {% if __user__ %}
+              <li class="dropdown">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> <span class="glyphicon glyphicon-user"> {{ __user__.name }} </span> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  {% if __user__.admin %}
+                  <li><a href="/manage/blogs/create"><i class="uk-icon-plus"></i><span class="glyphicon glyphicon-pencil"> New Blog</span></a></li>
+                  {% endif %}
+                  <li><a href="/signout"><span class="glyphicon glyphicon-log-out"> Sign Out</span></a></li>
+                </ul>
+              </li>
+              {% else %}
+              <li><a href="/signin"><span class="glyphicon glyphicon-log-in">  Sign In</span></a></li>
+              <li><a href="/register"><span class="glyphicon glyphicon-pencil"> Register</a></span></li>
+              {% endif %}
+            </ul>
           </div><!--/.nav-collapse -->
         </div>
       </nav>
 
-      <div class="starter-template">
-        <h1>Hello world!</h1>
 
-        <!-- content -->
-        {% block content %}
-        {% endblock %}
-        <!-- // content -->
-      </div>
+      <div style="height: 50px;"></div>
+
+
+      <!-- content -->
+      {% block content %}
+      {% endblock %}
+      <!-- // content -->
+
 
     </div><!-- /.container -->
 
 
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </body>

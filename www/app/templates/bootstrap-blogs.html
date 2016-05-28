@@ -1,0 +1,28 @@
+{% extends 'bootstrap-base.html' %}
+
+{% block title %}日志{% endblock %}
+
+
+{% block content %}
+
+
+<main class="container">
+  <div class="row">
+    <div class="col-sm-9 blog-main">
+      {% for blog in blogs %}
+      <article class="blog-post">
+
+        <h2 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h2>
+        <p class="blog-post-meta"> 发表于 {{ blog.created_at|datetime }}</p>
+
+        <p>{{ blog.html_content|safe }}</p>
+        <hr class="divider" />
+      </article>
+
+      {% endfor %}
+    </div>
+  </div>
+</main>
+
+
+{% endblock %}
