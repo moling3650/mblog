@@ -4,6 +4,11 @@
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
 # @Version : 0.1
+import re
+from pygments import highlight
+from pygments.lexers import PythonLexer
+from pygments.formatters import HtmlFormatter
+from .markdown2 import markdown
 from .errors import APIPermissionError, APIValueError
 
 
@@ -58,3 +63,10 @@ def check_string(**kw):
     for field, string in kw.items():
         if not string or not string.strip():
             raise APIValueError(field, '%s cannot be empty.' % field)
+
+
+def markdown_highlight(content):
+    return re.sub(
+        r'<pre><code>(?P<code>.+?)</code></pre>',
+        lambda m: highlight(m.group('code'), PythonLexer(), HtmlFormatter()),
+        markdown(content), flags=re.S)

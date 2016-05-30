@@ -4,6 +4,7 @@ ehthumbs.db
 
 dist/*
 py3env/*
+fabfile.*
 # Folder config file
 Desktop.ini
 
@@ -48,3 +49,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.pyc
+
+
+
