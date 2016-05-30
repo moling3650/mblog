@@ -13,10 +13,10 @@
     left: 0;
     right: auto;
 }
-/* #navbar .nav > li:hover .dropdown-menu {
+#navbar .nav > li:hover .dropdown-menu {
     display: block;
 }
- */
+
 .form-signin {
   max-width: 300px;
   padding: 15px;

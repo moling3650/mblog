@@ -8,25 +8,20 @@
 
 <main class="container">
   <div class="row">
-    <div class="col-md-9 col-sm-12 blog-main">
+    <div class="col-sm-9 blog-main">
       {% for blog in blogs %}
       <article class="blog-post">
+
         <h2 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h2>
-        <p class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
+        <p class="blog-post-meta"> 发表于 {{ blog.created_at|datetime }}</p>
 
         <p>{{ blog.html_content|safe }}</p>
         <hr class="divider" />
       </article>
+
       {% endfor %}
     </div>
-    <div class="col-md-3 h1 text-center">
-      {% if __user__ %}
-        <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" />
-      {% else %}
-        <img src="../static/img/user.png" alt="user_image" class="img-thumbnail img-respinsuve" />
-      {% endif %}
-    </div>
-  </div><!-- .row -->
+  </div>
 </main>
 
 

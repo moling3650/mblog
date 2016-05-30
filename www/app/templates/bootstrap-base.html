@@ -11,10 +11,9 @@
     <link rel="bookmark" href="/static/img/favicon.ico"/>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/pygments.css" />
     <!-- 可选的Bootstrap主题文件（一般不用引入） -->
     <!-- <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> -->
-    <link rel="stylesheet" href="/static/css/mblog.css">
+    <link rel="stylesheet" href="../static/css/mblog.css">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -32,7 +31,7 @@
       <!-- <nav class="navbar navbar-inverse"> -->
         <div class="container">
           <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".collapse" aria-expanded="false" aria-controls="navbar">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
               <span class="sr-only">Toggle navigation</span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
@@ -53,7 +52,7 @@
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> <span class="glyphicon glyphicon-user"> {{ __user__.name }} </span> <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   {% if __user__.admin %}
-                  <li><a href="/manage/blogs/create"><span class="glyphicon glyphicon-pencil"> New Blog</span></a></li>
+                  <li><a href="/manage/blogs/create"><i class="uk-icon-plus"></i><span class="glyphicon glyphicon-pencil"> New Blog</span></a></li>
                   {% endif %}
                   <li><a href="/signout"><span class="glyphicon glyphicon-log-out"> Sign Out</span></a></li>
                 </ul>
@@ -66,7 +65,6 @@
           </div><!--/.nav-collapse -->
         </div>
       </nav>
-
 
 
       <div style="height: 50px;"></div>
