@@ -13,9 +13,8 @@ from aiohttp import web
 
 from app import COOKIE_NAME
 from app.frame import get, post
-from app.frame.halper import Page, get_page_index, check_admin, check_string
+from app.frame.halper import Page, get_page_index, check_admin, check_string, markdown_highlight
 from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
-from app.frame.markdown2 import markdown
 from app.models import User, Blog, Comment
 
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
@@ -38,7 +37,7 @@ async def index(*, page='1'):
     else:
         blogs = await Blog.findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
     for blog in blogs:
-        blog.html_content = markdown(blog.content)
+        blog.html_content = markdown_highlight(blog.content)
     return {
         '__template__': 'bootstrap-blogs.html',
         'page': page_info,
@@ -133,8 +132,9 @@ async def get_bolg(id):
     blog = await Blog.find(id)
     comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
     for c in comments:
-        c.html_content = markdown(c.content)
-    blog.html_content = markdown(blog.content)
+        c.html_content = markdown_highlight(c.content)
+    blog.html_content = markdown_highlight(blog.content)
+
     return {
         '__template__': 'blog.html',
         'blog': blog,
