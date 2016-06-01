@@ -16,6 +16,8 @@
 
 1. aiomysql: aiomysql针对asyncio框架用于访问mysql的库
 
+1. Pygments： 用于实现网页代码高亮的库
+
 所有的库都可以通过pip安装，或者更方便地使用`pip install -r requirements.txt`命令来安装。
 
 ###项目结构
@@ -60,3 +62,8 @@
 - 因为js的数据处理和前端绑定，js代码估计也需要修改，然而我还未学过javaScript  
 - 将来肯定要支持代码高亮的
 - 数据库可迁移也是要弄的  
+
+### 初步实现代码高亮
+- 只支持python代码的高亮。  
+- 现在好像还没有支持python3.5的新语法，我也不知道为什么，明明在pygments官网示范是支持的。  
+- 只支持区块代码的高亮，markdown默认区块代码是前面四个空格。  
