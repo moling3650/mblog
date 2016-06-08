@@ -42,9 +42,9 @@
           </div>
           <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="/"><span class="glyphicon glyphicon-home"> Home</span></a></li>
-              <li><a href="/manage"><span class="glyphicon glyphicon-wrench"> Manage</span></a></li>
-              <li><a href="//github.com/moling3650/mblog" target="_blank"><span class="glyphicon glyphicon-flash"> Code</span></a></li>
+              <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+              <li><a href="/manage"><span class="glyphicon glyphicon-wrench"></span> Manage</a></li>
+              <li><a href="//github.com/moling3650/mblog" target="_blank"><span class="glyphicon glyphicon-flash"></span> Code</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
@@ -70,20 +70,32 @@
 
 
       <div style="height: 50px;"></div>
-
-
       <!-- content -->
       {% block content %}
       {% endblock %}
       <!-- // content -->
 
-
     </div><!-- /.container -->
-
+    <div class="container">
+      <footer>
+        <div class="text-right"><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a></div>
+      </footer>
+    </div>
 
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script>
+
+    $(".dropdown").mouseenter(function(){
+        $(this).addClass("open");
+    });
+    $(".dropdown").mouseleave(function(){
+        $(this).removeClass("open");
+    });
+    </script>
+    {% block script %}
+    {% endblock %}
   </body>
 </html>

@@ -68,7 +68,11 @@ class RequestHandler(object):
             kw['request'] = request
 
         # 检查参数表中有没参数缺失
-        for arg in required_args.values():
+        for key, arg in required_args.items():
+            # request参数不能为可变长参数
+            if key == 'request':
+                if arg.kind in (arg.VAR_POSITIONAL, arg.VAR_KEYWORD):
+                    return web.HTTPBadRequest(text='request parameter cannot be the var argument.')
             # 如果参数类型不是变长列表和变长字典，变长参数是可缺省的
             if arg.kind not in (arg.VAR_POSITIONAL, arg.VAR_KEYWORD):
                 # 如果还是没有默认值，而且还没有传值的话就报错
@@ -108,20 +112,21 @@ class RequestHandler(object):
 def add_routes(app, module_name):
     try:
         mod = __import__(module_name, fromlist=['get_submodule'])
-        for attr in dir(mod):
-            if attr.startswith('_'):
-                continue
-            func = getattr(mod, attr)
-            if callable(func):
-                method = getattr(func, '__method__', None)
-                path = getattr(func, '__route__', None)
-                if method and path:
-                    func = asyncio.coroutine(func)
-                    args = ', '.join(inspect.signature(func).parameters.keys())
-                    logging.info('add route %s %s => %s(%s)' % (method, path, func.__name__, args))
-                    app.router.add_route(method, path, RequestHandler(func))
     except ImportError as e:
         raise e
+
+    for attr in dir(mod):
+        if attr.startswith('_'):
+            continue
+        func = getattr(mod, attr)
+        if callable(func):
+            method = getattr(func, '__method__', None)
+            path = getattr(func, '__route__', None)
+            if method and path:
+                func = asyncio.coroutine(func)
+                args = ', '.join(inspect.signature(func).parameters.keys())
+                logging.info('add route %s %s => %s(%s)' % (method, path, func.__name__, args))
+                app.router.add_route(method, path, RequestHandler(func))
 
 
 # 添加静态文件夹的路径

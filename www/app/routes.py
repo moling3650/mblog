@@ -21,8 +21,14 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
+@get('/test')
+def test(request):
+    # raise APIValueError('email', 'Email not exist.')
+    return 'redirect:/boot'
+
+
 @get('/boot')
-def bootbase():
+def bootbase(request):
     return {
         '__template__': 'bootstrap-base.html'
     }
@@ -86,6 +92,7 @@ async def api_register_user(*, email, name, password):
 @get('/signin')
 def signin():
     return {
+        # '__template__': 'bootstrap-signin.html'
         '__template__': 'signin.html'
     }
 
