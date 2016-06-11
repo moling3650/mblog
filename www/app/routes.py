@@ -21,12 +21,6 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
-@get('/test')
-def test(request):
-    # raise APIValueError('email', 'Email not exist.')
-    return 'redirect:/boot'
-
-
 @get('/boot')
 def bootbase(request):
     return {
@@ -92,16 +86,16 @@ async def api_register_user(*, email, name, password):
 @get('/signin')
 def signin():
     return {
-        # '__template__': 'bootstrap-signin.html'
-        '__template__': 'signin.html'
+        '__template__': 'bootstrap-signin.html'
     }
 
 
 @post('/api/authenticate')
-async def authenticate(*, email, password):
+async def authenticate(*, email, sha1_pw):
+    logging.info('password: %s' % sha1_pw)
     if not email:
         raise APIValueError('email', 'Invalid email.')
-    if not password:
+    if not sha1_pw:
         raise APIValueError('password', 'Invalid password.')
     users = await User.findAll('email = ?', [email])
     if len(users) == 0:
@@ -111,7 +105,7 @@ async def authenticate(*, email, password):
     sha1 = hashlib.sha1()
     sha1.update(user.id.encode('utf-8'))
     sha1.update(b':')
-    sha1.update(password.encode('utf-8'))
+    sha1.update(sha1_pw.encode('utf-8'))
     if user.password != sha1.hexdigest():
         raise APIValueError('password', 'Invalid password')
     # authenticate ok, set cookie

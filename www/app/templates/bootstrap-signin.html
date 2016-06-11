@@ -1,87 +1,48 @@
 {% extends 'bootstrap-base.html' %}
 
 {% block meta %}<!-- block meta  -->{% endblock %}
-{% block title %} Sign In{% endblock %}
+{% block title %} Sign In {% endblock %}
 
 {% block content %}
 <div class="container">
-<!--   <form id="vm" v-on="submit: submit" class="form-signin">
-    <h2 class="form-signin-heading">Please sign in</h2>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-  </form> -->
 
+  <form id="vm-form-signin" class="form-signin" v-on:submit.prevent="submit">
+    <h2 class="form-signin-heading text-center">Please sign in</h2>
+    <label class="sr-only" for="email">email</label>
+    <input type="email" v-model="email" class="form-control" id="email" name="email">
+    <label class="sr-only" for="password">password</label>
+    <input type="password" v-model="password" class="form-control" id="password" name="password">
+    <button class="btn btn-primary btn-block">提交</button>
+  </form>
 
-<form id="vm-signin" class="form-signin" v-on="submit: submit">
-  <label class="sr-only">email</label>
-  <input type="email" class="form-control" name="email">
-  <label class="sr-only">password</label>
-  <input type="password" class="form-control" name="password">
-  <button class="btn btn-primary btn-block">提交</button>
-</form>
 </div>
 {% endblock %}
 
 {% block script %}
 
-<script src="/static/js/vue.min.js"></script>
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/sha1.min.js"></script>
 <script src="/static/js/awesome.js"></script>
 
 <script>
-var vm = new Vue({
-  el: "#vm-signin",
+var vmAuth = new Vue({
+  el: '#vm-form-signin',
   data: {
     email: '',
-    password: ''
-  }
+    password: '',
+    sha1_pw: ''
+  },
   methods: {
     submit: function(event){
-      event.preventDefault();
-      var
-        $from = $("#vm-signin");
-        data = {
-          email = this.email,
-          password = this.password === "" ? "" : CryptoJS.SHA1(email + ':' + this.password).toString()
-        };
-      $form.postJSON('/api/authenticate', data, function(err, result) {
+      this.email = this.email.trim();
+      this.sha1_pw = this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString()
+      $("#vm-form-signin").postJSON('/api/authenticate', this.$data, function(err, result) {
         if (! err) {
-          location.assign('/');
+            location.assign('/');
         }
+      });
     }
   }
-})
-
-
-</script>
-<!-- <script>
-$(function() {
-    var vmAuth = new Vue({
-        el: '#vm',
-        data: {
-            email: '',
-            password: ''
-        },
-        methods: {
-            submit: function(event) {
-                event.preventDefault();
-                var
-                    $form = $('#vm'),
-                    email = this.email.trim().toLowerCase(),
-                    data = {
-                        email: email,
-                        password: this.password==='' ? '' : CryptoJS.SHA1(email + ':' + this.password).toString()
-                    };
-                $form.postJSON('/api/authenticate', data, function(err, result) {
-                    if (! err) {
-                        location.assign('/');
-                    }
-                });
-            }
-        }
-    });
 });
-</script> -->
+</script>
 {% endblock %}
