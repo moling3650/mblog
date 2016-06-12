@@ -6,13 +6,18 @@
 {% block content %}
 <div class="container">
 
-  <form id="vm-form-signin" class="form-signin" v-on:submit.prevent="submit">
-    <h2 class="form-signin-heading text-center">Please sign in</h2>
+  <form class="form-vm" id="vm-form-signin" v-on:submit.prevent="submit">
+
+    <h2 class="text-center">Please sign in</h2>
+
     <label class="sr-only" for="email">email</label>
-    <input type="email" v-model="email" class="form-control" id="email" name="email">
+    <input class="form-control" id="email" name="email" type="email" v-model="email">
+
     <label class="sr-only" for="password">password</label>
-    <input type="password" v-model="password" class="form-control" id="password" name="password">
+    <input class="form-control" id="password" name="password" type="password" v-model="password">
+
     <button class="btn btn-primary btn-block">提交</button>
+
   </form>
 
 </div>
@@ -36,7 +41,7 @@ var vmAuth = new Vue({
     submit: function(event){
       this.email = this.email.trim();
       this.sha1_pw = this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString()
-      $("#vm-form-signin").postJSON('/api/authenticate', this.$data, function(err, result) {
+      $("#vm-form-signin").postJSON('/api/authenticate', this.$data, function(err, result){
         if (! err) {
             location.assign('/');
         }

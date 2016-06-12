@@ -1,0 +1,84 @@
+{% extends 'bootstrap-base.html' %}
+
+{% block meta %}<!-- block meta  -->{% endblock %}
+{% block title %} Register {% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <form class="form-vm" id="vm" v-on:submit.prevent="submit">
+
+    <h2 class="form-vm-heading text-center">Register</h2>
+
+    <label class="sr-only" for="name">name</label>
+    <input class="form-control" id="name" name="name" type="text" placeholder="请输入名字" v-model="name">
+
+    <label class="sr-only" for="email">email</label>
+    <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
+
+    <label class="sr-only" for="password">password</label>
+    <input class="form-control" id="password" name="password" type="password" placeholder="请输入口令" v-model="password">
+
+    <label class="sr-only" for="password2">password</label>
+    <input class="form-control" id="password2" name="password2" type="password" placeholder="请重复口令" v-model="password2">
+
+    <button class="btn btn-primary btn-block">提交</button>
+
+    </form>
+
+</div>
+{% endblock %}
+
+{% block script %}
+
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/sha1.min.js"></script>
+<script src="/static/js/awesome.js"></script>
+
+<script>
+
+function validateEmail(email) {
+  var re = /^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$/;
+  return re.test(email.toLowerCase());
+}
+
+var vmRegister = new Vue({
+  el: '#vm',
+  data: {
+    name: '',
+    email: '',
+    password: '',
+    password2: ''
+  },
+  methods: {
+    submit: function(){
+      $form = $('#vm');
+      if (! this.name.trim()) {
+        return alert('请输入名字');
+      }
+      if (! validateEmail(this.email.trim())) {
+        return alert('请输入正确的Email地址');
+      }
+      if (this.password.length < 6) {
+        return alert('口令长度至少为6个字符');
+      }
+      if (this.password !== this.password2) {
+        return alert('两次输入的口令不一致');
+      }
+
+      var email = this.email.trim().toLowerCase();
+      $form.postJSON('/api/register', {
+        name: this.name.trim(),
+        email: email,
+        password: CryptoJS.SHA1(email + ':' + this.password1).toString()
+      }, function (err, r) {
+        if (err) {
+          return alert(err.message || err.data || err);
+        }
+        return location.assign('/');
+      });
+    }
+  }
+});
+</script>
+{% endblock %}

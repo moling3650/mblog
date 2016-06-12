@@ -22,9 +22,9 @@ _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
 @get('/boot')
-def bootbase(request):
+def bootstrap():
     return {
-        '__template__': 'bootstrap-base.html'
+        '__template__': 'bootstrap-register.html'
     }
 
 
@@ -56,7 +56,7 @@ def not_found():
 @get('/register')
 def register():
     return {
-        '__template__': 'register.html'
+        '__template__': 'bootstrap-register.html'
     }
 
 
