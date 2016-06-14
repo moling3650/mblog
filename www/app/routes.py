@@ -21,10 +21,13 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
-@get('/boot')
-def bootstrap():
+@get('/b/{id}')
+async def get_b(id):
+    blog = await Blog.find(id)
+    blog.content = markdown_highlight(blog.content)
     return {
-        '__template__': 'bootstrap-register.html'
+        '__template__': 'bootstrap-blog.html',
+        'blog': blog
     }
 
 
@@ -131,21 +134,26 @@ def signout(request):
 @get('/blog/{id}')
 async def get_bolg(id):
     blog = await Blog.find(id)
-    comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
-    for c in comments:
-        c.html_content = markdown_highlight(c.content)
-    blog.html_content = markdown_highlight(blog.content)
-
+    blog.content = markdown_highlight(blog.content)
     return {
-        '__template__': 'blog.html',
+        '__template__': 'bootstrap-blog.html',
         'blog': blog,
-        'comments': comments
     }
 
 
 @get('/api/blogs/{id}')
 async def api_get_blog(id):
     return await Blog.find(id)
+
+
+@get('/api/blogs/{id}/comments')
+async def api_get_blog_comments(id):
+    comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
+    for c in comments:
+        c.content = markdown_highlight(c.content)
+    return {
+        'comments': comments
+    }
 
 
 @post('/api/blogs/{id}/comments')
@@ -160,6 +168,7 @@ async def api_create_comment(id, request, *, content):
         raise APIResourceNotFoundError('Blog')
     comment = Comment(blog_id=blog.id, user_id=user.id, user_name=user.name, user_image=user.image, content=content.strip())
     await comment.save()
+    comment.content = markdown_highlight(comment.content)
     return comment
 
 

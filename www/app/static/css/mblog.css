@@ -5,14 +5,7 @@
  * @date    2016-05-27 20:34:36
  * @version $Id$
  */
-#navbar .nav > li .dropdown-menu {
-    left: 0;
-    right: auto;
-}
-/* #navbar .nav > li:hover .dropdown-menu {
-    display: block;
-}
- */
+
 .form-vm {
   max-width: 400px;
   padding: 15px;
@@ -40,3 +33,25 @@
 margin-bottom: 25px;
 color: #999;
 }
+
+#footer {
+    background-color: #eee;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+/* 小屏幕（平板，大于等于768像素） */
+@media (min-width: 768px) {
+
+}
+
+/*  中屏幕（桌面显示器，大于等于992像素） */
+@media (min-width: 992px) {
+
+}
+
+/*  大屏幕（大桌面显示器，大于等于1200像素） */
+@media (min-width: 1200px) {
+
+}
+

@@ -32,7 +32,7 @@
       <!-- <nav class="navbar navbar-inverse"> -->
         <div class="container">
           <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".collapse" aria-expanded="false" aria-controls="navbar">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="navbar">
               <span class="sr-only">Toggle navigation</span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
@@ -40,18 +40,18 @@
             </button>
             <a class="navbar-brand" href="/">M blog</a>
           </div>
-          <div id="navbar" class="collapse navbar-collapse">
+
+          <div class="collapse navbar-collapse" id="collapse">
             <ul class="nav navbar-nav">
               <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
               <li><a href="/manage"><span class="glyphicon glyphicon-wrench"></span> Manage</a></li>
               <li><a href="//github.com/moling3650/mblog" target="_blank"><span class="glyphicon glyphicon-flash"></span> Code</a></li>
             </ul>
-
             <ul class="nav navbar-nav navbar-right">
               {% if __user__ %}
               <li class="dropdown">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> <span class="glyphicon glyphicon-user"> {{ __user__.name }} </span> <span class="caret"></span></a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu dropdown-menu-left">
                   {% if __user__.admin %}
                   <li><a href="/manage/blogs/create"><span class="glyphicon glyphicon-pencil"> New Blog</span></a></li>
                   {% endif %}
@@ -64,6 +64,7 @@
               {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
+
         </div>
       </nav>
 
@@ -76,11 +77,14 @@
       <!-- // content -->
 
     </div><!-- /.container -->
-    <div class="container">
-      <footer>
-        <div class="text-center"><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a></div>
-      </footer>
-    </div>
+
+    <footer id="footer">
+      <div class="container text-center">
+        <p><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a> © 2016 mblog</p>
+        <p>Powered by <a href="http://v3.bootcss.com/">Bootstrap</a></p>
+      </div>
+    </footer>
+
 
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>

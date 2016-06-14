@@ -5,21 +5,14 @@
 
 {% block content %}
 <div class="container">
-
-  <form class="form-vm" id="vm-form-signin" v-on:submit.prevent="submit">
-
-    <h2 class="text-center">Please sign in</h2>
-
-    <label class="sr-only" for="email">email</label>
-    <input class="form-control" id="email" name="email" type="email" v-model="email">
-
-    <label class="sr-only" for="password">password</label>
-    <input class="form-control" id="password" name="password" type="password" v-model="password">
-
-    <button class="btn btn-primary btn-block">提交</button>
-
-  </form>
-
+    <form class="form-vm" id="vm-form-signin" v-on:submit.prevent="submit">
+        <h2 class="text-center">Please sign in</h2>
+        <label class="sr-only" for="email">email</label>
+        <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
+        <label class="sr-only" for="password">password</label>
+        <input class="form-control" id="password" name="password" type="password" placeholder="请输入密码" v-model="password">
+        <button class="btn btn-primary btn-block">提交</button>
+    </form>
 </div>
 {% endblock %}
 
@@ -31,23 +24,23 @@
 
 <script>
 var vmAuth = new Vue({
-  el: '#vm-form-signin',
-  data: {
-    email: '',
-    password: '',
-    sha1_pw: ''
-  },
-  methods: {
-    submit: function(event){
-      this.email = this.email.trim();
-      this.sha1_pw = this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString()
-      $("#vm-form-signin").postJSON('/api/authenticate', this.$data, function(err, result){
-        if (! err) {
-            location.assign('/');
+    el: '#vm-form-signin',
+    data: {
+        email: '',
+        password: '',
+        sha1_pw: ''
+    },
+    methods: {
+        submit: function(event){
+            this.email = this.email.trim();
+            this.sha1_pw = this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString();
+            $("#vm-form-signin").postJSON('/api/authenticate', this.$data, function(err, result){
+                if (! err) {
+                    location.assign('/');
+                }
+            });
         }
-      });
     }
-  }
 });
 </script>
 {% endblock %}

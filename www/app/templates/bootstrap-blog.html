@@ -1,0 +1,92 @@
+{% extends 'bootstrap-base.html' %}
+
+{% block title %}{{ blog.name }}{% endblock %}
+
+{% block content %}
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-9 col-xm-12 blog-main">
+            <article class="blog-post">
+                <h3 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h3>
+                <p class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
+                <p>{{ blog.content|safe }}</p>
+                <hr class="divider" />
+            </article>
+            <div class="container" id="vm">
+                <h4>添加评论</h4>
+                <form class="form" v-on:submit.prevent="submit">
+                    <label class="sr-only" for="content">内容</label>
+                    <textarea class="form-control" rows="5" id="content" name="content" placeholder="内容" v-model="content"></textarea>
+                    <button class="btn btn-primary" style="margin-top: 10px">Submit</button>
+                </form>
+                <hr class="divider"/>
+
+                <h4>最新评论</h4>
+                <ul class="media-list">
+                    <li class="media" v-for="c in comments">
+                        <div class="media-left">
+                            <img class="media-object img-thumbnail" :src="c.user_image" alt="user_image" width="150" height="150"/>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading" v-text="c.user_name"></h4>
+                            <small v-text="'发表于 ' + c.created_at.toDateTime()"></small>
+                            <hr class="divider"/>
+                            <article>
+                                <p v-html="c.content"></p>
+                            </article>
+                        </div>
+                        <hr class="divider" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-3 h1 text-center">
+            {% if __user__ %}
+            <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" width="200" height="200"/>
+            {% else %}
+            <img src="../static/img/user.png" alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
+            {% endif %}
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/awesome.js"></script>
+<script>
+var vm = new Vue({
+    el: '#vm',
+    data: {
+        content: '',
+        comments: []
+    },
+    methods: {
+        submit: function() {
+            if (! this.content.trim()) {
+                return alert('请输入评论内容！');
+            }
+            $('#vm').find('form').postJSON('/api/blogs/{{ blog.id }}/comments', { content: this.content.trim() }, function (err, comment) {
+                if (err) {
+                    return alert(err.message || err.data || err);
+                }
+                vm.content = '';
+                vm.comments.unshift(comment);
+            })
+        }
+    }
+});
+
+$(function() {
+    getJSON('/api/blogs/{{ blog.id }}/comments', function (err, data) {
+        if (err) {
+            return alert(err);
+        }
+        vm.comments = data.comments;
+    });
+});
+</script>
+
+{% endblock %}

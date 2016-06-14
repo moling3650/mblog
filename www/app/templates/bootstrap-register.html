@@ -36,49 +36,48 @@
 <script src="/static/js/awesome.js"></script>
 
 <script>
-
 function validateEmail(email) {
   var re = /^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$/;
   return re.test(email.toLowerCase());
 }
 
 var vmRegister = new Vue({
-  el: '#vm',
-  data: {
-    name: '',
-    email: '',
-    password: '',
-    password2: ''
-  },
-  methods: {
-    submit: function(){
-      $form = $('#vm');
-      if (! this.name.trim()) {
-        return alert('请输入名字');
-      }
-      if (! validateEmail(this.email.trim())) {
-        return alert('请输入正确的Email地址');
-      }
-      if (this.password.length < 6) {
-        return alert('口令长度至少为6个字符');
-      }
-      if (this.password !== this.password2) {
-        return alert('两次输入的口令不一致');
-      }
+    el: '#vm',
+    data: {
+        name: '',
+        email: '',
+        password: '',
+        password2: ''
+    },
+    methods: {
+        submit: function(){
+        var $form = $('#vm');
+            if (! this.name.trim()) {
+                return alert('请输入名字');
+            }
+            if (! validateEmail(this.email.trim())) {
+                return alert('请输入正确的Email地址');
+            }
+            if (this.password.length < 6) {
+                return alert('口令长度至少为6个字符');
+            }
+            if (this.password !== this.password2) {
+                return alert('两次输入的口令不一致');
+            }
 
-      var email = this.email.trim().toLowerCase();
-      $form.postJSON('/api/register', {
-        name: this.name.trim(),
-        email: email,
-        password: CryptoJS.SHA1(email + ':' + this.password1).toString()
-      }, function (err, r) {
-        if (err) {
-          return alert(err.message || err.data || err);
+            var email = this.email.trim().toLowerCase();
+            $form.postJSON('/api/register', {
+                name: this.name.trim(),
+                email: email,
+                password: CryptoJS.SHA1(email + ':' + this.password1).toString()
+            }, function (err, r) {
+                if (err) {
+                    return alert(err.message || err.data || err);
+                }
+                return location.assign('/');
+            });
         }
-        return location.assign('/');
-      });
     }
-  }
 });
 </script>
 {% endblock %}
