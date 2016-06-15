@@ -8,21 +8,21 @@
 
     <form class="form-vm" id="vm" v-on:submit.prevent="submit">
 
-    <h2 class="form-vm-heading text-center">Register</h2>
+        <h2 class="form-vm-heading text-center">Register</h2>
 
-    <label class="sr-only" for="name">name</label>
-    <input class="form-control" id="name" name="name" type="text" placeholder="请输入名字" v-model="name">
+        <label class="sr-only" for="name">name</label>
+        <input class="form-control" id="name" name="name" type="text" placeholder="请输入名字" v-model="name">
 
-    <label class="sr-only" for="email">email</label>
-    <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
+        <label class="sr-only" for="email">email</label>
+        <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
 
-    <label class="sr-only" for="password">password</label>
-    <input class="form-control" id="password" name="password" type="password" placeholder="请输入口令" v-model="password">
+        <label class="sr-only" for="password">password</label>
+        <input class="form-control" id="password" name="password" type="password" placeholder="请输入口令" v-model="password">
 
-    <label class="sr-only" for="password2">password</label>
-    <input class="form-control" id="password2" name="password2" type="password" placeholder="请重复口令" v-model="password2">
+        <label class="sr-only" for="password2">password</label>
+        <input class="form-control" id="password2" name="password2" type="password" placeholder="请重复口令" v-model="password2">
 
-    <button class="btn btn-primary btn-block">提交</button>
+        <button class="btn btn-primary btn-block">提交</button>
 
     </form>
 
@@ -47,15 +47,17 @@ var vmRegister = new Vue({
         name: '',
         email: '',
         password: '',
-        password2: ''
+        password2: '',
+        sha1_pw: ''
     },
     methods: {
         submit: function(){
-        var $form = $('#vm');
-            if (! this.name.trim()) {
+            this.email = this.email.trim();
+            this.name = this.name.trim();
+            if (! this.name) {
                 return alert('请输入名字');
             }
-            if (! validateEmail(this.email.trim())) {
+            if (! validateEmail(this.email)) {
                 return alert('请输入正确的Email地址');
             }
             if (this.password.length < 6) {
@@ -64,13 +66,8 @@ var vmRegister = new Vue({
             if (this.password !== this.password2) {
                 return alert('两次输入的口令不一致');
             }
-
-            var email = this.email.trim().toLowerCase();
-            $form.postJSON('/api/register', {
-                name: this.name.trim(),
-                email: email,
-                password: CryptoJS.SHA1(email + ':' + this.password1).toString()
-            }, function (err, r) {
+            this.sha1_pw = CryptoJS.SHA1(this.email + ':' + this.password).toString();
+            postJSON('/api/register', this.$data, function (err, r) {
                 if (err) {
                     return alert(err.message || err.data || err);
                 }

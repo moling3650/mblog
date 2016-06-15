@@ -7,26 +7,26 @@
 
 
 <main class="container">
-  <div class="row">
-    <div class="col-md-9 col-xm-12 blog-main">
-      {% for blog in blogs %}
-      <article class="blog-post">
-        <h3 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h3>
-        <p class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
+    <div class="row">
+        <div class="col-md-9 col-xm-12 blog-main">
+            {% for blog in blogs %}
+            <article class="blog-post">
+                <h3 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h3>
+                <p class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
 
-        <p>{{ blog.html_content|safe }}</p>
-        <hr class="divider" />
-      </article>
-      {% endfor %}
-    </div>
-    <div class="col-md-3 h1 text-center">
-      {% if __user__ %}
-        <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" width="200" height="200"/>
-      {% else %}
-        <img src="../static/img/user.png" alt="user_image" class="img-thumbnail img-respinsuve" />
-      {% endif %}
-    </div>
-  </div><!-- .row -->
+                <p>{{ blog.html_content|safe }}</p>
+                <hr class="divider" />
+            </article>
+            {% endfor %}
+        </div>
+        <div class="col-md-3 h1 text-center">
+            {% if __user__ %}
+            <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
+            {% else %}
+            <img src="../static/img/user.png" alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
+            {% endif %}
+        </div>
+    </div><!-- .row -->
 </main>
 
 

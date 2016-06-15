@@ -17,6 +17,8 @@ from app.frame.halper import Page, get_page_index, check_admin, check_string, ma
 from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
 from app.models import User, Blog, Comment
 
+logging.basicConfig(level=logging.INFO)
+
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
@@ -64,17 +66,17 @@ def register():
 
 
 @post('/api/register')
-async def api_register_user(*, email, name, password):
+async def api_register_user(*, email, name, sha1_pw):
     if not name or not name.strip():
         raise APIValueError('name')
     if not email or not _RE_EMAIL.match(email):
         raise APIValueError('email')
-    if not password or not _RE_SHA1.match(password):
+    if not sha1_pw or not _RE_SHA1.match(sha1_pw):
         raise APIValueError('password')
     users = await User.findAll('email = ?', [email])
     if users:
         raise ('register:failed', 'email', 'Email is already in used.')
-    user = User(name=name.strip(), email=email, password=password, image='/static/img/user.png')
+    user = User(name=name.strip(), email=email, password=sha1_pw, image='/static/img/user.png')
     await user.save()
     # make session cookie
     r = web.Response()
@@ -95,7 +97,6 @@ def signin():
 
 @post('/api/authenticate')
 async def authenticate(*, email, sha1_pw):
-    logging.info('password: %s' % sha1_pw)
     if not email:
         raise APIValueError('email', 'Invalid email.')
     if not sha1_pw:
@@ -157,7 +158,7 @@ async def api_get_blog_comments(id):
 
 
 @post('/api/blogs/{id}/comments')
-async def api_create_comment(id, request, *, content):
+async def api_create_comment(id, request, *, content, time):
     user = request.__user__
     if user is None:
         raise APIPermissionError('Please signin first.')
@@ -168,8 +169,10 @@ async def api_create_comment(id, request, *, content):
         raise APIResourceNotFoundError('Blog')
     comment = Comment(blog_id=blog.id, user_id=user.id, user_name=user.name, user_image=user.image, content=content.strip())
     await comment.save()
-    comment.content = markdown_highlight(comment.content)
-    return comment
+    comments = await Comment.findAll('blog_id = ? and created_at > ?', [id, time], orderBy='created_at desc')
+    for c in comments:
+        c.content = markdown_highlight(c.content)
+    return dict(comments=comments)
 
 
 # 管理页面

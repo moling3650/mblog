@@ -36,14 +36,14 @@
                                 <p v-html="c.content"></p>
                             </article>
                         </div>
-                        <hr class="divider" />
+                        <hr class="divider"/>
                     </li>
-                </ul>
+                </ul><!-- media-list -->
             </div>
         </div>
         <div class="col-md-3 h1 text-center">
             {% if __user__ %}
-            <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" width="200" height="200"/>
+            <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
             {% else %}
             <img src="../static/img/user.png" alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
             {% endif %}
@@ -68,12 +68,15 @@ var vm = new Vue({
             if (! this.content.trim()) {
                 return alert('请输入评论内容！');
             }
-            $('#vm').find('form').postJSON('/api/blogs/{{ blog.id }}/comments', { content: this.content.trim() }, function (err, comment) {
+            postJSON('/api/blogs/{{ blog.id }}/comments', {
+                content: this.content.trim(),
+                time: (this.comments.length) ? vm.comments[0].created_at : 0
+            }, function (err, data) {
                 if (err) {
                     return alert(err.message || err.data || err);
                 }
                 vm.content = '';
-                vm.comments.unshift(comment);
+                vm.comments = data.comments.concat(vm.comments);
             })
         }
     }

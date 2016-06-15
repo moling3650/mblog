@@ -31,10 +31,10 @@ var vmAuth = new Vue({
         sha1_pw: ''
     },
     methods: {
-        submit: function(event){
+        submit: function(){
             this.email = this.email.trim();
             this.sha1_pw = this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString();
-            $("#vm-form-signin").postJSON('/api/authenticate', this.$data, function(err, result){
+            postJSON('/api/authenticate', this.$data, function(err, result){
                 if (! err) {
                     location.assign('/');
                 }
