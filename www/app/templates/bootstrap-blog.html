@@ -9,17 +9,21 @@
         <div class="col-md-9 col-xm-12 blog-main">
             <article class="blog-post">
                 <h3 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h3>
-                <p class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
+                <p class="blog-post-meta">发表于 <time>{{ blog.created_at|datetime }}</time></p>
                 <p>{{ blog.content|safe }}</p>
                 <hr class="divider" />
             </article>
             <div class="container" id="vm">
+                {% if __user__ %}
                 <h4>添加评论</h4>
                 <form class="form" v-on:submit.prevent="submit">
                     <label class="sr-only" for="content">内容</label>
                     <textarea class="form-control" rows="5" id="content" name="content" placeholder="内容" v-model="content"></textarea>
                     <button class="btn btn-primary" style="margin-top: 10px">Submit</button>
                 </form>
+                {% else %}
+                <h4>请<a href="/signin">登陆</a>后再评论，如未注册请先<a href="/register">注册</a></h4>
+                {% endif %}
                 <hr class="divider"/>
 
                 <h4>最新评论</h4>

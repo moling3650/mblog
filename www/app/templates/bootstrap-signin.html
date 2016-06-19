@@ -5,13 +5,19 @@
 
 {% block content %}
 <div class="container">
-    <form class="form-vm" id="vm-form-signin" v-on:submit.prevent="submit">
+    <form id="vm-form" role="form" v-on:submit.prevent="submit">
         <h2 class="text-center">Please sign in</h2>
-        <label class="sr-only" for="email">email</label>
-        <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
-        <label class="sr-only" for="password">password</label>
-        <input class="form-control" id="password" name="password" type="password" placeholder="请输入密码" v-model="password">
-        <button class="btn btn-primary btn-block">提交</button>
+        <div class="form-group">
+            <label class="sr-only" for="email">email</label>
+            <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="password">password</label>
+            <input class="form-control" id="password" name="password" type="password" placeholder="请输入密码" v-model="password">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary btn-block">提交</button>
+        </div>
     </form>
 </div>
 {% endblock %}
@@ -24,20 +30,27 @@
 
 <script>
 var vmAuth = new Vue({
-    el: '#vm-form-signin',
+    el: '#vm-form',
     data: {
         email: '',
-        password: '',
-        sha1_pw: ''
+        password: ''
     },
     methods: {
         submit: function(){
             this.email = this.email.trim();
-            this.sha1_pw = this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString();
-            postJSON('/api/authenticate', this.$data, function(err, result){
-                if (! err) {
-                    location.assign('/');
+            if(! this.email ){
+                alert('请输入email');
+            }
+            var data = {
+                email: this.email,
+                sha1_pw: this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString()
+            }
+            postJSON('/api/authenticate', data, function(err, result){
+                if (err) {
+                    console.log(err);
+                    return alert(err.message || err.data || err);
                 }
+                location.assign('/');
             });
         }
     }

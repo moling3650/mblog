@@ -10,6 +10,7 @@ import json
 import time
 from datetime import datetime
 from aiohttp import web
+from urllib import parse
 
 from app import COOKIE_NAME
 from app.models import User
@@ -36,6 +37,33 @@ async def auth_factory(app, handler):
             return web.HTTPFound('/')
         return await handler(request)
     return auth
+
+async def data_factory(app, handler):
+    async def parse_data(request):
+        logging.info('data_factory...')
+        if request.method == 'POST':
+            if not request.content_type:
+                return web.HTTPBadRequest(text='Missing Content-Type.')
+            content_type = request.content_type.lower()
+            if content_type.startswith('application/json'):
+                request.__data__ = await request.json()
+                if not isinstance(request.__data__, dict):
+                    return web.HTTPBadRequest(text='JSON body must be object.')
+                logging.info('request json: %s' % request.__data__)
+            elif content_type.startswith(('application/x-www-form-urlencoded', 'multipart/form-data')):
+                params = await request.post()
+                request.__data__ = dict(**params)
+                logging.info('request form: %s' % request.__data__)
+            else:
+                return web.HTTPBadRequest(text='Unsupported Content-Type: %s' % content_type)
+        elif request.method == 'GET':
+            qs = request.query_string
+            request.__data__ = {k: v[0] for k, v in parse.parse_qs(qs, True).items()}
+            logging.info('request query: %s' % request.__data__)
+        else:
+            request.__data__ = dict()
+        return await handler(request)
+    return parse_data
 
 # 把任何返回值封装成浏览器可正确显示的Response对象
 async def response_factory(app, handler):

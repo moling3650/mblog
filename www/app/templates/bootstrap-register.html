@@ -6,24 +6,27 @@
 {% block content %}
 <div class="container">
 
-    <form class="form-vm" id="vm" v-on:submit.prevent="submit">
-
-        <h2 class="form-vm-heading text-center">Register</h2>
-
-        <label class="sr-only" for="name">name</label>
-        <input class="form-control" id="name" name="name" type="text" placeholder="请输入名字" v-model="name">
-
-        <label class="sr-only" for="email">email</label>
-        <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
-
-        <label class="sr-only" for="password">password</label>
-        <input class="form-control" id="password" name="password" type="password" placeholder="请输入口令" v-model="password">
-
-        <label class="sr-only" for="password2">password</label>
-        <input class="form-control" id="password2" name="password2" type="password" placeholder="请重复口令" v-model="password2">
-
-        <button class="btn btn-primary btn-block">提交</button>
-
+    <form id="vm-form" role="from" v-on:submit.prevent="submit">
+        <h2 class="text-center">Register</h2>
+        <div class="form-group">
+            <label class="sr-only" for="name">name</label>
+            <input class="form-control" id="name" name="name" type="text" placeholder="请输入名字" v-model="name">
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="email">email</label>
+            <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="password">password</label>
+            <input class="form-control" id="password" name="password" type="password" placeholder="请输入口令" v-model="password">
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="password2">password2</label>
+            <input class="form-control" id="password2" name="password2" type="password" placeholder="请重复口令" v-model="password2">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary btn-block">提交</button>
+        </div>
     </form>
 
 </div>
@@ -42,13 +45,12 @@ function validateEmail(email) {
 }
 
 var vmRegister = new Vue({
-    el: '#vm',
+    el: '#vm-form',
     data: {
         name: '',
         email: '',
         password: '',
         password2: '',
-        sha1_pw: ''
     },
     methods: {
         submit: function(){
@@ -66,8 +68,12 @@ var vmRegister = new Vue({
             if (this.password !== this.password2) {
                 return alert('两次输入的口令不一致');
             }
-            this.sha1_pw = CryptoJS.SHA1(this.email + ':' + this.password).toString();
-            postJSON('/api/register', this.$data, function (err, r) {
+            var data = {
+                name: this.name,
+                email: this.email,
+                sha1_pw: CryptoJS.SHA1(this.email + ':' + this.password).toString()
+            }
+            postJSON('/api/register', data, function (err, r) {
                 if (err) {
                     return alert(err.message || err.data || err);
                 }

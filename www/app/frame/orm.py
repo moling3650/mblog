@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def log(sql, args=None):
-    logging.info('SQL: [%s] args: %s' % (sql, str(args or [])))
+    logging.info('SQL: [%s] args: %s' % (sql, args or []))
 
 async def create_pool(loop, user, password, db, **kw):
     # 该函数用于创建连接池
@@ -113,7 +113,7 @@ class Model(dict, metaclass=ModelMetaclass):
         try:
             return self[attr]
         except KeyError:
-            raise AttributeError(r"'Model' object has no attribute '%s'" % attr)
+            raise AttributeError("'Model' object has no attribute '%s'" % attr)
 
     def __setattr__(self, attr, value):
         self[attr] = value
@@ -125,7 +125,7 @@ class Model(dict, metaclass=ModelMetaclass):
             field = self.__mappings__[key]
             if field.default is not None:
                 value = field.default() if callable(field.default) else field.default
-                logging.debug('using default value for %s:%s' % (key, str(value)))
+                logging.debug('using default value for %s:%s' % (key, value))
                 setattr(self, key, value)
         return value
 
@@ -153,7 +153,7 @@ class Model(dict, metaclass=ModelMetaclass):
                 sql.append('limit ?, ?')
                 args.extend(limit)
             else:
-                raise ValueError('Invalid limit value: %s' % str(limit))
+                raise ValueError('Invalid limit value: %s' % limit)
         resultset = await select(' '.join(sql), args)
         return [cls(**r) for r in resultset]
 

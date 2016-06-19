@@ -26,7 +26,7 @@ class Page(object):
         if (item_count == 0) or (page_index > self.page_count):
             self.offset = 0
             self.limit = 0
-            self.page_index = 1
+            self.page_index = self.page_count
         else:
             self.page_index = page_index
             self.offset = self.page_size * (page_index - 1)
@@ -34,24 +34,13 @@ class Page(object):
         self.has_next = self.page_index < self.page_count
         self.has_previous = self.page_index > 1
 
-    def __str__(self):
-        s = 'item_count: %s\n' % self.item_count
-        s += 'page_count: %s\n' % self.page_count
-        s += 'page_index: %s\n' % self.page_index
-        s += 'page_size: %s\n' % self.page_size
-        s += 'offset: %s\n' % self.offset
-        s += 'limit: %s' % self.limit
-        return s
-
-    __repr__ = __str__
-
 
 # 获取合法的页面引索
-def get_page_index(page_str):
+def set_valid_value(num_str, value=1):
     try:
-        return max(int(page_str), 1)
+        return max(int(num_str), 1)
     except ValueError:
-        return 1
+        return value
 
 
 def check_admin(request):

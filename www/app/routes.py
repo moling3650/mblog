@@ -13,11 +13,9 @@ from aiohttp import web
 
 from app import COOKIE_NAME
 from app.frame import get, post
-from app.frame.halper import Page, get_page_index, check_admin, check_string, markdown_highlight
+from app.frame.halper import Page, set_valid_value, check_admin, check_string, markdown_highlight
 from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
 from app.models import User, Blog, Comment
-
-logging.basicConfig(level=logging.INFO)
 
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
@@ -34,9 +32,9 @@ async def get_b(id):
 
 
 @get('/')
-async def index(*, page='1'):
+async def index(*, page='1', size='10'):
     num = await Blog.countRows()
-    page_info = Page(num, get_page_index(page))
+    page_info = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
         blogs = []
     else:
@@ -45,8 +43,8 @@ async def index(*, page='1'):
         blog.html_content = markdown_highlight(blog.content)
     return {
         '__template__': 'bootstrap-blogs.html',
-        'page': page_info,
-        'blogs': blogs
+        'blogs': blogs,
+        'page': page_info
     }
 
 
@@ -66,7 +64,7 @@ def register():
 
 
 @post('/api/register')
-async def api_register_user(*, email, name, sha1_pw):
+async def api_register_user(*, name, email, sha1_pw):
     if not name or not name.strip():
         raise APIValueError('name')
     if not email or not _RE_EMAIL.match(email):
@@ -75,7 +73,7 @@ async def api_register_user(*, email, name, sha1_pw):
         raise APIValueError('password')
     users = await User.findAll('email = ?', [email])
     if users:
-        raise ('register:failed', 'email', 'Email is already in used.')
+        raise APIValueError('email', 'Email is already in used.')
     user = User(name=name.strip(), email=email, password=sha1_pw, image='/static/img/user.png')
     await user.save()
     # make session cookie
@@ -152,9 +150,7 @@ async def api_get_blog_comments(id):
     comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
     for c in comments:
         c.content = markdown_highlight(c.content)
-    return {
-        'comments': comments
-    }
+    return dict(comments=comments)
 
 
 @post('/api/blogs/{id}/comments')
@@ -185,15 +181,16 @@ def manage():
 def manage_table(table, *, page='1'):
     return {
         '__template__': 'manage_%s.html' % table,
-        'page_index': get_page_index(page)
+        'page_index': set_valid_value(page)
     }
 
 
 @get('/api/{table}')
-async def api_model(table, *, page=1):
+async def api_model(table, *, page='1', size='10'):
     models = {'users': User, 'blogs': Blog, 'comments': Comment}
     num = await models[table].countRows()
-    page_info = Page(num, get_page_index(page))
+    size = set_valid_value(size, 10)
+    page_info = Page(num, set_valid_value(page), size)
     if num == 0:
         return {'page': page_info, table: ()}
     items = await models[table].findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
