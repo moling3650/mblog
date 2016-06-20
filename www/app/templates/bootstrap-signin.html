@@ -5,18 +5,23 @@
 
 {% block content %}
 <div class="container">
-    <form id="vm-form" role="form" v-on:submit.prevent="submit">
+    <form class="center-block" id="vm-form" role="form" v-on:submit.prevent="submit">
         <h2 class="text-center">Please sign in</h2>
-        <div class="form-group">
+        <div class="alert alert-danger" role="alert" hidden="hidden">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            <span v-text="message"></span>
+        </div>
+        <div class="form-group form-group-lg">
             <label class="sr-only" for="email">email</label>
             <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-lg">
             <label class="sr-only" for="password">password</label>
             <input class="form-control" id="password" name="password" type="password" placeholder="请输入密码" v-model="password">
         </div>
         <div class="form-group">
-            <button class="btn btn-primary btn-block">提交</button>
+            <button class="btn btn-primary btn-lg btn-block">提交</button>
         </div>
     </form>
 </div>
@@ -33,13 +38,14 @@ var vmAuth = new Vue({
     el: '#vm-form',
     data: {
         email: '',
-        password: ''
+        password: '',
+        message: ''
     },
     methods: {
         submit: function(){
             this.email = this.email.trim();
             if(! this.email ){
-                alert('请输入email');
+                return showAlert(vmAuth, '请输入email');
             }
             var data = {
                 email: this.email,
@@ -48,12 +54,13 @@ var vmAuth = new Vue({
             postJSON('/api/authenticate', data, function(err, result){
                 if (err) {
                     console.log(err);
-                    return alert(err.message || err.data || err);
+                    return showAlert(vmAuth, err.message || err.data || err)
                 }
                 location.assign('/');
             });
         }
     }
 });
+
 </script>
 {% endblock %}

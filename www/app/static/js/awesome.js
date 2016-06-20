@@ -88,6 +88,11 @@ if (! Number.prototype.toDateTime) {
     };
 }
 
+function showAlert(vm, message) {
+    vm.message = message;
+    $('.alert').show();
+}
+
 function encodeHtml(str) {
     return String(str)
         .replace(/&/g, '&amp;')

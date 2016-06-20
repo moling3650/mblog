@@ -6,7 +6,7 @@
 
 <main class="container">
     <div class="row">
-        <div class="col-md-9 col-xm-12 blog-main">
+        <div class="col-sm-9 col-xs-12 blog-main">
             <article class="blog-post">
                 <h3 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h3>
                 <p class="blog-post-meta">发表于 <time>{{ blog.created_at|datetime }}</time></p>
@@ -45,7 +45,7 @@
                 </ul><!-- media-list -->
             </div>
         </div>
-        <div class="col-md-3 h1 text-center">
+        <div class="col-sm-3 hidden-xs h1 text-center">
             {% if __user__ %}
             <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
             {% else %}

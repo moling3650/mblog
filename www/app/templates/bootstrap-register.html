@@ -6,26 +6,31 @@
 {% block content %}
 <div class="container">
 
-    <form id="vm-form" role="from" v-on:submit.prevent="submit">
+    <form class="center-block" id="vm-form" role="from" v-on:submit.prevent="submit">
         <h2 class="text-center">Register</h2>
-        <div class="form-group">
+        <div class="alert alert-danger" role="alert" hidden="hidden">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            <span v-text="message"></span>
+        </div>
+        <div class="form-group form-group-lg">
             <label class="sr-only" for="name">name</label>
             <input class="form-control" id="name" name="name" type="text" placeholder="请输入名字" v-model="name">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-lg">
             <label class="sr-only" for="email">email</label>
             <input class="form-control" id="email" name="email" type="email" placeholder="请输入邮箱" v-model="email">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-lg">
             <label class="sr-only" for="password">password</label>
             <input class="form-control" id="password" name="password" type="password" placeholder="请输入口令" v-model="password">
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-lg">
             <label class="sr-only" for="password2">password2</label>
             <input class="form-control" id="password2" name="password2" type="password" placeholder="请重复口令" v-model="password2">
         </div>
         <div class="form-group">
-            <button class="btn btn-primary btn-block">提交</button>
+            <button class="btn btn-primary btn-lg btn-block">提交</button>
         </div>
     </form>
 
@@ -51,31 +56,32 @@ var vmRegister = new Vue({
         email: '',
         password: '',
         password2: '',
+        message:''
     },
     methods: {
         submit: function(){
-            this.email = this.email.trim();
             this.name = this.name.trim();
+            this.email = this.email.trim();
             if (! this.name) {
-                return alert('请输入名字');
+                return showAlert(this, '请输入名字');
             }
             if (! validateEmail(this.email)) {
-                return alert('请输入正确的Email地址');
+                return showAlert(this, '请输入正确的Email地址');
             }
             if (this.password.length < 6) {
-                return alert('口令长度至少为6个字符');
+                return showAlert(this, '口令长度至少为6个字符');
             }
             if (this.password !== this.password2) {
-                return alert('两次输入的口令不一致');
+                return showAlert(this, '两次输入的口令不一致');
             }
             var data = {
                 name: this.name,
                 email: this.email,
                 sha1_pw: CryptoJS.SHA1(this.email + ':' + this.password).toString()
             }
-            postJSON('/api/register', data, function (err, r) {
+            postJSON('/api/register', data, function (err, result) {
                 if (err) {
-                    return alert(err.message || err.data || err);
+                    return showAlert(vmRegister, err.message || err.data || err);
                 }
                 return location.assign('/');
             });

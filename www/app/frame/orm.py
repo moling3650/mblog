@@ -159,9 +159,9 @@ class Model(dict, metaclass=ModelMetaclass):
 
     # 根据列名和条件查看数据库有多少条信息
     @classmethod
-    async def countRows(cls, where=None, args=None):
+    async def countRows(cls, selectField='*', where=None, args=None):
         ' find number by select and where. '
-        sql = ['select count(*) _num_ from `%s`' % (cls.__table__)]
+        sql = ['select count(%s) _num_ from `%s`' % (selectField, cls.__table__)]
         if where:
             sql.append('where %s' % (where))
         resultset = await select(' '.join(sql), args, 1)

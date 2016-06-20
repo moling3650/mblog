@@ -6,7 +6,7 @@
 # @Version : 0.1
 import re
 from pygments import highlight
-from pygments.lexers import PythonLexer
+from pygments.lexers import Python3Lexer
 from pygments.formatters import HtmlFormatter
 from .markdown2 import markdown
 from .errors import APIPermissionError, APIValueError
@@ -57,5 +57,5 @@ def check_string(**kw):
 def markdown_highlight(content):
     return re.sub(
         r'<pre><code>(?P<code>.+?)</code></pre>',
-        lambda m: highlight(m.group('code'), PythonLexer(), HtmlFormatter()),
+        lambda m: highlight(m.group('code'), Python3Lexer(), HtmlFormatter()),
         markdown(content), flags=re.S)
