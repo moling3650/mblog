@@ -44,7 +44,8 @@ async def index(*, page='1', size='10'):
     return {
         '__template__': 'bootstrap-blogs.html',
         'blogs': blogs,
-        'page': page_info
+        'page': page_info,
+        'size': size
     }
 
 

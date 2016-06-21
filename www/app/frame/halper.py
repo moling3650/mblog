@@ -6,7 +6,7 @@
 # @Version : 0.1
 import re
 from pygments import highlight
-from pygments.lexers import Python3Lexer
+from pygments.lexers import HtmlLexer, JavascriptLexer, Python3Lexer
 from pygments.formatters import HtmlFormatter
 from .markdown2 import markdown
 from .errors import APIPermissionError, APIValueError
@@ -54,8 +54,17 @@ def check_string(**kw):
             raise APIValueError(field, '%s cannot be empty.' % field)
 
 
+def code_highlight(m):
+    code = m.group('code').replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
+    if code.startswith('<'):
+        return highlight(code, HtmlLexer(), HtmlFormatter())
+    elif code.startswith(('var', 'function')):
+        return highlight(code, JavascriptLexer(), HtmlFormatter())
+    else:
+        return highlight(code, Python3Lexer(), HtmlFormatter())
+
+
 def markdown_highlight(content):
     return re.sub(
         r'<pre><code>(?P<code>.+?)</code></pre>',
-        lambda m: highlight(m.group('code'), Python3Lexer(), HtmlFormatter()),
         markdown(content), flags=re.S)

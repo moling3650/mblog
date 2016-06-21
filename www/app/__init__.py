@@ -37,9 +37,9 @@ def init_jinja2(app, **kw):
     app['__templating__'] = env
 
 
-async def create_server(loop, config_mod):
+async def create_server(loop, config_mod_name):
     try:
-        config = __import__(config_mod, fromlist=['get_config'])
+        config = __import__(config_mod_name, fromlist=['get config'])
     except ImportError as e:
         raise e
 

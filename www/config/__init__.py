@@ -11,9 +11,7 @@ db_config = {
     'db': 'mblog'
 }
 
-jinja2_config = {
-
-}
+jinja2_config = dict()
 
 COOKIE_NAME = 'aweSession'
 COOKIE_KEY = 'MbLog'
