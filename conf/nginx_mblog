@@ -4,7 +4,7 @@ server {
     access_log /home/ubuntu/mblog/log/access.log;
     error_log  /home/ubuntu/mblog/log/error.log;
 
-    # server_name simpleblog.liaoxuefeng.com;
+    # server_name  www.qiangtaili.com;
 
     client_max_body_size 1m;
 

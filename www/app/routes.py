@@ -134,7 +134,7 @@ async def get_bolg(id):
     blog.content = markdown_highlight(blog.content)
     return {
         '__template__': 'bootstrap-blog.html',
-        'blog': blog,
+        'blog': blog
     }
 
 
