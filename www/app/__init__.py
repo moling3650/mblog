@@ -17,6 +17,7 @@ from app.factorys import logger_factory, auth_factory, data_factory, response_fa
 logging.basicConfig(level=logging.INFO)
 
 
+# jinja2初始化函数
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = {

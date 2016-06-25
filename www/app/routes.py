@@ -21,13 +21,10 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
-@get('/b/{id}')
-async def get_b(id):
-    blog = await Blog.find(id)
-    blog.content = markdown_highlight(blog.content)
+@get('/test')
+async def test():
     return {
-        '__template__': 'bootstrap-blog.html',
-        'blog': blog
+        '__template__': 'test.html',
     }
 
 
@@ -40,7 +37,7 @@ async def index(*, page='1', size='10'):
     else:
         blogs = await Blog.findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
     for blog in blogs:
-        blog.html_content = markdown_highlight(blog.content)
+        blog.content = markdown_highlight(blog.content)
     return {
         '__template__': 'bootstrap-blogs.html',
         'blogs': blogs,

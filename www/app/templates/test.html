@@ -1,0 +1,35 @@
+{% extends 'bootstrap-base.html' %}
+
+{% block title %}test{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="container" id="editor">
+        <div class="col-sm-6">
+            <textarea  class="form-control" rows="5" v-model="message"></textarea>
+        </div>
+        <div class="col-sm-6" v-html="message|marked"></div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/marked.min.js"></script>
+<script>
+new Vue({
+    el: '#editor',
+    data: {
+        message: '# hello'
+    },
+    filters: {
+        marked: marked
+    }
+})
+
+</script>
+{% endblock %}

@@ -28,39 +28,8 @@
 {% endblock %}
 
 {% block script %}
-
 <script src="/static/js/vue.min.v1.js"></script>
 <script src="/static/js/sha1.min.js"></script>
 <script src="/static/js/awesome.js"></script>
-
-<script>
-var vmAuth = new Vue({
-    el: '#vm-form',
-    data: {
-        email: '',
-        password: '',
-        message: ''
-    },
-    methods: {
-        submit: function(){
-            this.email = this.email.trim();
-            if(! this.email ){
-                return showAlert(vmAuth, '请输入email');
-            }
-            var data = {
-                email: this.email,
-                sha1_pw: this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString()
-            }
-            postJSON('/api/authenticate', data, function(err, result){
-                if (err) {
-                    console.log(err);
-                    return showAlert(vmAuth, err.message || err.data || err)
-                }
-                location.assign('/');
-            });
-        }
-    }
-});
-
-</script>
+<script src="/static/js/signin.js"></script>
 {% endblock %}

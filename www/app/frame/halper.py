@@ -38,9 +38,10 @@ class Page(object):
 # 获取合法的页面引索
 def set_valid_value(num_str, value=1):
     try:
-        return max(int(num_str), 1)
+        num = int(num_str)
     except ValueError:
         return value
+    return num if num > 0 else value
 
 
 def check_admin(request):
@@ -58,13 +59,11 @@ def code_highlight(m):
     code = m.group('code').replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
     if code.startswith('<'):
         return highlight(code, HtmlLexer(), HtmlFormatter())
-    elif code.startswith(('var', 'function')):
+    elif code.startswith(('var', 'function', '$')):
         return highlight(code, JavascriptLexer(), HtmlFormatter())
     else:
         return highlight(code, Python3Lexer(), HtmlFormatter())
 
 
 def markdown_highlight(content):
-    return re.sub(
-        r'<pre><code>(?P<code>.+?)</code></pre>',
-        markdown(content), flags=re.S)
+    return re.sub(r'<pre><code>(?P<code>.+?)</code></pre>', code_highlight, markdown(content), flags=re.S)

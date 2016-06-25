@@ -11,8 +11,8 @@
                 <h3 class="blog-post-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h3>
                 <p class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
 
-                <p>{{ blog.html_content|safe }}</p>
-                <hr class="divider" />
+                <p>{{ blog.content|safe }}</p>
+                <hr class="divider"/>
             </article>
             {% endfor %}
         </div>

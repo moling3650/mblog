@@ -16,11 +16,15 @@
             <div class="container" id="vm">
                 {% if __user__ %}
                 <h4>添加评论</h4>
-                <form class="form" v-on:submit.prevent="submit">
-                    <label class="sr-only" for="content">内容</label>
-                    <textarea class="form-control" rows="5" id="content" name="content" placeholder="内容" v-model="content"></textarea>
-                    <button class="btn btn-primary" style="margin-top: 10px">Submit</button>
-                </form>
+                <div class="row">
+                    <form class="form col-sm-6" v-on:submit.prevent="submit">
+                        <label class="sr-only" for="content">内容</label>
+                        <textarea class="form-control" rows="10" id="content" name="content" placeholder="内容" v-model="content"></textarea>
+                        <button class="btn btn-primary" style="margin-top: 10px">Submit</button>
+                    </form>
+                    <div class="col-sm-6" v-html="content|marked"></div>
+                </div>
+
                 {% else %}
                 <h4>请<a href="/signin">登陆</a>后再评论，如未注册请先<a href="/register">注册</a></h4>
                 {% endif %}
@@ -60,12 +64,16 @@
 {% block script %}
 <script src="/static/js/vue.min.v1.js"></script>
 <script src="/static/js/awesome.js"></script>
+<script src="/static/js/marked.min.js"></script>
 <script>
 var vm = new Vue({
     el: '#vm',
     data: {
         content: '',
         comments: []
+    },
+    filters: {
+        marked: marked
     },
     methods: {
         submit: function() {
@@ -95,5 +103,4 @@ $(function() {
     });
 });
 </script>
-
 {% endblock %}
