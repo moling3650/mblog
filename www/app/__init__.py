@@ -47,7 +47,8 @@ async def create_server(loop, config_mod_name):
     await create_pool(loop, **config.db_config)
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, data_factory, response_factory])
-    add_routes(app, 'app.routes')
+    add_routes(app, 'app.route')
+    add_routes(app, 'app.api')
     add_static(app)
     init_jinja2(app, filters=dict(datetime=datetime_filter), **config.jinja2_config)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 9900)

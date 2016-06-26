@@ -22,7 +22,7 @@ var vm = new Vue({
                 email: this.email,
                 sha1_pw: this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString()
             }
-            postJSON('/api/authenticate', data, function(err, result){
+            postJSON('/authenticate', data, function(err, result){
                 if (err) {
                     console.log(err);
                     return showAlert(vm, err.message || err.data || err)

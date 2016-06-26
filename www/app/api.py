@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Date    : 2016-05-05 22:51:06
+# @Date    : 2016-06-26 02:46:05
 # @Author  : moling (365024424@qq.com)
-# @Link    : #
-# @Version : 0.1
-
+# @Link    : http://qiangtaoli.com
+# @Version : $Id$
 import hashlib
 import json
 import logging
@@ -17,52 +16,13 @@ from app.frame.halper import Page, set_valid_value, check_admin, check_string, m
 from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
 from app.models import User, Blog, Comment
 
-_RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
+_RE_EMAIL = re.compile(r'^[a-zA-Z0-9\.\-\_]+\@[a-zA-Z0-9\-\_]+(\.[a-zA-Z0-9\-\_]+){1,4}$')
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
-@get('/test')
-async def test():
-    return {
-        '__template__': 'test.html',
-    }
-
-
-@get('/')
-async def index(*, page='1', size='10'):
-    num = await Blog.countRows()
-    page_info = Page(num, set_valid_value(page), set_valid_value(size, 10))
-    if num == 0:
-        blogs = []
-    else:
-        blogs = await Blog.findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
-    for blog in blogs:
-        blog.content = markdown_highlight(blog.content)
-    return {
-        '__template__': 'bootstrap-blogs.html',
-        'blogs': blogs,
-        'page': page_info,
-        'size': size
-    }
-
-
-@get('/404')
-def not_found():
-    return {
-        '__template__': '404.html'
-    }
-
-
 # 注册一个新用户
-@get('/register')
-def register():
-    return {
-        '__template__': 'bootstrap-register.html'
-    }
-
-
-@post('/api/register')
-async def api_register_user(*, name, email, sha1_pw):
+@post('/register')
+async def register(*, name, email, sha1_pw):
     if not name or not name.strip():
         raise APIValueError('name')
     if not email or not _RE_EMAIL.match(email):
@@ -83,15 +43,8 @@ async def api_register_user(*, name, email, sha1_pw):
     return r
 
 
-# 用户登陆
-@get('/signin')
-def signin():
-    return {
-        '__template__': 'bootstrap-signin.html'
-    }
-
-
-@post('/api/authenticate')
+# 登陆验证
+@post('/authenticate')
 async def authenticate(*, email, sha1_pw):
     if not email:
         raise APIValueError('email', 'Invalid email.')
@@ -128,21 +81,49 @@ def signout(request):
     return r
 
 
-@get('/blog/{id}')
-async def get_bolg(id):
-    blog = await Blog.find(id)
-    blog.content = markdown_highlight(blog.content)
-    return {
-        '__template__': 'bootstrap-blog.html',
-        'blog': blog
-    }
+# 取（用户、博客、评论）表的条目
+@get('/api/{table}')
+async def api_get_items(table, *, page='1', size='10'):
+    models = {'users': User, 'blogs': Blog, 'comments': Comment}
+    num = await models[table].countRows()
+    page_info = Page(num, set_valid_value(page), set_valid_value(size, 10))
+    if num == 0:
+        return dict(page=page_info, items=[])
+    items = await models[table].findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
+    return dict(page=page_info, items=items)
 
 
+# 取某篇博客
 @get('/api/blogs/{id}')
 async def api_get_blog(id):
     return await Blog.find(id)
 
 
+# 创建新博客
+@post('/api/blogs')
+async def api_create_blog(request, *, name, summary, content):
+    check_admin(request)
+    check_string(name=name, summary=summary, content=content)
+    blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__.image,
+                name=name.strip(), summary=summary.strip(), content=content.strip())
+    await blog.save()
+    return blog
+
+
+# 修改某篇博客
+@post('/api/blogs/{id}')
+async def api_update_blog(id, request, *, name, summary, content):
+    check_admin(request)
+    check_string(name=name, summary=summary, content=content)
+    blog = await Blog.find(id)
+    blog.name = name.strip()
+    blog.summary = summary.strip()
+    blog.content = content.strip()
+    await blog.update()
+    return blog
+
+
+# 取某篇博客的所有评论
 @get('/api/blogs/{id}/comments')
 async def api_get_blog_comments(id):
     comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
@@ -151,6 +132,7 @@ async def api_get_blog_comments(id):
     return dict(comments=comments)
 
 
+# 创建新评论
 @post('/api/blogs/{id}/comments')
 async def api_create_comment(id, request, *, content, time):
     user = request.__user__
@@ -169,74 +151,7 @@ async def api_create_comment(id, request, *, content, time):
     return dict(comments=comments)
 
 
-# 管理页面
-@get('/manage')
-def manage():
-    return 'redirect:/manage/blogs'
-
-
-@get('/manage/{table}')
-def manage_table(table, *, page='1'):
-    return {
-        '__template__': 'manage_%s.html' % table,
-        'page_index': set_valid_value(page)
-    }
-
-
-@get('/api/{table}')
-async def api_model(table, *, page='1', size='10'):
-    models = {'users': User, 'blogs': Blog, 'comments': Comment}
-    num = await models[table].countRows()
-    size = set_valid_value(size, 10)
-    page_info = Page(num, set_valid_value(page), size)
-    if num == 0:
-        return {'page': page_info, table: ()}
-    items = await models[table].findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
-    return {'page': page_info, table: items}
-
-
-# 创建博客
-@get('/manage/blogs/create')
-def manage_create_blog():
-    return {
-        '__template__': 'manage_blog_edit.html',
-        'id': '',
-        'action': '/api/blogs'
-    }
-
-
-@post('/api/blogs')
-async def api_create_blog(request, *, name, summary, content):
-    check_admin(request)
-    check_string(name=name, summary=summary, content=content)
-    blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__.image,
-                name=name.strip(), summary=summary.strip(), content=content.strip())
-    await blog.save()
-    return blog
-
-
-# 更改或删除博客
-@get('/manage/blogs/edit')
-def manage_edit_blog(id):
-    return {
-        '__template__': 'manage_blog_edit.html',
-        'id': id,
-        'action': '/api/blogs/%s' % id
-    }
-
-
-@post('/api/blogs/{id}')
-async def api_update_blog(id, request, *, name, summary, content):
-    check_admin(request)
-    check_string(name=name, summary=summary, content=content)
-    blog = await Blog.find(id)
-    blog.name = name.strip()
-    blog.summary = summary.strip()
-    blog.content = content.strip()
-    await blog.update()
-    return blog
-
-
+# 删除博客或评论
 @post('/api/{table}/{id}/delete')
 async def api_delete_item(table, id, request):
     models = {'blogs': Blog, 'comments': Comment}

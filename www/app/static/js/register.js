@@ -40,7 +40,7 @@ var vmRegister = new Vue({
                 email: this.email,
                 sha1_pw: CryptoJS.SHA1(this.email + ':' + this.password).toString()
             }
-            postJSON('/api/register', data, function (err, result) {
+            postJSON('/register', data, function (err, result) {
                 if (err) {
                     return showAlert(vmRegister, err.message || err.data || err);
                 }

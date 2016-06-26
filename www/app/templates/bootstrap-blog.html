@@ -19,10 +19,10 @@
                 <div class="row">
                     <form class="form col-sm-6" v-on:submit.prevent="submit">
                         <label class="sr-only" for="content">内容</label>
-                        <textarea class="form-control" rows="10" id="content" name="content" placeholder="内容" v-model="content"></textarea>
+                        <textarea class="form-control" rows="15" id="content" name="content" placeholder="内容" v-model="content"></textarea>
                         <button class="btn btn-primary" style="margin-top: 10px">Submit</button>
                     </form>
-                    <div class="col-sm-6" v-html="content|marked"></div>
+                    <div class="col-sm-6 pre-scrollable" v-html="content|marked"></div>
                 </div>
 
                 {% else %}
@@ -32,7 +32,7 @@
 
                 <h4>最新评论</h4>
                 <ul class="media-list">
-                    <li class="media" v-for="c in comments">
+                    <li class="media" v-for="c in comments" track-by="id">
                         <div class="media-left">
                             <img class="media-object img-thumbnail" :src="c.user_image" alt="user_image" width="150" height="150"/>
                         </div>
