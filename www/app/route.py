@@ -11,11 +11,10 @@ from app.models import Blog
 
 
 # 测试
-@get('/test/{table}')
-async def test(table):
+@get('/test')
+async def test():
     return {
-        '__template__': 'test.html',
-        'table': table
+        '__template__': 'test.html'
     }
 
 
@@ -73,10 +72,10 @@ def manage():
 
 # 管理用户、博客、评论
 @get('/manage/{table}')
-def manage_table(table, *, page='1'):
+def manage_table(table):
     return {
-        '__template__': 'manage_%s.html' % table,
-        'page_index': set_valid_value(page)
+        '__template__': 'manage.html',
+        'table': table,
     }
 
 

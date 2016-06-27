@@ -6,7 +6,7 @@
  */
 
 function validateEmail(email) {
-  var re = /^[\w\.\-\_]+\@[\w\-\_]+(\.[\w\-\_]+){1,4}$/;
+  var re = /^[\w\.\-]+\@[\w\-]+(\.[\w\-]+){1,4}$/;
   return re.test(email);
 }
 

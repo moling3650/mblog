@@ -22,8 +22,8 @@ var vm = new Vue({
                 return alert('请输入评论内容！');
             }
             postJSON('/api/blogs/' + blog_id + '/comments', {
-                content: this.content.trim(),
-                time: (this.comments.length) ? vm.comments[0].created_at : 0
+                content: this.content,
+                time: (vm.comments[0] && vm.comments[0].created_at) || 0
             }, function (err, data) {
                 if (err) {
                     return alert(err.message || err.data || err);

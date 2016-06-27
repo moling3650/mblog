@@ -20,7 +20,7 @@ _RE_EMAIL = re.compile(r'^[a-zA-Z0-9\.\-\_]+\@[a-zA-Z0-9\-\_]+(\.[a-zA-Z0-9\-\_]
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
-# 注册一个新用户
+# 注册新用户
 @post('/register')
 async def register(*, name, email, sha1_pw):
     if not name or not name.strip():
@@ -89,7 +89,7 @@ async def api_get_items(table, *, page='1', size='10'):
     page_info = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
         return dict(page=page_info, items=[])
-    items = await models[table].findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
+    items = await models[table].findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit + num % page_info.page_size))
     return dict(page=page_info, items=items)
 
 
@@ -143,7 +143,7 @@ async def api_create_comment(id, request, *, content, time):
     blog = await Blog.find(id)
     if blog is None:
         raise APIResourceNotFoundError('Blog')
-    comment = Comment(blog_id=blog.id, user_id=user.id, user_name=user.name, user_image=user.image, content=content.strip())
+    comment = Comment(blog_id=blog.id, user_id=user.id, user_name=user.name, user_image=user.image, content=content.lstrip('\n').rstrip())
     await comment.save()
     comments = await Comment.findAll('blog_id = ? and created_at > ?', [id, time], orderBy='created_at desc')
     for c in comments:

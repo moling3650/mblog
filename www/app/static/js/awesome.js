@@ -93,6 +93,11 @@ function showAlert(vm, message) {
     $('.alert').show();
 }
 
+function getUrlParams(key) {
+  var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'));
+  return ret && decodeURIComponent(ret[2]);
+}
+
 function encodeHtml(str) {
     return String(str)
         .replace(/&/g, '&amp;')
