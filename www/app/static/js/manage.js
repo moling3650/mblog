@@ -6,7 +6,7 @@
  */
 var table = location.pathname.split('/').pop();
 
-function getItemsByPage(page, size='10') {
+function getItemsByPage (page, size) {
     $.getJSON('/api/' + table, {
         page: page || '1',
         size: size || '10'
@@ -36,20 +36,20 @@ var vm = new Vue({
         delete_item: function (item) {
             if (confirm('确认要删除“' + (item.name || item.content) + '”？删除后不可恢复！')) {
                 postJSON('/api/' + table + '/' + item.id + '/delete', function (err, r) {
-                    if (err) {
-                        return alert(err.message || err.error || err);
-                    }
-                    if (vm.items.length > 10) {
-                        vm.items.$remove(item);
+                    if (this.items.length > 10) {
+                        this.items.$remove(item);
                     }
                     else{
-                        getItemsByPage(vm.page.page_index, vm.page.page_size);
+                        getItemsByPage(this.page.index, this.page.limit);
                     }
                 });
             }
         },
+        vaildPage: function(i) {
+            return (i > 1) && (Math.abs(i - this.page.index) < 3);
+        },
         gotoPage: function (page) {
-            return getItemsByPage(page, vm.page.page_size);
+            return getItemsByPage(page, this.page.limit);
         }
     }
 });

@@ -86,11 +86,11 @@ def signout(request):
 async def api_get_items(table, *, page='1', size='10'):
     models = {'users': User, 'blogs': Blog, 'comments': Comment}
     num = await models[table].countRows()
-    page_info = Page(num, set_valid_value(page), set_valid_value(size, 10))
+    page = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
-        return dict(page=page_info, items=[])
-    items = await models[table].findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit + num % page_info.page_size))
-    return dict(page=page_info, items=items)
+        return dict(page=page, items=[])
+    items = await models[table].findAll(orderBy='created_at desc', limit=(page.offset, page.limit + num % page.limit))
+    return dict(page=page, items=items)
 
 
 # 取某篇博客

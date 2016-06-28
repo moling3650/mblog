@@ -3,33 +3,35 @@
 {% block title %}test{% endblock %}
 
 {% block content %}
+<ul class="pagination" id="app">
+    <li v-for="n in last+1 | filterBy myFilter" :class="{active: index===(n)}">
+        <a href="#" v-text="n"></a>
+    </li>
+</ul>
+<ul class="pagination">
+    {% for i in range(10) if i < 5 %}
+    <li><a href="#">{{i}}</a></li>
+    {% endfor %}
 
-<div class="row">
-    <div class="container" id="editor">
-        <div class="col-sm-6">
-            <textarea  class="form-control" rows="5" v-model="message"></textarea>
-        </div>
-        <div class="col-sm-6" v-html="message|marked"></div>
-    </div>
-
-</div>
-
-
+</ul>
 {% endblock %}
 
 {% block script %}
+<script src="/static/js/awesome.js"></script>
 <script src="/static/js/vue.min.v1.js"></script>
-<script src="/static/js/marked.min.js"></script>
 <script>
+Vue.config.delimiters = ['${', '}']
 new Vue({
-    el: '#editor',
+    el: '#app',
     data: {
-        message: '# hello'
+        index: 19,
+        last: 20,
     },
-    filters: {
-        marked: marked
+    methods: {
+        myFilter: function(n){
+            return (n === 1) || (n === this.last) || (Math.abs(n - this.index) < 3);
+        }
     }
 })
-
 </script>
 {% endblock %}

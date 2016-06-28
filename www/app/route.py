@@ -22,18 +22,17 @@ async def test():
 @get('/')
 async def index(*, page='1', size='10'):
     num = await Blog.countRows()
-    page_info = Page(num, set_valid_value(page), set_valid_value(size, 10))
+    page = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
         blogs = []
     else:
-        blogs = await Blog.findAll(orderBy='created_at desc', limit=(page_info.offset, page_info.limit))
+        blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
     for blog in blogs:
         blog.content = markdown_highlight(blog.content)
     return {
         '__template__': 'bootstrap-blogs.html',
         'blogs': blogs,
-        'page': page_info,
-        'size': size
+        'page': page
     }
 
 
