@@ -6,6 +6,11 @@
 
 基本按照[廖雪峰的python3教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432170876125c96f6cc10717484baea0c6da9bee2be4000)实战部分来编写，经过不少简化或重构而成（基本上看不懂的地方最后弄明白再改写了），欢迎发起pull request来完善注释和功能。
 
+## 添加更新日志  
+直到现在才发现有需要写一个更新日志...orz  
+最近在学习前端，更新应该还是很频繁的。
+[点我查看更新](https://github.com/moling3650/mblog/blob/master/CHANGELOG.md)
+
 ##准备工作
 请确保你已经安装以下的库
 
