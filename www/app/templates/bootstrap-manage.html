@@ -8,7 +8,7 @@
     <div class="row" style="margin-top: 20px">
         <div class="panel panel-default">
             <ul class="nav nav-tabs">
-                <li :class="{active: '{{table}}'===$key}" v-for="model of models"><a :href="'' + $key" v-text="$key"></a></li>
+                <li :class="{active: '{{table}}'===key}" v-for="(key, _) of models"><a :href="'' + key" v-text="key"></a></li>
             </ul>
             <table class="table table-striped table-hover table-responsive">
                 <thead>
@@ -19,10 +19,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in items | limitBy page.limit" track-by="id">
-                        <td v-for="field of fields">
-                        <a  v-if="'{{table}}'==='blogs' && $key==='name'" :href="'/blog/'+item.id" v-text="item[$key]"></a>
-                        <span v-else v-text="item[$key]"></span>
+                    <tr v-for="item of items | limitBy page.limit" track-by="id">
+                        <td v-for="(key, field) of fields">
+                            <a  v-if="'{{table}}'==='blogs' && key==='name'" :href="'/blog/'+item.id" v-text="item.name"></a>
+                            <span v-else v-text="item[$key]"></span>
                         </td>
                         <td v-text="item.created_at.toDateTime()"></td>
                         <td v-show="'{{table}}' !== 'users' && {{__user__.admin}}">
@@ -48,7 +48,6 @@
                 </li>
             </ul><!-- pagination -->
         </nav>
-
     </div>
 </div>
 {% endblock %}

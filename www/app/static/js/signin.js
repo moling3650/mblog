@@ -25,7 +25,7 @@ var vm = new Vue({
             postJSON('/authenticate', data, function(err, result){
                 if (err) {
                     console.log(err);
-                    return showAlert(vm, err.message || err.data || err)
+                    return showAlert(vm, err.message || err.data || err);
                 }
                 location.assign('/');
             });

@@ -1,0 +1,37 @@
+{% extends 'bootstrap-base.html' %}
+
+{% block title %}编辑日志{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 20px">
+    <form class="center-block" id="blog" role="from" v-on:submit.prevent="submit">
+        <div class="alert alert-danger" role="alert" hidden="hidden">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            <span v-text="message"></span>
+        </div>
+        <div class="form-group form-group-lg">
+            <label class="sr-only" for="name">标题</label>
+            <input class="form-control" id="name" name="name" type="text" placeholder="标题" v-model="blog.name">
+        </div>
+        <div class="form-group form-group-lg">
+            <label class="sr-only" for="summary">标签</label>
+            <input class="form-control" id="summary" name="summary" type="text" placeholder="标签" v-model="blog.summary">
+        </div>
+        <div class="form-group form-group-lg">
+            <label class="sr-only" for="content">内容</label>
+            <textarea class="form-control" id="content" name="content" placeholder="请输入内容" rows="15" v-model="blog.content"></textarea>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary btn-lg">保存</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/awesome.js"></script>
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/blog_edit.js"></script>
+{% endblock %}

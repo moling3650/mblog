@@ -90,6 +90,9 @@ async def api_get_items(table, *, page='1', size='10'):
     if num == 0:
         return dict(page=page, items=[])
     items = await models[table].findAll(orderBy='created_at desc', limit=(page.offset, page.limit + num % page.limit))
+    if table == 'users':
+        for user in items:
+            user.password = '******'
     return dict(page=page, items=items)
 
 

@@ -14,7 +14,7 @@ from app.models import Blog
 @get('/test')
 async def test():
     return {
-        '__template__': 'test.html'
+        '__template__': 'uk-base.html'
     }
 
 
@@ -73,7 +73,7 @@ def manage():
 @get('/manage/{table}')
 def manage_table(table):
     return {
-        '__template__': 'manage.html',
+        '__template__': 'bootstrap-manage.html',
         'table': table,
     }
 
@@ -82,17 +82,13 @@ def manage_table(table):
 @get('/manage/blogs/create')
 def manage_create_blog():
     return {
-        '__template__': 'manage_blog_edit.html',
-        'id': '',
-        'action': '/api/blogs'
+        '__template__': 'bootstrap-blog_edit.html'
     }
 
 
 # 修改博客
 @get('/manage/blogs/edit')
-def manage_edit_blog(id):
+def manage_edit_blog():
     return {
-        '__template__': 'manage_blog_edit.html',
-        'id': id,
-        'action': '/api/blogs/%s' % id
+        '__template__': 'bootstrap-blog_edit.html'
     }

@@ -2,56 +2,6 @@
 
 {% block title %}编辑日志{% endblock %}
 
-{% block beforehead %}
-
-<script>
-var
-    ID = '{{ id }}',
-    action = '{{ action }}';
-function initVM(blog) {
-    var vm = new Vue({
-        el: '#vm',
-        data: blog,
-        methods: {
-            submit: function (event) {
-                event.preventDefault();
-                var $form = $('#vm').find('form');
-                $form.postJSON(action, this.$data, function (err, r) {
-                    if (err) {
-                        $form.showFormError(err);
-                    }
-                    else {
-                        return location.assign('/blog/' + r.id);
-                    }
-                });
-            }
-        }
-    });
-    $('#vm').show();
-}
-$(function () {
-    if (ID) {
-        getJSON('/api/blogs/' + ID, function (err, blog) {
-            if (err) {
-                return fatal(err);
-            }
-            $('#loading').hide();
-            initVM(blog);
-        });
-    }
-    else {
-        $('#loading').hide();
-        initVM({
-            name: '',
-            summary: '',
-            content: ''
-        });
-    }
-});
-</script>
-
-{% endblock %}
-
 {% block content %}
 
     <div class="uk-width-1-1 uk-margin-bottom">
@@ -66,10 +16,9 @@ $(function () {
 
     <div id="error" class="uk-width-1-1">
     </div>
-
-    <div id="loading" class="uk-width-1-1 uk-text-center">
+<!--     <div id="loading" class="uk-width-1-1 uk-text-center">
         <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> 正在加载...</span>
-    </div>
+    </div> -->
 
     <div id="vm" class="uk-width-2-3">
         <form v-on="submit: submit" class="uk-form uk-form-stacked">
@@ -100,3 +49,10 @@ $(function () {
     </div>
 
 {% endblock %}
+
+{% block script %}
+<script src="/static/js/awesome.js"></script>
+<!-- <script src="/static/js/vue.min.v1.js"></script> -->
+<script src="/static/js/blog_edit.js"></script>
+{% endblock %}
+
