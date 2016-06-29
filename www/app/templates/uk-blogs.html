@@ -1,0 +1,39 @@
+{% extends 'uk-base.html' %}
+
+{% block title %}日志{% endblock %}
+
+{% block content %}
+<main>
+    <div class="uk-width-medium-3-4">
+        {% for blog in blogs %}
+        <article class="uk-article">
+            <h3 class="uk-article-title"><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h3>
+            <p class="uk-article-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
+
+            <p>{{ blog.content|safe }}</p>
+        </article>
+        <div class="uk-article-divider"></div>
+        {% endfor %}
+    </div>
+        <nav uk->
+            <ul class="uk-pagination">
+                <li class="{{'uk-active' if page.index == 1}}"><a href="?page=1&size={{page.limit}}" >1</a></li>
+                {% if (page.index - 1) > 3 %}
+                    <li class="disabled"><span>...</span></li>
+                {% endif %}
+                {% for index in range(2, page.last) if (index - page.index) | abs < 3 %}
+                    <li class="{{'uk-active' if page.index == index}}"><a href="?page={{index}}&size={{page.limit}}" >{{ index }}</a></li>
+                {% endfor %}
+                {% if (page.last - page.index) > 3 %}
+                    <li class="disabled"><span>...</span></li>
+                {% endif %}
+                {% if page.last > 1 %}
+                    <li class="{{'uk-active' if page.index == page.last}}"><a href="?page={{page.last}}&size={{page.limit}}" >{{page.last}}</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+
+
+</main>
+{% endblock %}

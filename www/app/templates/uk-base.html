@@ -1,91 +1,103 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-        {% block meta %}<!-- block meta  -->{% endblock %}
-        <title>{% block title %} ? {% endblock %} - Mblog Python Webapp</title>
-        <link rel="shortcut icon" href="/static/img/favicon.ico"/>
-        <link rel="bookmark" href="/static/img/favicon.ico"/>
-        <!-- uikit 核心 CSS 文件 -->
-        <link rel="stylesheet" href="//cdn.bootcss.com/uikit/2.26.3/css/uikit.min.css">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    {% block meta %}<!-- block meta  -->{% endblock %}
+    <title>{% block title %} ? {% endblock %} - Mblog Python Webapp</title>
+    <link rel="shortcut icon" href="/static/img/favicon.ico"/>
+    <link rel="bookmark" href="/static/img/favicon.ico"/>
+    <!-- uikit 核心 CSS 文件 -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/uikit/2.26.3/css/uikit.min.css">
+    <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
 
-        <link rel="stylesheet" href="/static/css/pygments.css" />
-        <link rel="stylesheet" href="/static/css/mblog.css">
-        {% block beforehead %}<!-- before head  -->{% endblock %}
+    <link rel="stylesheet" href="/static/css/pygments.css" />
+    <link rel="stylesheet" href="/static/css/mblog.css">
+    {% block beforehead %}<!-- before head  -->{% endblock %}
 
-    </head>
+</head>
 
 
-    <body>
-        <nav class="tm-navbar uk-navbar uk-navbar-attached">
-            <div class="uk-container uk-container-center">
-                <a class="uk-navbar-brand uk-hidden-small" href="#">Mblog</a>
+<body>
+    <nav class="tm-navbar uk-navbar uk-navbar-attached">
+        <div class="uk-container uk-container-center">
+            <a class="uk-navbar-brand uk-hidden-small" href="#">Mblog</a>
 
-                <ul class="uk-navbar-nav uk-hidden-small">
-                    <li class="uk-active"><a href="/"><i class="uk-icon-home"></i> Home</a></li>
-                    <li><a href="manage"><i class="uk-icon-book"></i> Manage</a></li>
-                    <li><a href="//github.com/moling3650/mblog" target="_blank"><i class="uk-icon-code"></i> code</a></li>
-                </ul>
-                <ul class="uk-navbar-nav uk-navbar-flip">
-                    {% if __user__ %}
-                    <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="true">
-                        <a href="#"><i class="uk-icon-user"></i> {{ __user__.name }} <i class="uk-icon-caret-down"></i></a>
-                        <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-bottom">
-                            <ul class="uk-nav uk-nav-navbar">
-                                {% if __user__.admin %}
-                                <li><a href="/manage/blogs/create"> New Blog</a></li>
-                                {% endif %}
-                                <li><a href="/signout"> Sign Out</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                    {% else %}
-                    <li><a href="/signin">Sign In</a></li>
-                    <li><a href="/register">Register</a></li>
-                    {% endif %}
-                </ul>
-                <a href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
-                <div class="uk-navbar-brand uk-navbar-center uk-visible-small">Mblog</div>
+            <ul class="uk-navbar-nav uk-hidden-small" id="navbar-left">
+                <li><a href="/"><i class="uk-icon-home"></i> Home</a></li>
+                <li><a href="manage"><i class="uk-icon-book"></i> Manage</a></li>
+                <li><a href="//github.com/moling3650/mblog" target="_blank"><i class="uk-icon-code"></i> code</a></li>
+            </ul>
+            <ul class="uk-navbar-nav uk-navbar-flip">
+                {% if __user__ %}
+                <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="true">
+                    <a href="#"><i class="uk-icon-user"></i> {{ __user__.name }} <i class="uk-icon-caret-down"></i></a>
+                    <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-bottom">
+                        <ul class="uk-nav uk-nav-navbar">
+                            {% if __user__.admin %}
+                            <li><a href="/manage/blogs/create"><i class="uk-icon-pencil"></i> New Blog</a></li>
+                            {% endif %}
+                            <li><a href="/signout"><i class="uk-icon-sign-out"></i> Sign Out</a></li>
+                        </ul>
+                    </div>
+                </li>
+                {% else %}
+                <li><a href="/signin">Sign In</a></li>
+                <li><a href="/register">Register</a></li>
+                {% endif %}
+            </ul>
+            <a href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
+            <div class="uk-navbar-brand uk-navbar-center uk-visible-small">Mblog</div>
+        </div>
+    </nav>
+    <div class="uk-container uk-container-center">
+        <div class="uk-grid">
+            <!-- content -->
+            {% block content %}
+            {% endblock %}
+            <!-- // content -->
+        </div>
+    </div>
+
+    <footer class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
+        <div class="uk-container uk-container-center uk-text-center">
+            <div class="uk-panel uk-margin-top uk-margin-bottom">
+                <p>
+                    <a target="_blank" href="http://weibo.com/moling3650" class="uk-icon-button uk-icon-weibo"></a>
+                    <a target="_blank" href="https://github.com/moling3650" class="uk-icon-button uk-icon-github"></a>
+                </p>
+                <p><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a></p>
+                <p>Powered by <a href="http://getuikit.net">uikit</a>. Copyright &copy; 2016. </p>
+                <p><a href="www.qiangtaoli.com" target="_blank">www.qiangtaoli.com</a>. All rights reserved.</p>
             </div>
-        </nav>
 
-        <!-- content -->
-        {% block content %}
-        {% endblock %}
-        <!-- // content -->
-
-        <footer class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
-            <div class="uk-container uk-container-center uk-text-center">
-                <div class="uk-panel uk-margin-top uk-margin-bottom">
-                    <p>
-                        <a target="_blank" href="http://weibo.com/moling3650" class="uk-icon-button uk-icon-weibo"></a>
-                        <a target="_blank" href="https://github.com/moling3650" class="uk-icon-button uk-icon-github"></a>
-                    </p>
-                    <p><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a></p>
-                    <p>Powered by <a href="http://getuikit.net">uikit</a>. Copyright &copy; 2016. </p>
-                    <p><a href="www.qiangtaoli.com" target="_blank">www.qiangtaoli.com</a>. All rights reserved.</p>
-                </div>
-
-            </div>
-        </footer>
+        </div>
+    </footer>
 
 
-        <nav id="tm-offcanvas" class="uk-offcanvas">
-            <div class="uk-offcanvas-bar">
-                <ul class="uk-nav uk-nav-offcanvas">
-                    <li><a href="/"> Home</a></li>
-                    <li><a href="manage"> Manage</a></li>
-                    <li><a href="//github.com/moling3650/mblog" target="_blank"> code</a></li>
-                </ul>
-            </div>
-       </nav>
-        <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-        <!-- uikit 核心 JavaScript 文件 -->
-        <script src="//cdn.bootcss.com/uikit/2.26.3/js/uikit.min.js"></script>
-        {% block script %}
-        {% endblock %}
-    </body>
+    <nav id="tm-offcanvas" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar">
+            <ul class="uk-nav uk-nav-offcanvas">
+                <li><a href="/"> Home</a></li>
+                <li><a href="manage"> Manage</a></li>
+                <li><a href="//github.com/moling3650/mblog" target="_blank"> code</a></li>
+            </ul>
+        </div>
+   </nav>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <!-- uikit 核心 JavaScript 文件 -->
+    <script src="//cdn.bootcss.com/uikit/2.26.3/js/uikit.min.js"></script>
+    <script>
+    if (location.pathname.indexOf('manage') !== -1) {
+       $('#navbar-left>li:eq(1)').addClass('uk-active');
+    }
+    else {
+        $('#navbar-left>li:first').addClass('uk-active');
+    }
+    </script>
+    {% block script %}
+    {% endblock %}
+</body>
 </html>

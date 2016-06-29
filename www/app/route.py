@@ -20,7 +20,12 @@ async def test():
 
 # 首页
 @get('/')
-async def index(*, page='1', size='10'):
+async def index():
+    return 'redirect:/bootstrap/'
+
+
+@get('/{template}/')
+async def home(template, *, page='1', size='10'):
     num = await Blog.countRows()
     page = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
@@ -30,7 +35,7 @@ async def index(*, page='1', size='10'):
     for blog in blogs:
         blog.content = markdown_highlight(blog.content)
     return {
-        '__template__': 'bootstrap-blogs.html',
+        '__template__': '%s-blogs.html' % (template),
         'blogs': blogs,
         'page': page
     }

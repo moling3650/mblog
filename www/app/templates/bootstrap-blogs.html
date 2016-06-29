@@ -26,18 +26,18 @@
         <div class="col-xs-12">
             <nav class="text-center">
                 <ul class="pagination">
-                    <li class="{{'active' if page.index == 1}}"><a href="/?page=1&size={{page.limit}}" >1</a></li>
+                    <li class="{{'active' if page.index == 1}}"><a href="?page=1&size={{page.limit}}" >1</a></li>
                     {% if (page.index - 1) > 3 %}
                         <li class="disabled"><span>...</span></li>
                     {% endif %}
                     {% for index in range(2, page.last) if (index - page.index) | abs < 3%}
-                        <li class="{{'active' if page.index == index}}"><a href="/?page={{index}}&size={{page.limit}}" >{{ index }}</a></li>
+                        <li class="{{'active' if page.index == index}}"><a href="?page={{index}}&size={{page.limit}}" >{{ index }}</a></li>
                     {% endfor %}
                     {% if (page.last - page.index) > 3 %}
                         <li class="disabled"><span>...</span></li>
                     {% endif %}
                     {% if page.last > 1 %}
-                        <li class="{{'active' if page.index == page.last}}"><a href="/?page={{page.last}}&size={{page.limit}}" >{{page.last}}</a></li>
+                        <li class="{{'active' if page.index == page.last}}"><a href="?page={{page.last}}&size={{page.limit}}" >{{page.last}}</a></li>
                     {% endif %}
                 </ul>
             </nav>
