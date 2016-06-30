@@ -14,20 +14,19 @@ var vm = new Vue({
     },
     methods: {
         submit: function(){
-            this.email = this.email.trim();
-            if(! this.email ){
-                return showAlert(vm, '请输入email');
+            var self = this;
+            self.email = self.email.trim();
+            if(! self.email ){
+                return showAlert(self, '请输入email');
             }
-            var data = {
-                email: this.email,
-                sha1_pw: this.password==='' ? '' : CryptoJS.SHA1(this.email + ':' + this.password).toString()
-            }
-            postJSON('/authenticate', data, function(err, result){
+            postJSON('/authenticate', {
+                email: self.email,
+                sha1_pw: self.password==='' ? '' : CryptoJS.SHA1(self.email + ':' + self.password).toString()
+            }, function(err, result){
                 if (err) {
-                    console.log(err);
-                    return showAlert(vm, err.message || err.data || err);
+                    return showAlert(self, err.message || err.data || err);
                 }
-                location.assign('/');
+                return location.assign(location.pathname.split('signin')[0]);
             });
         }
     }

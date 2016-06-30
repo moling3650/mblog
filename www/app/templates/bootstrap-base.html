@@ -38,11 +38,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">M blog</a>
+                    <a class="navbar-brand" href="/uk/">M blog</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="collapse">
-                    <ul class="nav navbar-nav navbar-left">
+                    <ul class="nav navbar-nav" id="navbar-left">
                         <li><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                         <li><a href="/manage"><span class="glyphicon glyphicon-wrench"></span> Manage</a></li>
                         <li><a href="//github.com/moling3650/mblog" target="_blank"><span class="glyphicon glyphicon-flash"></span> Code</a></li>
@@ -61,8 +61,8 @@
                         </ul>
                         </li>
                         {% else %}
-                        <li><a href="/signin"><span class="glyphicon glyphicon-log-in">  Sign In</span></a></li>
-                        <li><a href="/register"><span class="glyphicon glyphicon-pencil"> Register</a></span></li>
+                        <li><a href="signin"><span class="glyphicon glyphicon-log-in">  Sign In</span></a></li>
+                        <li><a href="register"><span class="glyphicon glyphicon-pencil"> Register</a></span></li>
                         {% endif %}
                     </ul><!--/.navbar-right -->
                 </div><!--/.nav-collapse -->
@@ -90,14 +90,7 @@
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script>
-    if (location.pathname.indexOf('manage') !== -1) {
-       $('.navbar-left>li:eq(1)').addClass('active');
-    }
-    else {
-        $('.navbar-left>li:first').addClass('active');
-    }
-    </script>
+    <script src="/static/js/awesome.js"></script>
     {% block script %}
     {% endblock %}
 </body>

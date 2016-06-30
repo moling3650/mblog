@@ -20,6 +20,26 @@ if (! String.prototype.trim) {
     };
 }
 
+function showAlert(vm, message) {
+    vm.message = message;
+    $('.alert, .uk-alert').show();
+}
+
+function getUrlParams(key) {
+  var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'));
+  return ret && decodeURIComponent(ret[2]);
+}
+
+$(function() {
+    var active = location.pathname.startsWith('/uk') ? 'uk-active' : 'active';
+    if (location.pathname.indexOf('manage') !== -1) {
+        $('#navbar-left>li:eq(1)').addClass(active);
+    }
+    else {
+        $('#navbar-left>li:first').addClass(active);
+    }
+});
+
 if (! Number.prototype.toDateTime) {
     var replaces = {
         'yyyy': function(dt) {
@@ -88,15 +108,6 @@ if (! Number.prototype.toDateTime) {
     };
 }
 
-function showAlert(vm, message) {
-    vm.message = message;
-    $('.alert').show();
-}
-
-function getUrlParams(key) {
-  var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'));
-  return ret && decodeURIComponent(ret[2]);
-}
 
 function encodeHtml(str) {
     return String(str)
@@ -107,45 +118,6 @@ function encodeHtml(str) {
         .replace(/>/g, '&gt;');
 }
 
-// parse query string as object:
-
-function parseQueryString() {
-    var
-        q = location.search,
-        r = {},
-        i, pos, s, qs;
-    if (q && q.charAt(0)==='?') {
-        qs = q.substring(1).split('&');
-        for (i=0; i<qs.length; i++) {
-            s = qs[i];
-            pos = s.indexOf('=');
-            if (pos <= 0) {
-                continue;
-            }
-            r[s.substring(0, pos)] = decodeURIComponent(s.substring(pos+1)).replace(/\+/g, ' ');
-        }
-    }
-    return r;
-}
-
-function gotoPage(i) {
-    var r = parseQueryString();
-    r.page = i;
-    location.assign('?' + $.param(r));
-}
-
-function refresh() {
-    var
-        t = new Date().getTime(),
-        url = location.pathname;
-    if (location.search) {
-        url = url + location.search + '&t=' + t;
-    }
-    else {
-        url = url + '?t=' + t;
-    }
-    location.assign(url);
-}
 
 function toSmartDate(timestamp) {
     if (typeof(timestamp)==='string') {
@@ -378,20 +350,6 @@ if (typeof(Vue)!=='undefined') {
     });
 }
 
-function redirect(url) {
-    var
-        hash_pos = url.indexOf('#'),
-        query_pos = url.indexOf('?'),
-        hash = '';
-    if (hash_pos >=0 ) {
-        hash = url.substring(hash_pos);
-        url = url.substring(0, hash_pos);
-    }
-    url = url + (query_pos >= 0 ? '&' : '?') + 't=' + new Date().getTime() + hash;
-    console.log('redirect to: ' + url);
-    location.assign(url);
-}
-
 // init:
 
 function _bindSubmit($form) {
@@ -439,11 +397,6 @@ $(function () {
     });
 });
 
-$(function() {
-    if (location.pathname === '/' || location.pathname.indexOf('/blog')===0) {
-        $('li[data-url=blogs]').addClass('uk-active');
-    }
-});
 
 function _display_error($obj, err) {
     if ($obj.is(':visible')) {

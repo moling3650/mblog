@@ -23,10 +23,10 @@
 <body>
     <nav class="tm-navbar uk-navbar uk-navbar-attached">
         <div class="uk-container uk-container-center">
-            <a class="uk-navbar-brand uk-hidden-small" href="#">Mblog</a>
+            <a class="uk-navbar-brand uk-hidden-small" href="/">Mblog</a>
 
             <ul class="uk-navbar-nav uk-hidden-small" id="navbar-left">
-                <li><a href="/"><i class="uk-icon-home"></i> Home</a></li>
+                <li><a href="/uk/"><i class="uk-icon-home"></i> Home</a></li>
                 <li><a href="manage"><i class="uk-icon-book"></i> Manage</a></li>
                 <li><a href="//github.com/moling3650/mblog" target="_blank"><i class="uk-icon-code"></i> code</a></li>
             </ul>
@@ -44,8 +44,8 @@
                     </div>
                 </li>
                 {% else %}
-                <li><a href="/signin">Sign In</a></li>
-                <li><a href="/register">Register</a></li>
+                <li><a href="signin">Sign In</a></li>
+                <li><a href="register">Register</a></li>
                 {% endif %}
             </ul>
             <a href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <footer class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
+    <footer class="uk-margin-large-top" style="background-color:#ddd; border-top:1px solid #aaa;">
         <div class="uk-container uk-container-center uk-text-center">
             <div class="uk-panel uk-margin-top uk-margin-bottom">
                 <p>
@@ -72,7 +72,6 @@
                 <p>Powered by <a href="http://getuikit.net">uikit</a>. Copyright &copy; 2016. </p>
                 <p><a href="www.qiangtaoli.com" target="_blank">www.qiangtaoli.com</a>. All rights reserved.</p>
             </div>
-
         </div>
     </footer>
 
@@ -89,14 +88,7 @@
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <!-- uikit 核心 JavaScript 文件 -->
     <script src="//cdn.bootcss.com/uikit/2.26.3/js/uikit.min.js"></script>
-    <script>
-    if (location.pathname.indexOf('manage') !== -1) {
-       $('#navbar-left>li:eq(1)').addClass('uk-active');
-    }
-    else {
-        $('#navbar-left>li:first').addClass('uk-active');
-    }
-    </script>
+    <script src="/static/js/awesome.js"></script>
     {% block script %}
     {% endblock %}
 </body>

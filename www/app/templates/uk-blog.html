@@ -1,0 +1,68 @@
+{% extends 'uk-base.html' %}
+
+{% block title %}{{ blog.name }}{% endblock %}
+
+{% block content %}
+<div class="uk-width-small-1-1  uk-width-medium-3-4 uk-margin-left">
+    <div class="uk-grid-margin" >
+        <div class="uk-width-1-1">
+            <article class="uk-article">
+                <h3 class="uk-article-title"><a href="#">{{ blog.name }}</a></h3>
+                <p class="uk-article-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
+                <hr class="uk-article-divider" />
+                <p>{{ blog.content|safe }}</p>
+            </article>
+        </div>
+    </div>
+    <div class="uk-container uk-padding-remove" id="blog">
+        <div class="uk-width-1-1 uk-margin-large-top">
+            {% if __user__ %}
+            <h3>发表评论</h3>
+            <article class="uk-comment">
+                <header class="uk-comment-header">
+                    <img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{ __user__.image }}">
+                    <h4 class="uk-comment-title">{{ __user__.name }}</h4>
+                </header>
+                <div class="uk-comment-body uk-padding-remove">
+                    <form class="uk-form" v-on:submit.prevent="submit">
+                        <div class="uk-alert uk-alert-danger" hidden="hidden" v-text="message"></div>
+                        <div class="uk-form-row uk-grid-margin">
+                            <textarea class="uk-width-1-1" rows="6" placeholder="评论" v-model="comment"></textarea>
+                        </div>
+                        <div class="uk-form-row">
+                            <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-comment"></i> 发表评论</button>
+                        </div>
+                    </form>
+                </div>
+            </article>
+            <hr class="uk-article-divider">
+            {% endif %}
+        </div>
+
+        <h4 v-show="comments.length > 0">最新评论</h4>
+        <h4 v-else>还没有人评论</h4>
+        <ul class="uk-comment-list">
+            <li v-for="c in comments" track-by="id">
+                <article class="uk-comment">
+                    <header class="uk-comment-header">
+                        <img class="uk-comment-avatar uk-border-circle" width="50" height="50" :src="c.user_image">
+                        <h4 class="uk-comment-title" v-show="'{{blog.user_id}}'!==c.user_id" v-text="c.user_name"></h4>
+                        <h4 v-else v-text="c.user_name + '（作者）'"></h4>
+                        <p class="uk-comment-meta" v-text="'Created at ' + c.created_at.toDateTime('yyyy-MM-dd')"></p>
+                    </header>
+                    <div class="uk-comment-body uk-margin-large-left" style="background: #eee" v-html="c.content"></div>
+                </article>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/marked.min.js"></script>
+<script src="/static/js/blog.js"></script>
+{% endblock %}

@@ -8,36 +8,38 @@ var blog = new Vue({
     el: '#blog',
     data: {
         id: location.pathname.split('/').pop(),
-        content: '',
-        comments: []
+        comment: '',
+        comments: [],
+        message:''
     },
     filters: {
         marked: marked
     },
     methods: {
         submit: function() {
-            if (! this.content.trim()) {
-                return alert('请输入评论内容！');
+            var self = this;
+            if (! self.comment.trim()) {
+                return showAlert(self, '请输入评论内容！');
             }
-            postJSON('/api/blogs/' + this.id + '/comments', {
-                content: this.content,
-                time: (this.comments[0] && this.comments[0].created_at) || 0
+            postJSON('/api/blogs/' + self.id + '/comments', {
+                content: self.comment,
+                time: (self.comments[0] && self.comments[0].created_at) || 0
             }, function (err, data) {
                 if (err) {
-                    return alert(err.message || err.data || err);
+                    return showAlert(self, err.message || err.data || err);
                 }
-                blog.content = '';
-                blog.comments = data.comments.concat(blog.comments);
+                self.comment = '';
+                self.comments = data.comments.concat(self.comments);
             })
         }
     },
     ready: function() {
-        var blog_id = location.pathname.split('/').pop();
-        getJSON('/api/blogs/' + this.id + '/comments', function (err, data) {
+        var self = this;
+        getJSON('/api/blogs/' + self.id + '/comments', function (err, data) {
             if (err) {
                 return alert(err.message || err.data || err);
                 }
-            blog.comments = data.comments;
+            self.comments = data.comments;
         });
     }
 });

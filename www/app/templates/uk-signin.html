@@ -1,0 +1,35 @@
+{% extends 'uk-base.html' %}
+
+{% block title %} Sign In {% endblock %}
+
+{% block content %}
+    <div class="uk-container-center uk-margin-large-top">
+
+            <form id="vm-form" v-on:submit.prevent="submit" class="uk-panel uk-panel-box uk-form">
+                <div class="uk-alert uk-alert-danger" hidden="hidden" v-text="message"></div>
+                <div class="uk-form-row">
+                    <div class="uk-form-icon uk-width-1-1">
+                        <i class="uk-icon-envelope-o"></i>
+                        <input class="uk-form-large uk-form-width-large" name="email" type="text" placeholder="电子邮件" maxlength="50" v-model="email">
+                    </div>
+                </div>
+                <div class="uk-form-row">
+                    <div class="uk-form-icon uk-width-1-1">
+                        <i class="uk-icon-lock"></i>
+                        <input class="uk-form-large uk-form-width-large" name="password" type="password" placeholder="口令" maxlength="50" v-model="password">
+                    </div>
+                </div>
+                <div class="uk-form-row">
+                    <button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large"><i class="uk-icon-sign-in"></i> 登录</button>
+                </div>
+            </form>
+
+    </div>
+{% endblock %}
+
+
+{% block script %}
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/sha1.min.js"></script>
+<script src="/static/js/signin.js"></script>
+{% endblock %}

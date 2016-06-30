@@ -14,7 +14,7 @@ from app.models import Blog
 @get('/test')
 async def test():
     return {
-        '__template__': 'uk-base.html'
+        '__template__': 'test.html'
     }
 
 
@@ -42,28 +42,28 @@ async def home(template, *, page='1', size='10'):
 
 
 # 注册页面
-@get('/register')
-def register():
+@get('/{template}/register')
+def register(template):
     return {
-        '__template__': 'bootstrap-register.html'
+        '__template__': '%s-register.html' % (template)
     }
 
 
 # 登陆页面
-@get('/signin')
-def signin():
+@get('/{template}/signin')
+def signin(template):
     return {
-        '__template__': 'bootstrap-signin.html'
+        '__template__': '%s-signin.html' % (template)
     }
 
 
 # 博客页面
-@get('/blog/{id}')
-async def get_bolg(id):
+@get('/{template}/blog/{id}')
+async def get_bolg(template, id):
     blog = await Blog.find(id)
     blog.content = markdown_highlight(blog.content)
     return {
-        '__template__': 'bootstrap-blog.html',
+        '__template__': '%s-blog.html' % (template),
         'blog': blog
     }
 
