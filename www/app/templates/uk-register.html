@@ -4,32 +4,32 @@
 
 {% block content %}
 
-    <div class="uk-width-medium-1-2 uk-width-small-1-1 uk-container-center" style="width: 50%">
-        <h1>欢迎注册！</h1>
+    <div class="uk-width-medium-1-2 uk-width-small-1-1">
+        <h3 class="uk-text-center uk-margin-top">欢迎注册！</h3>
         <form class="uk-form uk-form-stacked" id="vm-form" v-on:submit.prevent="submit">
             <div class="uk-alert uk-alert-danger" hidden="hidden" v-text="message"></div>
             <div class="uk-form-row">
-                <label class="uk-form-label">名字:</label>
+                <label class="uk-form-label uk-hidden-small">名字:</label>
                 <div class="uk-form-controls">
-                    <input class="uk-form-width-large" type="text" placeholder="名字" v-model="name">
+                    <input class="uk-form-width-large" type="text" placeholder="输入名字" maxlength="50" v-model="name">
                 </div>
             </div>
             <div class="uk-form-row">
-                <label class="uk-form-label">电子邮件:</label>
+                <label class="uk-form-label uk-hidden-small">电子邮件:</label>
                 <div class="uk-form-controls">
-                    <input class="uk-form-width-large" type="text" placeholder="your-name@example.com" v-model="email">
+                    <input class="uk-form-width-large" type="text" placeholder="your-name@example.com" maxlength="50" v-model="email">
                 </div>
             </div>
             <div class="uk-form-row">
-                <label class="uk-form-label">输入口令:</label>
+                <label class="uk-form-label uk-hidden-small">输入口令:</label>
                 <div class="uk-form-controls">
-                    <input class="uk-form-width-large" type="password" placeholder="输入口令" v-model="password">
+                    <input class="uk-form-width-large" type="password" placeholder="输入口令" maxlength="50" v-model="password">
                 </div>
             </div>
             <div class="uk-form-row">
-                <label class="uk-form-label">重复口令:</label>
+                <label class="uk-form-label uk-hidden-small">重复口令:</label>
                 <div class="uk-form-controls">
-                    <input class="uk-form-width-large" type="password" placeholder="重复口令" v-model="password2">
+                    <input class="uk-form-width-large" type="password" placeholder="重复口令" maxlength="50" v-model="password2">
                 </div>
             </div>
             <div class="uk-form-row">

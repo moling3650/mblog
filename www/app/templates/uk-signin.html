@@ -3,28 +3,29 @@
 {% block title %} Sign In {% endblock %}
 
 {% block content %}
-    <div class="uk-container-center uk-margin-large-top">
-
-            <form id="vm-form" v-on:submit.prevent="submit" class="uk-panel uk-panel-box uk-form">
-                <div class="uk-alert uk-alert-danger" hidden="hidden" v-text="message"></div>
-                <div class="uk-form-row">
-                    <div class="uk-form-icon uk-width-1-1">
-                        <i class="uk-icon-envelope-o"></i>
-                        <input class="uk-form-large uk-form-width-large" name="email" type="text" placeholder="电子邮件" maxlength="50" v-model="email">
-                    </div>
-                </div>
-                <div class="uk-form-row">
-                    <div class="uk-form-icon uk-width-1-1">
-                        <i class="uk-icon-lock"></i>
-                        <input class="uk-form-large uk-form-width-large" name="password" type="password" placeholder="口令" maxlength="50" v-model="password">
-                    </div>
-                </div>
-                <div class="uk-form-row">
-                    <button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large"><i class="uk-icon-sign-in"></i> 登录</button>
-                </div>
-            </form>
-
-    </div>
+<div class="uk-container-center uk-width-medium-1-2 uk-width-small-1-1">
+    <h3 class="uk-text-center uk-margin-top">欢迎回来！</h3>
+    <form class="uk-form uk-form-stacked uk-panel uk-panel-box" id="vm-form" v-on:submit.prevent="submit">
+        <div class="uk-alert uk-alert-danger" hidden="hidden" v-text="message"></div>
+        <div class="uk-form-row">
+            <label class="uk-form-label uk-hidden-small">电子邮件:</label>
+            <div class="uk-form-controls uk-form-icon">
+                <i class="uk-icon-envelope-o"></i>
+                <input class="uk-form-large uk-form-width-large" type="text" placeholder="your-name@example.com" maxlength="50" v-model="email">
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <label class="uk-form-label uk-hidden-small">输入口令:</label>
+            <div class="uk-form-controls uk-form-icon">
+                <i class="uk-icon-lock"></i>
+                <input class="uk-form-large uk-form-width-large" type="password" placeholder="输入口令" maxlength="50" v-model="password">
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large"><i class="uk-icon-sign-in"></i> 登录</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
 
 

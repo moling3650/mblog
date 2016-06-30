@@ -35,7 +35,7 @@
             <ul class="uk-navbar-nav uk-navbar-flip">
                 {% if __user__ %}
                 <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="true">
-                    <a href="#"><i class="uk-icon-user"></i> {{ __user__.name }} <i class="uk-icon-caret-down"></i></a>
+                    <a href="#"><i class="uk-icon-user"></i> <span class="uk-hidden-small">{{ __user__.name }}</span> <i class="uk-icon-caret-down"></i></a>
                     <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-bottom">
                         <ul class="uk-nav uk-nav-navbar">
                             {% if __user__.admin %}
@@ -46,12 +46,14 @@
                     </div>
                 </li>
                 {% else %}
-                <li><a href="signin">Sign In</a></li>
-                <li><a href="register">Register</a></li>
+                <li class="uk-hidden-small"><a href="signin">Sign In</a></li>
+                <li class="uk-hidden-small"><a href="register">Register</a></li>
+                <li class="uk-visible-small"><a href="signin"><i class="uk-icon-sign-in"></i></a></li>
+                <li class="uk-visible-small"><a href="register"><i class="uk-icon-registered"></i></a></li>
                 {% endif %}
             </ul>
             <a href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
-            <a class="uk-navbar-brand uk-navbar-center uk-visible-small">
+            <a class="uk-navbar-brand uk-navbar-center uk-visible-small" href="/">
                 <img src="/static/img/bootstrap.png" alt="Brand-other-index" style="height: 42px;" />
             </a>
         </div>
