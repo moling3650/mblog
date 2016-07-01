@@ -26,24 +26,27 @@ var vm = new Vue({
         this.getItemsByPage(getUrlParams('page'), getUrlParams('size'));
     },
     methods: {
+
         getItemsByPage: function  (page, size) {
+            var self = this;
             $.getJSON('/api/' + this.table, {
                 page: page || '1',
                 size: size || '10'
             }, function (data) {
-                vm.items = data.items;
-                vm.page = data.page;
+                self.items = data.items;
+                self.page = data.page;
             })
         },
         delete_item: function (item) {
+            var self = this;
             if (confirm('确认要删除“' + (item.name || item.content) + '”？删除后不可恢复！')) {
                 postJSON('/api/' + this.table + '/' + item.id + '/delete', function (err, r) {
-                    vm.items.$remove(item);
-                    if (vm.items.length === 0 && vm.page.index > 1) {
-                        vm.getItemsByPage(vm.page.index - 1, vm.page.limit);
+                    self.items.$remove(item);
+                    if (self.items.length === 0 && self.page.index > 1) {
+                        self.getItemsByPage(self.page.index - 1, self.page.limit);
                     }
-                    else if (vm.items.length < 10 && vm.page.index < vm.page.last) {
-                        vm.getItemsByPage(vm.page.index, vm.page.limit);
+                    else if (self.items.length < 10 && self.page.index < self.page.last) {
+                        self.getItemsByPage(self.page.index, self.page.limit);
                     }
                 });
             }
