@@ -9,7 +9,7 @@
         <div class="uk-grid-margin" >
             <div class="uk-width-1-1">
                 <article class="uk-article">
-                    <h3 class="uk-article-title"><a href="blog/{{ blog.id }}">{{ blog.name }}</a></h3>
+                    <h3 class="uk-article-title uk-text-truncate"><a href="blog/{{ blog.id }}">{{ blog.name }}</a></h3>
                     <p class="uk-article-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
                     <hr class="uk-article-divider" />
                     <p>{{ blog.content|safe }}</p>

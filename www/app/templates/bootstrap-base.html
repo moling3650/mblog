@@ -38,15 +38,15 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/uk/" style="background: #000">
+                    <a class="navbar-brand" href="/uk/" style="background: #000; padding-top: 10px;">
                         <img src="/static/img/uikit.png" alt="Brand-other-index"/>
                     </a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="collapse">
                     <ul class="nav navbar-nav" id="navbar-left">
-                        <li><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                        <li><a href="/manage"><span class="glyphicon glyphicon-wrench"></span> Manage</a></li>
+                        <li><a href="/bootstrap/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                        <li><a href="/bootstrap/manage"><span class="glyphicon glyphicon-wrench"></span> Manage</a></li>
                         <li><a href="//github.com/moling3650/mblog" target="_blank"><span class="glyphicon glyphicon-flash"></span> Code</a></li>
                     </ul><!--/.navbar-left -->
                     <ul class="nav navbar-nav navbar-right">
@@ -57,14 +57,14 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-left">
                             {% if __user__.admin %}
-                            <li><a href="/manage/blogs/create"><span class="glyphicon glyphicon-pencil"> New Blog</span></a></li>
+                            <li><a href="/bootstrap/manage/blogs/create"><span class="glyphicon glyphicon-pencil"> New Blog</span></a></li>
                             {% endif %}
                             <li><a href="/signout"><span class="glyphicon glyphicon-log-out"> Sign Out</span></a></li>
                         </ul>
                         </li>
                         {% else %}
-                        <li><a href="signin"><span class="glyphicon glyphicon-log-in">  Sign In</span></a></li>
-                        <li><a href="register"><span class="glyphicon glyphicon-pencil"> Register</a></span></li>
+                        <li><a href="/bootstrap/signin"><span class="glyphicon glyphicon-log-in">  Sign In</span></a></li>
+                        <li><a href="/bootstrap/register"><span class="glyphicon glyphicon-pencil"> Register</a></span></li>
                         {% endif %}
                     </ul><!--/.navbar-right -->
                 </div><!--/.nav-collapse -->
@@ -82,8 +82,9 @@
 
     <footer id="footer">
         <div class="container text-center">
-            <p><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a> © 2016 mblog</p>
             <p>Powered by <a href="http://v3.bootcss.com/">Bootstrap</a></p>
+            <p><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a> © 2016 mblog</p>
+            <p><a href="www.qiangtaoli.com" target="_blank">www.qiangtaoli.com</a>. All rights reserved.</p>
         </div>
     </footer>
 

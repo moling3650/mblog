@@ -32,7 +32,7 @@ var vm = new Vue({
                 if (err) {
                     return showAlert(vm, err.message || err.data || err)
                 }
-                return location.assign('/blog/' + blog.id);
+                return location.assign(location.pathname.split('manage')[0] + 'blog/' + blog.id);
             });
         }
     }

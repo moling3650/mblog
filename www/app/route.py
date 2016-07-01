@@ -69,31 +69,31 @@ async def get_bolg(template, id):
 
 
 # 管理页面
-@get('/manage')
-def manage():
-    return 'redirect:/manage/blogs'
+@get('/{template}/manage')
+def manage(template):
+    return 'redirect:/%s/manage/blogs' % (template)
 
 
 # 管理用户、博客、评论
-@get('/manage/{table}')
-def manage_table(table):
+@get('/{template}/manage/{table}')
+def manage_table(template, table):
     return {
-        '__template__': 'bootstrap-manage.html',
-        'table': table,
+        '__template__': '%s-manage.html' % (template),
+        'table': table
     }
 
 
 # 创建博客
-@get('/manage/blogs/create')
-def manage_create_blog():
+@get('/{template}/manage/blogs/create')
+def manage_create_blog(template):
     return {
-        '__template__': 'bootstrap-blog_edit.html'
+        '__template__': '%s-blog_edit.html' % (template)
     }
 
 
 # 修改博客
-@get('/manage/blogs/edit')
-def manage_edit_blog():
+@get('/{template}/manage/blogs/edit')
+def manage_edit_blog(template):
     return {
-        '__template__': 'bootstrap-blog_edit.html'
+        '__template__': '%s-blog_edit.html' % (template)
     }

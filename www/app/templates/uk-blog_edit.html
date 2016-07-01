@@ -1,0 +1,38 @@
+{% extends 'uk-base.html' %}
+
+{% block title %}日志{% endblock %}
+
+{% block content %}
+<div class="uk-width-medium-3-4 uk-width-small-1-1 uk-margin-top">
+    <form class="uk-form uk-form-stacked" id="blog" role="from" v-on:submit.prevent="submit">
+        <div class="uk-alert uk-alert-danger" hidden="hidden" v-text="message"></div>
+        <div class="uk-form-row">
+            <label class="uk-form-label uk-hidden-small">标题:</label>
+            <div class="uk-form-controls">
+                <input class="uk-width-1-1" type="text" name="name" placeholder="标题" v-model="blog.name">
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <label class="uk-form-label uk-hidden-small">标签:</label>
+            <div class="uk-form-controls">
+                <input class="uk-width-1-1" type="text" name="summary" placeholder="标签" v-model="blog.summary">
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <label class="uk-form-label uk-hidden-small">内容:</label>
+            <div class="uk-form-controls">
+                <textarea class="uk-width-1-1" name="content" placeholder="内容" rows="15" style="resize:none;" v-model="blog.content"></textarea>
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <button class="uk-button uk-button-primary" type="submit"><i class="uk-icon-save"></i> 保存</button>
+            <a class="uk-button" href="/uk/manage/blogs"><i class="uk-icon-times"></i> 取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/vue.min.v1.js"></script>
+<script src="/static/js/blog_edit.js"></script>
+{% endblock %}

@@ -23,13 +23,13 @@
 <body>
     <nav class="tm-navbar uk-navbar uk-navbar-attached">
         <div class="uk-container uk-container-center">
-            <a class="uk-navbar-brand uk-hidden-small" href="/">
+            <a class="uk-navbar-brand uk-hidden-small" href="/bootstrap/" style="background: #563d7c;">
                 <img src="/static/img/bootstrap.png" alt="Brand-other-index" style="height: 42px;" />
             </a>
 
             <ul class="uk-navbar-nav uk-hidden-small" id="navbar-left">
                 <li><a href="/uk/"><i class="uk-icon-home"></i> Home</a></li>
-                <li><a href="manage"><i class="uk-icon-book"></i> Manage</a></li>
+                <li><a href="/uk/manage"><i class="uk-icon-book"></i> Manage</a></li>
                 <li><a href="//github.com/moling3650/mblog" target="_blank"><i class="uk-icon-code"></i> code</a></li>
             </ul>
             <ul class="uk-navbar-nav uk-navbar-flip">
@@ -39,17 +39,17 @@
                     <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-bottom">
                         <ul class="uk-nav uk-nav-navbar">
                             {% if __user__.admin %}
-                            <li><a href="/manage/blogs/create"><i class="uk-icon-pencil"></i> New Blog</a></li>
+                            <li><a href="/uk/manage/blogs/create"><i class="uk-icon-pencil"></i> New Blog</a></li>
                             {% endif %}
                             <li><a href="/signout"><i class="uk-icon-sign-out"></i> Sign Out</a></li>
                         </ul>
                     </div>
                 </li>
                 {% else %}
-                <li class="uk-hidden-small"><a href="signin">Sign In</a></li>
-                <li class="uk-hidden-small"><a href="register">Register</a></li>
-                <li class="uk-visible-small"><a href="signin"><i class="uk-icon-sign-in"></i></a></li>
-                <li class="uk-visible-small"><a href="register"><i class="uk-icon-registered"></i></a></li>
+                <li class="uk-hidden-small"><a href="/uk/signin">Sign In</a></li>
+                <li class="uk-hidden-small"><a href="/uk/register">Register</a></li>
+                <li class="uk-visible-small"><a href="/uk/signin"><i class="uk-icon-sign-in"></i></a></li>
+                <li class="uk-visible-small"><a href="/uk/register"><i class="uk-icon-registered"></i></a></li>
                 {% endif %}
             </ul>
             <a href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
@@ -74,8 +74,8 @@
                     <a target="_blank" href="http://weibo.com/moling3650" class="uk-icon-button uk-icon-weibo"></a>
                     <a target="_blank" href="https://github.com/moling3650" class="uk-icon-button uk-icon-github"></a>
                 </p>
-                <p><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a></p>
-                <p>Powered by <a href="http://getuikit.net">uikit</a>. Copyright &copy; 2016. </p>
+                <p>Powered by <a href="http://getuikit.net">uikit</a></p>
+                <p><a href="http://www.miitbeian.gov.cn">粤ICP备16049607号-1</a> © 2016 mblog</p>
                 <p><a href="www.qiangtaoli.com" target="_blank">www.qiangtaoli.com</a>. All rights reserved.</p>
             </div>
         </div>
@@ -85,8 +85,8 @@
     <nav id="tm-offcanvas" class="uk-offcanvas">
         <div class="uk-offcanvas-bar">
             <ul class="uk-nav uk-nav-offcanvas">
-                <li><a href="/"> Home</a></li>
-                <li><a href="manage"> Manage</a></li>
+                <li><a href="/uk/"> Home</a></li>
+                <li><a href="/uk/manage"> Manage</a></li>
                 <li><a href="//github.com/moling3650/mblog" target="_blank"> code</a></li>
             </ul>
         </div>
