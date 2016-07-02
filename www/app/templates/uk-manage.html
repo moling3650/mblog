@@ -9,7 +9,7 @@
         </ul>
 
 
-    <table class="uk-table uk-table-striped uk-table-hover">
+    <table class="uk-table uk-table-striped uk-table-hover" id="manage-table">
         <thead>
             <tr>
                 <th class="" v-for="title of fields" v-text="title"></th>
@@ -19,7 +19,7 @@
         </thead>
         <tbody>
             <tr v-for="item of items | limitBy page.limit" track-by="id">
-                <td class="uk-text-bold" v-for="(key, field) of fields">
+                <td v-for="(key, field) of fields">
                     <a  v-if="'{{table}}'==='blogs' && key==='name'" :href="'/uk/blog/'+item.id" v-text="item.name"></a>
                     <span v-else v-text="item[$key]"></span>
                 </td>

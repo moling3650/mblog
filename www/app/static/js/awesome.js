@@ -31,7 +31,7 @@ function getUrlParams(key) {
 }
 
 $(function() {
-    var active = location.pathname.startsWith('/uk') ? 'uk-active' : 'active';
+    var active = location.pathname.substr(0, 4) === '/uk/' ? 'uk-active' : 'active';
     if (location.pathname.indexOf('manage') !== -1) {
         $('#navbar-left>li:eq(1)').addClass(active);
     }
