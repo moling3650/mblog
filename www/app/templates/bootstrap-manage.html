@@ -21,7 +21,7 @@
             <tbody>
                 <tr v-for="item of items | limitBy page.limit" track-by="id">
                     <td v-for="(key, field) of fields">
-                        <a  v-if="'{{table}}'==='blogs' && key==='name'" :href="'/blog/'+item.id" v-text="item.name"></a>
+                        <a  v-if="'{{table}}'==='blogs' && key==='name'" :href="'/bootstrap/blog/'+item.id" v-text="item.name"></a>
                         <span v-else v-text="item[$key]"></span>
                     </td>
                     <td v-text="item.created_at.toDateTime('yyyy-MM-dd')"></td>

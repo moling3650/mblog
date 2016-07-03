@@ -128,7 +128,7 @@ function toSmartDate(timestamp) {
     }
 
     var
-        today = new Date(g_time),
+        today = new Date(),
         now = today.getTime(),
         s = '1分钟前',
         t = now - timestamp;

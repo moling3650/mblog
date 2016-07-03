@@ -95,6 +95,9 @@
     <!-- uikit 核心 JavaScript 文件 -->
     <script src="//cdn.bootcss.com/uikit/2.26.3/js/uikit.min.js"></script>
     <script src="/static/js/awesome.js"></script>
+    <script>
+        $('.uk-navbar-brand').attr('href', location.href.replace('/uk/', '/bootstrap/'));
+    </script>
     {% block script %}
     {% endblock %}
 </body>

@@ -36,7 +36,7 @@
                 </div>
 
                 {% else %}
-                <h4>请<a href="/signin">登陆</a>后再评论，如未注册请先<a href="/register">注册</a></h4>
+                <h4>请<a href="/bootstrap/signin">登陆</a>后再评论，如未注册请先<a href="/bootstrap/register">注册</a></h4>
                 {% endif %}
                 <hr class="divider"/>
 
@@ -48,7 +48,7 @@
                         </div>
                         <div class="media-body">
                             <h4 class="media-heading" v-text="c.user_name"></h4>
-                            <small v-text="'发表于 ' + c.created_at.toDateTime()"></small>
+                            <small v-text="'发表于 ' + c.created_at.toDateTime('yyyy-MM-dd')"></small>
                             <hr class="divider"/>
                             <article>
                                 <p v-html="c.content"></p>
@@ -63,7 +63,7 @@
             {% if __user__ %}
             <img src={{ __user__.image }} alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
             {% else %}
-            <img src="../static/img/user.png" alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
+            <img src="/static/img/user.png" alt="user_image" class="img-thumbnail img-respinsuve" width="150" height="150"/>
             {% endif %}
         </div>
     </div>

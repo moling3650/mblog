@@ -29,10 +29,10 @@ var vm = new Vue({
 
         getItemsByPage: function  (page, size) {
             var self = this;
-            $.getJSON('/api/' + this.table, {
+            getJSON('/api/' + this.table, {
                 page: page || '1',
                 size: size || '10'
-            }, function (data) {
+            }, function (err, data) {
                 self.items = data.items;
                 self.page = data.page;
             })
