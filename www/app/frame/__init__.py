@@ -14,9 +14,11 @@ from aiohttp import web
 
 from .errors import APIError
 
+#定义各种url处理函数
 
 def get(path):
     '''
+    装饰函数，函数经次函数装饰后即带上了__method__、__route__属性
     Define decorator @get('/path')
     '''
     def decorator(func):
@@ -31,6 +33,7 @@ def get(path):
 
 def post(path):
     '''
+    装饰函数
     Define decorator @post('/path')
     '''
     def decorator(func):
@@ -42,13 +45,16 @@ def post(path):
         return wrapper
     return decorator
 
+# RequestHandler目的就是从URL函数中分析其需要接收的参数，从request中获取必要的参数，
+# URL函数不一定是一个coroutine，因此我们用RequestHandler()来封装一个URL处理函数。
+# 调用URL函数，然后把结果转换为web.Response对象，这样，就完全符合aiohttp框架的要求：
 
-class RequestHandler(object):
+class RequestHandler(object): # 初始化一个请求处理类
 
     def __init__(self, func):
         self._func = func
 
-    async def __call__(self, request):
+    async def __call__(self, request):#任何类，只需要定义一个__call__()方法，就可以直接对实例进行调用
         # 获取函数的参数表
         required_args = inspect.signature(self._func).parameters
         logging.info('required args: %s' % required_args)
@@ -87,14 +93,20 @@ def add_routes(app, module_name):
         mod = __import__(module_name, fromlist=['get_submodule'])
     except ImportError as e:
         raise e
-
+    # 遍历mod的方法和属性,主要是找处理方法
+    # 由于我们定义的处理方法，被@get或@post修饰过，所以方法里会有'__method__'和'__route__'属性
     for attr in dir(mod):
+        # 如果是以'_'开头的，一律pass，我们定义的处理方法不是以'_'开头的
         if attr.startswith('_'):
             continue
+        # 获取到非'_'开头的属性或方法
         func = getattr(mod, attr)
+        # 取能调用的，说明是方法
         if callable(func):
+            # 检测'__method__'和'__route__'属性
             method = getattr(func, '__method__', None)
             path = getattr(func, '__route__', None)
+            # 如果都有，说明是我们定义的处理方法，加到app对象里处理route中
             if method and path:
                 func = asyncio.coroutine(func)
                 args = ', '.join(inspect.signature(func).parameters.keys())
@@ -105,5 +117,5 @@ def add_routes(app, module_name):
 # 添加静态文件夹的路径
 def add_static(app):
     path = os.path.join(os.path.dirname(__path__[0]), 'static')
-    app.router.add_static('/static/', path)
+    app.router.add_static('/static/', path) 
     logging.info('add static %s => %s' % ('/static/', path))
