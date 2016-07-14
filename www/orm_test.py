@@ -28,7 +28,7 @@ async def test():
                 password='pw',
                 image='/static/img/user.png'
             )
-            rows = await User.countRows('email = ?', u.email)
+            rows = await User.countRows(where='email = ?', args=[u.email])
             if rows == 0:
                 await u.save()
             else:

@@ -13,7 +13,7 @@ _REMOTE_TMP_TAR = '/tmp/%s' % _TAR_FILE
 
 env.hosts = ['119.29.191.109']
 env.user = 'ubuntu'
-env.password = '******'
+env.password = 'huishou8'
 env.key_filename = 'D:\\tk'
 
 

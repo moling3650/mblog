@@ -4,11 +4,10 @@
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
 # @Version : 0.1
-import re
+import mistune
 from pygments import highlight
-from pygments.lexers import HtmlLexer, JavascriptLexer, Python3Lexer
-from pygments.formatters import HtmlFormatter
-from .markdown2 import markdown
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import html
 from .errors import APIPermissionError, APIValueError
 
 
@@ -42,15 +41,22 @@ def check_string(**kw):
             raise APIValueError(field, '%s cannot be empty.' % field)
 
 
-def code_highlight(m):
-    code = m.group('code').replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
-    if code.startswith('<'):
-        return highlight(code, HtmlLexer(), HtmlFormatter())
-    elif code.startswith(('var', 'function', '$')):
-        return highlight(code, JavascriptLexer(), HtmlFormatter())
-    else:
-        return highlight(code, Python3Lexer(), HtmlFormatter())
+class HighlightRenderer(mistune.Renderer):
+
+    def block_code(self, code, lang):
+        guess = 'python3'
+        if code.lstrip().startswith('<?php'):
+            guess = 'php'
+        elif code.lstrip().startswith('<'):
+            guess = 'html'
+        elif code.lstrip().startswith(('function', 'var', '$')):
+            guess = 'javascript'
+
+        lexer = get_lexer_by_name(lang or guess, stripall=True)
+        formatter = html.HtmlFormatter()
+        return highlight(code, lexer, formatter)
 
 
 def markdown_highlight(content):
-    return re.sub(r'<pre><code>(?P<code>.+?)</code></pre>', code_highlight, markdown(content), flags=re.S)
+    markdown = mistune.Markdown(renderer=HighlightRenderer())
+    return markdown(content)
