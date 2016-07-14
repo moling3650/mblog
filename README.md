@@ -54,7 +54,9 @@
 		|	|
 		|	+models.py         <--模型（数据库的表）
 		|	|
-		|	+-routes.py         <--路由
+		|	+-route.py         <--路由
+		|   |
+		|   +-api.py       　　<-- api接口
 		|
 		orm_test.py           <--测试orm
 		|
