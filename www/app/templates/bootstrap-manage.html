@@ -35,15 +35,17 @@
     </div>
     <nav class="text-center">
         <ul class="pagination">
-            <li :class="{active: page.index===1}">
+            <li :class="{'active': page.index===1}">
                 <a href="#" v-on:click="gotoPage(1)" v-text="1"></a>
             </li>
-            <li class="disabled" v-show="(page.index - 1) > 3"><span>...</span></li>
-            <li :class="{active: page.index===i}" v-for="i in page.last | filterBy vaildPage">
+            <li class="disabled" v-if="(page.index - 1) > 3"><span>...</span></li>
+
+            <li :class="{'active': page.index===i}" v-for="i in page.last | filterBy vaildPage">
                 <a href="#" v-on:click="gotoPage(i)" v-text="i"></a>
             </li>
-            <li class="disabled" v-show="(page.last - page.index) > 3"><span>...</span></li>
-            <li :class="{active: page.index===page.last}" v-show="page.last > 1">
+
+            <li class="disabled" v-if="(page.last - page.index) > 3"><span>...</span></li>
+            <li :class="{'active': page.index===page.last}" v-if="page.last > 1">
                 <a href="#" v-on:click="gotoPage(page.last)" v-text='page.last'></a>
             </li>
         </ul><!-- pagination -->

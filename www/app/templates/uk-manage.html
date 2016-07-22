@@ -14,7 +14,8 @@
             <tr>
                 <th class="" v-for="title of fields" v-text="title"></th>
                 <th class="uk-width-2-10">创建时间</th>
-                <th class="uk-width-2-10" v-show="'{{table}}'!=='users' && {{__user__.admin}}">操作</th>
+                <!-- <th class="uk-width-2-10" v-show="'{{table}}'!=='users' && {{__user__.admin}}">操作</th> -->
+                <th class="uk-width-2-10">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +25,8 @@
                     <span v-else v-text="item[$key]"></span>
                 </td>
                 <td v-text="item.created_at.toDateTime('yyyy-MM-dd')"></td>
-                <td v-show="'{{table}}' !== 'users' && {{__user__.admin}}">
+                <!-- <td v-show="'{{table}}' !== 'users' && {{__user__.admin}}"> -->
+                <td>
                     <a v-show="'{{table}}' === 'blogs'" :href="'blogs/edit?id='+item.id"><i class="uk-icon-edit"></i></a>
                     <a href="#" v-on:click="delete_item(item)"><i class="uk-icon-trash"></i></a>
                 </td>
@@ -34,18 +36,22 @@
 
     <nav class="uk-margin-top">
         <ul class="uk-pagination">
-            <li class="uk-active" v-show="page.index===1"><span v-text="1"></span></li>
-            <li v-else><a v-on:click="gotoPage(1)" v-text="1"></a></li>
+            <li :class="{'uk-active': page.index===1}"><!-- 首页 -->
+                <span v-show="page.index===1" v-text="1"></span>
+                <a v-else href="#" v-on:click="gotoPage(1)" v-text="1"></a>
+            </li>
             <li class="disabled" v-show="(page.index - 1) > 3"><span>...</span></li>
 
-            <li :class="[page.index===i ? 'uk-active': '']" v-for="i in page.last | filterBy vaildPage">
+            <li :class="{'uk-active': page.index===i}" v-for="i in page.last | filterBy vaildPage"><!-- 当前页左右 -->
                 <span v-show="page.index===i" v-text="i"></span>
-                <a v-else v-on:click="gotoPage(i)" v-text="i"></a>
+                <a v-else href="#" v-on:click="gotoPage(i)" v-text="i"></a>
             </li>
 
             <li class="disabled" v-show="(page.last - page.index) > 3"><span>...</span></li>
-            <li class="uk-active" v-show="page.index===page.last"><span v-text="page.last"></span></li>
-            <li v-else><a v-on:click="gotoPage(page.last)" v-text="page.last"></a></li>
+            <li :class="{'uk-active': page.index===page.last}" v-show="page.last > 1"><!-- 尾页 -->
+                <span v-show="page.index===page.last" v-text="page.last"></span>
+                <a v-else href="#" v-on:click="gotoPage(page.last)" v-text="page.last"></a>
+            </li>
         </ul>
     </nav>
 </div>
