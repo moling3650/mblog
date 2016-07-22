@@ -22,7 +22,9 @@
 
 1. aiomysql: aiomysql针对asyncio框架用于访问mysql的库
 
-1. Pygments： 用于实现网页代码高亮的库
+1. Pygments：用于实现网页代码高亮的库
+
+1. mistune: 将文本markdown化，结合Pygments可以精确高亮绝大多数编程语言
 
 所有的库都可以通过pip安装，或者更方便地使用`pip install -r requirements.txt`命令来安装。
 
@@ -74,7 +76,9 @@
 ### 支持代码高亮
 - <s>只支持python代码的高亮。</s>  
 - <s>现在好像还没有支持python3.5的新语法，我也不知道为什么，明明在pygments官网示范是支持的。</s>   
-- 只支持区块代码的高亮，markdown默认区块代码是前面四个空格。  
+- <s>只支持区块代码的高亮，markdown默认区块代码是前面四个空格。</s> 
 - 支持html语法高亮，代码需要以`<`开头  
-- 支持javascript语法高亮，代码需要以`var`或`function`开头  
+- 支持javascript语法高亮，代码需要以`var`或`function`或`$`开头  
 - 支持python3语法高亮，默认就是python3的解析器
+- 支持php语法高亮，代码需要以`<?php`开头
+- 支持大部分语言的代码高亮，需要用<kbd>\`\`\`(lang)\n(code)\n\`\`\`</kbd>包裹
