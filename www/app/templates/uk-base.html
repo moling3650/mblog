@@ -12,6 +12,7 @@
     <!-- uikit 核心 CSS 文件 -->
     <link rel="stylesheet" href="//cdn.bootcss.com/uikit/2.26.3/css/uikit.min.css">
     <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+    <link rel="stylesheet" href="/static/css/components/sticky.min.css" />
 
     <link rel="stylesheet" href="/static/css/pygments.css" />
     <link rel="stylesheet" href="/static/css/mblog.css">
@@ -22,7 +23,7 @@
 
 
 <body>
-    <nav class="tm-navbar uk-navbar uk-navbar-attached">
+    <nav class="tm-navbar uk-navbar uk-navbar-attached" data-uk-sticky>
         <div class="uk-container uk-container-center">
             <a class="uk-navbar-brand uk-hidden-small" href="/bootstrap/" style="background: #563d7c;">
                 <img src="/static/img/bootstrap.png" alt="Brand-other-index" style="height: 42px;" />
@@ -95,6 +96,7 @@
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <!-- uikit 核心 JavaScript 文件 -->
     <script src="//cdn.bootcss.com/uikit/2.26.3/js/uikit.min.js"></script>
+    <script src="/static/js/components/sticky.min.js"></script>
     <script src="/static/js/awesome.js"></script>
     <script>
         $('.uk-navbar-brand').attr('href', location.href.replace('/uk/', '/bootstrap/'));
