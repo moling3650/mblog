@@ -7,7 +7,7 @@
 import mistune
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
-from pygments.formatters import html
+from pygments.formatters import HtmlFormatter
 from .errors import APIPermissionError, APIValueError
 
 
@@ -53,10 +53,7 @@ class HighlightRenderer(mistune.Renderer):
             guess = 'javascript'
 
         lexer = get_lexer_by_name(lang or guess, stripall=True)
-        formatter = html.HtmlFormatter()
-        return highlight(code, lexer, formatter)
+        return highlight(code, lexer, HtmlFormatter())
 
 
-def markdown_highlight(content):
-    markdown = mistune.Markdown(renderer=HighlightRenderer())
-    return markdown(content)
+markdown_highlight = mistune.Markdown(renderer=HighlightRenderer(), hard_wrap=True)
