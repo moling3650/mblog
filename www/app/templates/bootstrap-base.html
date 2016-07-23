@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta property="wb:webmaster" content="56b0b8527ddba5ca" />
+
     {% block meta %}<!-- block meta  -->{% endblock %}
     <title>{% block title %} ? {% endblock %} - Mblog Python Webapp</title>
     <link rel="shortcut icon" href="/static/img/favicon.ico"/>
@@ -21,6 +23,7 @@
         <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js?appkey=366603916" type="text/javascript" charset="utf-8"></script>
     {% block beforehead %}<!-- before head  -->{% endblock %}
 
 </head>
@@ -63,6 +66,11 @@
                         </ul>
                         </li>
                         {% else %}
+                        <li>
+                            <a href="https://api.weibo.com/oauth2/authorize?client_id=366603916&redirect_uri=http://www.qiangtaoli.com/oauth2">
+                                <span class="glyphicon glyphicon-log-in">  Weibo</span>
+                            </a>
+                        </li>
                         <li><a href="/bootstrap/signin"><span class="glyphicon glyphicon-log-in">  Sign In</span></a></li>
                         <li><a href="/bootstrap/register"><span class="glyphicon glyphicon-pencil"> Register</a></span></li>
                         {% endif %}
@@ -77,8 +85,9 @@
         {% block content %}
         {% endblock %}
         <!-- // content -->
-
     </div><!-- /.container -->
+
+    <a class="btn-lg" id="go-top" href="javascript:void(0);" title="go-top" hidden="hidden"><span class="glyphicon glyphicon-arrow-up"></span></a>
 
     <footer id="footer">
         <div class="container text-center">

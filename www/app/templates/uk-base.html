@@ -48,10 +48,9 @@
                     </div>
                 </li>
                 {% else %}
-                <li class="uk-hidden-small"><a href="/uk/signin">Sign In</a></li>
-                <li class="uk-hidden-small"><a href="/uk/register">Register</a></li>
-                <li class="uk-visible-small"><a href="/uk/signin"><i class="uk-icon-sign-in"></i></a></li>
-                <li class="uk-visible-small"><a href="/uk/register"><i class="uk-icon-registered"></i></a></li>
+                <li><a href="https://api.weibo.com/oauth2/authorize?client_id=366603916&redirect_uri=http://www.qiangtaoli.com/oauth2"><i class="uk-icon-weibo"></i></a></li>
+                <li><a href="/uk/signin"><i class="uk-icon-sign-in"></i><span class="uk-hidden-small"> Sign In</span></a></li>
+                <li><a href="/uk/register"><i class="uk-icon-registered"></i><span class="uk-hidden-small"> Register</span></a></li>
                 {% endif %}
             </ul>
             <a href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
@@ -68,6 +67,8 @@
             <!-- // content -->
         </div>
     </div>
+
+    <a id="go-top" href="javascript:void(0);" title="go-top" hidden="hidden"><i class="uk-icon-arrow-up uk-icon-large"></i></a>
 
     <footer class="uk-margin-large-top" style="background-color:#ddd; border-top:1px solid #aaa;">
         <div class="uk-container uk-container-center uk-text-center">

@@ -38,6 +38,17 @@ $(function() {
     else {
         $('#navbar-left>li:first').addClass(active);
     }
+    $(window).scroll(function() {
+        if($(this).scrollTop() >= $(this).height()) {
+            $("#go-top").fadeIn();
+        }
+        else {
+            $("#go-top").fadeOut();
+        }
+    });
+    $("#go-top").click(function() {
+        $("body").animate({scrollTop: 0}, 800, "swing");
+    });
 });
 
 if (! Number.prototype.toDateTime) {

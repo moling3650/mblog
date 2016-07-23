@@ -5,6 +5,22 @@
  * @date    2016-05-27 20:34:36
  * @version $Id$
  */
+#go-top {
+    position: fixed;
+    bottom: 180px;
+    right: 20px;
+}
+#go-top:hover {
+    color: orange;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    border: 0;
+}
+
 #vm-form {
   max-width: 400px;
   margin: 0 auto;
