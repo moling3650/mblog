@@ -10,8 +10,11 @@
             <article class="blog-post">
                 <h3 class="blog-post-title"><a href="blog/{{ blog.id }}">{{ blog.name }}</a></h3>
                 <p class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
+                <div class="container-fluid blog-summary" hidden="hidden">
+                    {{ blog.content|safe }}
+                </div>
+                <span class="pull-right"><a href="blog/{{ blog.id }}">阅读更多</a></span>
 
-                <p>{{ blog.content|safe }}</p>
                 <hr class="divider"/>
             </article>
             {% endfor %}
@@ -45,6 +48,16 @@
 
     </div><!-- .row -->
 </main>
+{% endblock %}
+
+{% block script %}
+<script>
+$('.blog-summary').each(function() {
+    $(this).children('*:gt(2)').remove();
+    $(this).append('<p>......</p>');
+    $(this).fadeIn();
+});
+</script>
 {% endblock %}
 
 

@@ -11,8 +11,11 @@
                 <article class="uk-article">
                     <h3 class="uk-article-title uk-text-truncate"><a href="blog/{{ blog.id }}">{{ blog.name }}</a></h3>
                     <p class="uk-article-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
-                    <hr class="uk-article-divider" />
-                    <p>{{ blog.content|safe }}</p>
+                    <div class="blog-summary" hidden="hidden">
+                        {{ blog.content|safe }}
+                    </div>
+                    <span class="uk-align-right"><a href="blog/{{ blog.id }}">阅读更多</a></span>
+                    <hr class="uk-width-1-1 uk-article-divider" />
                 </article>
             </div>
         </div>
@@ -46,4 +49,14 @@
             {% endif %}
         </ul>
     </nav>
+{% endblock %}
+
+{% block script %}
+<script>
+$('.blog-summary').each(function() {
+    $(this).children('*:gt(2)').remove();
+    $(this).append('<p>......</p>');
+    $(this).fadeIn();
+});
+</script>
 {% endblock %}
