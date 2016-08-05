@@ -13,7 +13,7 @@ function validateEmail(email) {
 var vmRegister = new Vue({
     el: '#vm-form',
     data: {
-        name: '',
+        name: getUrlParams('name') || '',
         email: '',
         password: '',
         password2: '',
@@ -39,7 +39,9 @@ var vmRegister = new Vue({
             postJSON('/register', {
                 name: self.name,
                 email: self.email,
-                sha1_pw: CryptoJS.SHA1(self.email + ':' + self.password).toString()
+                sha1_pw: CryptoJS.SHA1(self.email + ':' + self.password).toString(),
+                oid: getUrlParams('oid'),
+                image: getUrlParams('image')
             }, function (err, result) {
                 if (err) {
                     return showAlert(self, err.message || err.data || err);

@@ -9,8 +9,9 @@ import functools
 import hashlib
 import time
 import uuid
+from aiohttp import web
 
-from app import COOKIE_KEY
+from app import COOKIE_KEY, COOKIE_NAME
 from app.frame.fields import *
 from app.frame.orm import Model
 
@@ -39,6 +40,10 @@ class User(Model):
         self.password = hashlib.sha1(sha1_pw.encode('utf-8')).hexdigest()
         await super().save()
 
+    def signin(self, response, max_age=86400):
+        response.set_cookie(COOKIE_NAME, self.generate_cookie(max_age), max_age=max_age, httponly=True)
+        return response
+
     def generate_cookie(self, max_age):
         expires = str(int(time.time() + max_age))
         s = '%s-%s-%s-%s' % (self.id, self.password, expires, COOKIE_KEY)
@@ -63,7 +68,7 @@ class User(Model):
             if sha1 != hashlib.sha1(s.encode('utf-8')).hexdigest():
                 logging.info('invalid sha1')
                 return None
-            user.passwd = '******'
+            user.password = '******'
             return user
         except Exception as e:
             logging.exception(e)
@@ -94,4 +99,12 @@ class Comment(Model):
     user_name = StringField()
     user_image = StringField(ddl='varchar(500)')
     content = TextField()
+    created_at = FloatField(default=time.time)
+
+
+class Oauth(Model):
+    __table__ = 'oauth'
+
+    id = StringField(primary_key=True)
+    user_id = StringField()
     created_at = FloatField(default=time.time)

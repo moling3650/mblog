@@ -4,9 +4,8 @@
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
 # @Version : 0.1
-
 from app.frame import get
-from app.frame.halper import Page, set_valid_value, markdown_highlight
+from app.frame.halper import Page, set_valid_value
 from app.models import Blog
 
 
@@ -32,8 +31,6 @@ async def home(template, *, page='1', size='10'):
         blogs = []
     else:
         blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
-    for blog in blogs:
-        blog.content = markdown_highlight(blog.content)
     return {
         '__template__': '%s-blogs.html' % (template),
         'blogs': blogs,
@@ -61,7 +58,6 @@ def signin(template):
 @get('/{template}/blog/{id}')
 async def get_bolg(template, id):
     blog = await Blog.find(id)
-    blog.content = markdown_highlight(blog.content)
     return {
         '__template__': '%s-blog.html' % (template),
         'blog': blog

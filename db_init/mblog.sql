@@ -2,7 +2,7 @@
 * @Author: moling
 * @Date:   2016-05-06 10:51:29
 * @Last Modified by:   anchen
-* @Last Modified time: 2016-05-06 12:49:02
+* @Last Modified time: 2016-07-14 23:10:07
 */
 drop database if exists mblog;
 
@@ -46,5 +46,14 @@ create table comments (
     `content` mediumtext not null,
     `created_at` real not null,
     key `idx_created_at` (`created_at`),
+    primary key (`id`)
+) engine=innodb default charset=utf8;
+
+create table oauth (
+    `id` varchar(50) not null,
+    `user_id` varchar(50) not null,
+    `created_at` real not null,
+    key `idx_created_at` (`created_at`),
+    unique key `idx_uid` (`user_id`),
     primary key (`id`)
 ) engine=innodb default charset=utf8;
