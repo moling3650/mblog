@@ -5,16 +5,16 @@
 # @Link    : http://qiangtaoli.com
 # @Version : $Id$
 import hashlib
-import json
 import logging
 import re
-from aiohttp import web
+from aiohttp import ClientSession, web
 
 from app import COOKIE_NAME
+from app.filters import marked_filter as markdown_highlight
 from app.frame import get, post
-from app.frame.halper import Page, set_valid_value, check_admin, check_string, markdown_highlight
+from app.frame.halper import Page, set_valid_value, check_admin, check_string
 from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
-from app.models import User, Blog, Comment
+from app.models import User, Blog, Comment, Oauth
 
 _RE_EMAIL = re.compile(r'^[a-zA-Z0-9\.\-\_]+\@[a-zA-Z0-9\-\_]+(\.[a-zA-Z0-9\-\_]+){1,4}$')
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
@@ -22,7 +22,7 @@ _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 # 注册新用户
 @post('/register')
-async def register(*, name, email, sha1_pw):
+async def register(*, name, email, sha1_pw, oid=None, image=None):
     if not name or not name.strip():
         raise APIValueError('name')
     if not email or not _RE_EMAIL.match(email):
@@ -32,15 +32,13 @@ async def register(*, name, email, sha1_pw):
     users = await User.findAll('email = ?', [email])
     if users:
         raise APIValueError('email', 'Email is already in used.')
-    user = User(name=name.strip(), email=email, password=sha1_pw, image='/static/img/user.png')
+    user = User(name=name.strip(), email=email, password=sha1_pw, image=image or '/static/img/user.png')
     await user.save()
-    # make session cookie
-    r = web.Response()
-    r.set_cookie(COOKIE_NAME, user.generate_cookie(86400), max_age=86400, httponly=True)
-    user.password = '******'
-    r.content_type = 'application/json'
-    r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
-    return r
+    if oid:
+        o = Oauth(id=oid, user_id=user.id)
+        await o.save()
+    # register ok, signin
+    return user.signin(web.json_response({'signin user': user.name}))
 
 
 # 登陆验证
@@ -61,13 +59,32 @@ async def authenticate(*, email, sha1_pw):
     sha1.update(sha1_pw.encode('utf-8'))
     if user.password != sha1.hexdigest():
         raise APIValueError('password', 'Invalid password')
-    # authenticate ok, set cookie
-    r = web.Response()
-    r.set_cookie(COOKIE_NAME, user.generate_cookie(86400), max_age=86400, httponly=True)
-    user.passwd = '******'
-    r.content_type = 'application/json'
-    r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
-    return r
+    # authenticate ok, signin
+    return user.signin(web.json_response({'signin user': user.name}))
+
+
+@get('/oauth2')
+async def oauth2(code):
+    url = 'https://api.weibo.com/oauth2/access_token'
+    payload = {
+        'client_id': '366603916',
+        'client_secret': 'b418efbd77094585d0a7f9ccac98a706',
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': 'http://www.qiangtaoli.com'
+    }
+    with ClientSession() as session:
+        async with session.post(url, data=payload) as resp:
+            params = await resp.json()
+        async with session.get('https://api.weibo.com/2/users/show.json', params=params) as resp:
+            info = await resp.json()
+        o = await Oauth.find('weibo-' + info['idstr'])
+        if not o:
+            return 'redirect:/bootstrap/register?oid=weibo-%s&name=%s&image=%s' % (info['idstr'], info['name'], info['avatar_large'])
+        user = await User.find(o.user_id)
+        if not user:
+            return 'oauth user was deleted.'
+        return user.signin(web.HTTPFound('/'))
 
 
 # 注销用户
@@ -84,7 +101,7 @@ def signout(request):
 # 取（用户、博客、评论）表的条目
 @get('/api/{table}')
 async def api_get_items(table, *, page='1', size='10'):
-    models = {'users': User, 'blogs': Blog, 'comments': Comment}
+    models = {'users': User, 'blogs': Blog, 'comments': Comment, 'oauth': Oauth}
     num = await models[table].countRows()
     page = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
@@ -157,7 +174,7 @@ async def api_create_comment(id, request, *, content, time):
 # 删除博客或评论
 @post('/api/{table}/{id}/delete')
 async def api_delete_item(table, id, request):
-    models = {'blogs': Blog, 'comments': Comment}
+    models = {'users': User, 'blogs': Blog, 'comments': Comment, 'oauth': Oauth}
     check_admin(request)
     item = await models[table].find(id)
     if item:

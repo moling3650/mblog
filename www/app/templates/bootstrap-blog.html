@@ -10,7 +10,7 @@
             <article class="blog-post">
                 <h3 class="blog-post-title"><a href="#">{{ blog.name }}</a></h3>
                 <p class="blog-post-meta">发表于 <time>{{ blog.created_at|datetime }}</time></p>
-                <p>{{ blog.content|safe }}</p>
+                <p>{{ blog.content|marked|safe }}</p>
                 <hr class="divider" />
             </article>
             <div class="container" id="blog">

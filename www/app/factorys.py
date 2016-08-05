@@ -7,8 +7,6 @@
 
 import logging
 import json
-import time
-from datetime import datetime
 from aiohttp import web
 from urllib import parse
 
@@ -26,15 +24,10 @@ async def logger_factory(app, handler):
 async def auth_factory(app, handler):
     async def auth(request):
         logging.info('check user: %s %s' % (request.method, request.path))
-        request.__user__ = None
-        cookie_str = request.cookies.get(COOKIE_NAME)
-        if cookie_str:
-            user = await User.find_by_cookie(cookie_str)
-            if user:
-                logging.info('set current user: %s' % user.email)
-                request.__user__ = user
-        if request.path.startswith('/manage/') and (request.__user__ is None):
-            return web.HTTPFound('/')
+        cookie = request.cookies.get(COOKIE_NAME)
+        request.__user__ = await User.find_by_cookie(cookie)
+        if request.__user__ is not None:
+            logging.info('set current user: %s' % request.__user__.email)
         return await handler(request)
     return auth
 
@@ -105,17 +98,3 @@ async def response_factory(app, handler):
         resp.content_type = 'text/plain;charset=utf-8'
         return resp
     return response
-
-
-def datetime_filter(t):
-    delta = int(time.time() - t)
-    if delta < 60:
-        return u'1分钟前'
-    if delta < 3600:
-        return u'%s分钟前' % (delta // 60)
-    if delta < 86400:
-        return u'%s小时前' % (delta // 3600)
-    if delta < 604800:
-        return u'%s天前' % (delta // 86400)
-    dt = datetime.fromtimestamp(t)
-    return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)

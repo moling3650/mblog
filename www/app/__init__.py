@@ -12,7 +12,8 @@ from jinja2 import Environment, FileSystemLoader
 from config import COOKIE_NAME, COOKIE_KEY
 from app.frame import add_routes, add_static
 from app.frame.orm import create_pool
-from app.factorys import logger_factory, auth_factory, data_factory, response_factory, datetime_filter
+from app.factorys import logger_factory, auth_factory, data_factory, response_factory
+from app.filters import datetime_filter, marked_filter
 
 logging.basicConfig(level=logging.INFO)
 
@@ -50,7 +51,7 @@ async def create_server(loop, config_mod_name):
     add_routes(app, 'app.route')
     add_routes(app, 'app.api')
     add_static(app)
-    init_jinja2(app, filters=dict(datetime=datetime_filter), **config.jinja2_config)
+    init_jinja2(app, filters=dict(datetime=datetime_filter, marked=marked_filter), **config.jinja2_config)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 9900)
     logging.info('server started at http://127.0.0.1:9900...')
     return server

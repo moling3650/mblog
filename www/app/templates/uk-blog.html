@@ -10,7 +10,7 @@
                 <h3 class="uk-article-title"><a href="#">{{ blog.name }}</a></h3>
                 <p class="uk-article-meta"><small>发表于 {{ blog.created_at|datetime }}</small></p>
                 <hr class="uk-article-divider" />
-                <p>{{ blog.content|safe }}</p>
+                <p>{{ blog.content|marked|safe }}</p>
             </article>
         </div>
     </div>
