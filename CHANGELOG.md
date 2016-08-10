@@ -1,4 +1,8 @@
 # 更新日志
+### 2016.08.10
+- 封装重构User类方法`signin`、`signout`、`verify_password`
+- 封装重构`check_xxx`函数
+
 ### 2016.07.26
 - 实现首页文章的摘要显示
 
