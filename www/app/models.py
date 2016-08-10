@@ -9,7 +9,6 @@ import functools
 import hashlib
 import time
 import uuid
-from aiohttp import web
 
 from app import COOKIE_KEY, COOKIE_NAME
 from app.frame.fields import *
@@ -41,14 +40,11 @@ class User(Model):
         await super().save()
 
     def signin(self, response, max_age=86400):
-        response.set_cookie(COOKIE_NAME, self.generate_cookie(max_age), max_age=max_age, httponly=True)
-        return response
-
-    def generate_cookie(self, max_age):
         expires = str(int(time.time() + max_age))
         s = '%s-%s-%s-%s' % (self.id, self.password, expires, COOKIE_KEY)
         L = [self.id, expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
-        return '-'.join(L)
+        response.set_cookie(COOKIE_NAME, '-'.join(L), max_age=max_age, httponly=True)
+        return response
 
     @classmethod
     async def find_by_cookie(cls, cookie_str):
