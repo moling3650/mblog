@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2016-06-26 02:46:05
 # @Author  : moling (365024424@qq.com)
-# @Link    : http://qiangtaoli.com
+# @Link    : http://www.qiangtaoli.com
 # @Version : $Id$
-import hashlib
 import logging
 import re
 from aiohttp import ClientSession, web
@@ -52,11 +51,7 @@ async def authenticate(*, email, sha1_pw):
         raise APIValueError('email', 'Email not exist.')
     user = users[0]
     # check password
-    sha1 = hashlib.sha1()
-    sha1.update(user.id.encode('utf-8'))
-    sha1.update(b':')
-    sha1.update(sha1_pw.encode('utf-8'))
-    if user.password != sha1.hexdigest():
+    if not user.verify_password(sha1_pw):
         raise APIValueError('password', 'Invalid password')
     # authenticate ok, signin
     return user.signin(web.json_response({'signin user': user.name}))

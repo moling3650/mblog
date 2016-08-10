@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2016-05-05 18:47:39
 # @Author  : moling (365024424@qq.com)
-# @Link    : #
+# @Link    : http://www.qiangtaoli.com
 # @Version : 0.1
 
 import functools
@@ -39,13 +39,23 @@ class User(Model):
         self.password = hashlib.sha1(sha1_pw.encode('utf-8')).hexdigest()
         await super().save()
 
+    # 验证用户密码是否正确
+    def verify_password(self, password):
+        sha1 = hashlib.sha1()
+        sha1.update(self.id.encode('utf-8'))
+        sha1.update(b':')
+        sha1.update(password.encode('utf-8'))
+        return self.password == sha1.hexdigest()
+
+    # 用户登陆，返回一个已登陆的响应
     def signin(self, response, max_age=86400):
         expires = str(int(time.time() + max_age))
         s = '%s-%s-%s-%s' % (self.id, self.password, expires, COOKIE_KEY)
-        L = [self.id, expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
-        response.set_cookie(COOKIE_NAME, '-'.join(L), max_age=max_age, httponly=True)
+        cookie = '-'.join((self.id, expires, hashlib.sha1(s.encode('utf-8')).hexdigest()))
+        response.set_cookie(COOKIE_NAME, cookie, max_age=max_age, httponly=True)
         return response
 
+    # 用户注销，返回一个已注销的响应
     @classmethod
     def signout(cls, response):
         response.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
