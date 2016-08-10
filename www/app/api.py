@@ -5,28 +5,20 @@
 # @Link    : http://www.qiangtaoli.com
 # @Version : $Id$
 import logging
-import re
 from aiohttp import ClientSession, web
 
 from app.filters import marked_filter as markdown_highlight
 from app.frame import get, post
-from app.frame.halper import Page, set_valid_value, check_admin, check_string
-from app.frame.errors import APIValueError, APIPermissionError, APIResourceNotFoundError
+from app.frame.halper import Page, set_valid_value, check_user, check_string, check_email_and_password
+from app.frame.errors import APIValueError, APIResourceNotFoundError
 from app.models import User, Blog, Comment, Oauth
-
-_RE_EMAIL = re.compile(r'^[a-zA-Z0-9\.\-\_]+\@[a-zA-Z0-9\-\_]+(\.[a-zA-Z0-9\-\_]+){1,4}$')
-_RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
 # 注册新用户
 @post('/register')
 async def register(*, name, email, sha1_pw, oid=None, image=None):
-    if not name or not name.strip():
-        raise APIValueError('name')
-    if not email or not _RE_EMAIL.match(email):
-        raise APIValueError('email')
-    if not sha1_pw or not _RE_SHA1.match(sha1_pw):
-        raise APIValueError('password')
+    check_string(name=name)
+    check_email_and_password(email, sha1_pw)
     users = await User.findAll('email = ?', [email])
     if users:
         raise APIValueError('email', 'Email is already in used.')
@@ -42,10 +34,7 @@ async def register(*, name, email, sha1_pw, oid=None, image=None):
 # 登陆验证
 @post('/authenticate')
 async def authenticate(*, email, sha1_pw):
-    if not email:
-        raise APIValueError('email', 'Invalid email.')
-    if not sha1_pw:
-        raise APIValueError('password', 'Invalid password.')
+    check_email_and_password(email, sha1_pw)
     users = await User.findAll('email = ?', [email])
     if len(users) == 0:
         raise APIValueError('email', 'Email not exist.')
@@ -112,7 +101,7 @@ async def api_get_blog(id):
 # 创建新博客
 @post('/api/blogs')
 async def api_create_blog(request, *, name, summary, content):
-    check_admin(request)
+    check_user(request.__user__)
     check_string(name=name, summary=summary, content=content)
     blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__.image,
                 name=name.strip(), summary=summary.strip(), content=content.strip())
@@ -123,7 +112,7 @@ async def api_create_blog(request, *, name, summary, content):
 # 修改某篇博客
 @post('/api/blogs/{id}')
 async def api_update_blog(id, request, *, name, summary, content):
-    check_admin(request)
+    check_user(request.__user__)
     check_string(name=name, summary=summary, content=content)
     blog = await Blog.find(id)
     blog.name = name.strip()
@@ -146,10 +135,8 @@ async def api_get_blog_comments(id):
 @post('/api/blogs/{id}/comments')
 async def api_create_comment(id, request, *, content, time):
     user = request.__user__
-    if user is None:
-        raise APIPermissionError('Please signin first.')
-    if not content or not content.strip():
-        raise APIValueError('content')
+    check_user(user, check_admin=False)
+    check_string(content=content)
     blog = await Blog.find(id)
     if blog is None:
         raise APIResourceNotFoundError('Blog')
@@ -165,7 +152,7 @@ async def api_create_comment(id, request, *, content, time):
 @post('/api/{table}/{id}/delete')
 async def api_delete_item(table, id, request):
     models = {'users': User, 'blogs': Blog, 'comments': Comment, 'oauth': Oauth}
-    check_admin(request)
+    check_user(request.__user__)
     item = await models[table].find(id)
     if item:
         await item.remove()
