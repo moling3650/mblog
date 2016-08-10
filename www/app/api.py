@@ -9,7 +9,6 @@ import logging
 import re
 from aiohttp import ClientSession, web
 
-from app import COOKIE_NAME
 from app.filters import marked_filter as markdown_highlight
 from app.frame import get, post
 from app.frame.halper import Page, set_valid_value, check_admin, check_string
@@ -90,12 +89,8 @@ async def oauth2(code):
 # 注销用户
 @get('/signout')
 def signout(request):
-    referer = request.headers.get('Referer')
-    r = web.HTTPFound(referer or '/')
-    # 清理掉cookie得用户信息数据
-    r.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
-    logging.info('user signed out')
-    return r
+    logging.info('user sign out')
+    return User.signout(web.HTTPFound(request.headers.get('Referer') or '/'))
 
 
 # 取（用户、博客、评论）表的条目

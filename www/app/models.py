@@ -47,6 +47,11 @@ class User(Model):
         return response
 
     @classmethod
+    def signout(cls, response):
+        response.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
+        return response
+
+    @classmethod
     async def find_by_cookie(cls, cookie_str):
         if not cookie_str:
             return None
