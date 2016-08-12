@@ -24,17 +24,18 @@ async def index():
 
 
 @get('/{template}/')
-async def home(template, *, page='1', size='10'):
-    num = await Blog.countRows()
+async def home(template, *, tag='', page='1', size='10'):
+    num = await Blog.countRows(where="position(? in `summary`)", args=[tag])
     page = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
         blogs = []
     else:
-        blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
+        blogs = await Blog.findAll("position(? in `summary`)", [tag], orderBy='created_at desc', limit=(page.offset, page.limit))
     return {
         '__template__': '%s-blogs.html' % (template),
         'blogs': blogs,
-        'page': page
+        'page': page,
+        'tag': tag
     }
 
 
