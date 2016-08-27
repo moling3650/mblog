@@ -1,4 +1,8 @@
 # 更新日志
+
+### 2016.08.27
+- 修正bootstrp首页的html的代码结构
+
 ### 2016.08.10
 - 封装重构User类方法`signin`、`signout`、`verify_password`
 - 封装重构`check_xxx`函数
