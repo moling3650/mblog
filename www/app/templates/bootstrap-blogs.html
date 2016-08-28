@@ -10,8 +10,8 @@
             {% for blog in blogs %}
                 <article class="blog-post">
                     <header>
-                        <h3 class="blog-post-title"><a href="blog/{{ blog.id }}">{{ blog.name }}</a></h3>
-                        <div class="blog-post-meta"><small>发表于 {{ blog.created_at|datetime }}</small></div>
+                        <h3 class="blog-post-title text-center"><a href="blog/{{ blog.id }}">{{ blog.name }}</a></h3>
+                        <div class="blog-post-meta text-center"><small>发表于 {{ blog.created_at|datetime }}</small></div>
                     </header>
                     <div class="container-fluid blog-summary">
                         {{ blog.content|marked|safe }}
@@ -37,14 +37,14 @@
                 </div>
                 <div class="blog-tags">
                     <h3>TAGS</h3>
-                    <div class="row" id="tags">
+                    <div id="tags">
                         <a href="?tag=Refactoring">Refactoring</a>
                         <a href="?tag=项目更新">项目更新</a>
                         <a href="?tag=flask">flask</a>
                         <a href="?tag=python">python</a>
                     </div>
                 </div>
-            </aside>
+           </aside>
             <nav class="col-xs-12 text-center">
                 <ul class="pagination">
                     <li class="{{'active' if page.index == 1}}"><a href="?tag={{tag}}&amp;page=1&amp;size={{page.limit}}" >1</a></li>
