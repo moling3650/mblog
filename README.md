@@ -8,6 +8,21 @@
 
 此博客基本按照[廖雪峰的python3教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432170876125c96f6cc10717484baea0c6da9bee2be4000)实战部分来编写，经过不少简化或重构而成（基本上看不懂的地方最后弄明白再改写了），欢迎发起pull request来完善注释和功能。
 
+## HTTP请求的命周期
+![项目流程图](http://www.qiangtaoli.com/static/img/Process.png)
+1. 客户端（浏览器）发起请求
+2. 路由分发请求（这个框架自动帮处理），add_routes函数就是注册路由。
+3. 中间件预前处理
+   - 打印日志
+   - 验证用户登陆
+   - 收集Request（请求）的数据
+4. RequestHandler清理参数并调用控制器，Django和Flask把这些处理请求的函数称为view functions
+5. 控制器做相关的逻辑判断，有必要时通过ORM框架处理Model的事务。
+6. 模型层的主要事务是数据库的查增改删。
+7. 控制器再次接管控制权，返回相应的数据。
+8. Response_factory根据控制器传过来的数据产生不同的响应。
+9. 客户端（浏览器）接收到来自服务器的响应。
+
 ## 添加更新日志  
 直到现在才发现有需要写一个更新日志...orz  
 最近在学习前端，更新应该还是很频繁的。
@@ -29,6 +44,8 @@
 1. mistune: 将文本markdown化，结合Pygments可以精确高亮绝大多数编程语言
 
 所有的库都可以通过pip安装，或者更方便地使用`pip install -r requirements.txt`命令来安装。
+
+
 
 ###项目结构
 
