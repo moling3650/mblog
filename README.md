@@ -2,22 +2,22 @@
 经过漫长的备案，网线总算是上线了，接下来应该是各种小修小补，力求完善功能和增强体验。
 我的个人技术博客：<http://www.qiangtaoli.com/>
 
-一个用python3.5.1实现的个人博客网站，内含自己实现的简易版ORM框架和Web框架，欢迎查看学习。如果喜欢的话，可以点击右上角的Star按钮支持下我的工作^_^
+一个用python3.5.1实现的个人博客网站，内含自己实现的简易版ORM框架和Web框架，欢迎查看学习。如果喜欢的话，可以点击右上角的Star按钮支持下我^_^
 
 用Flask重建过后端，只花了一周的时间，感叹Flask这个轻框架的结构真的是太优雅了！基本上是无痛切换，如果你想深入学习MVC框架，那你最好也看一下我用Flask框架实现的[mblog-Flask](https://github.com/moling3650/mblog-Flask)，你会对整个框架的架构有更深的体会的。
 
 此博客基本按照[廖雪峰的python3教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432170876125c96f6cc10717484baea0c6da9bee2be4000)实战部分来编写，经过不少简化或重构而成（基本上看不懂的地方最后弄明白再改写了），欢迎发起pull request来完善注释和功能。
 
-## HTTP请求的命周期
+## HTTP请求的生命周期
 ![项目流程图](http://www.qiangtaoli.com/static/img/Process.png)
 
 1. 客户端（浏览器）发起请求  
 2. 路由分发请求（这个框架自动帮处理），add_routes函数就是注册路由。  
-3. 中间件预前处理  
+3. 中间件预处理  
    - 打印日志
    - 验证用户登陆
    - 收集Request（请求）的数据
-4. RequestHandler清理参数并调用控制器，Django和Flask把这些处理请求的函数称为view functions
+4. RequestHandler清理参数并调用控制器（Django和Flask把这些处理请求的控制器称为view functions）
 5. 控制器做相关的逻辑判断，有必要时通过ORM框架处理Model的事务。
 6. 模型层的主要事务是数据库的查增改删。
 7. 控制器再次接管控制权，返回相应的数据。
