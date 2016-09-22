@@ -94,3 +94,11 @@ def manage_edit_blog(template):
     return {
         '__template__': '%s-blog_edit.html' % (template)
     }
+
+
+# 谷歌验证
+@get('google8d8dd87f7b70fbc7.html')
+def google_auth():
+    return {
+        '__template__': 'google8d8dd87f7b70fbc7.html'
+    }

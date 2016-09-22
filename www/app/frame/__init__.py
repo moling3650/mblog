@@ -104,8 +104,8 @@ def add_routes(app, module_name):
         # 取能调用的，说明是方法
         if callable(func):
             # 检测'__method__'和'__route__'属性
-            method = getattr(func, '__method__')
-            path = getattr(func, '__route__')
+            method = getattr(func, '__method__', None)
+            path = getattr(func, '__route__', None)
             # 如果都有，说明是我们定义的处理方法，加到app对象里处理route中
             if method and path:
                 func = asyncio.coroutine(func)
