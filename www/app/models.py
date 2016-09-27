@@ -33,6 +33,13 @@ class User(Model):
     image = StringField(ddl='varchar(500)')
     created_at = FloatField(default=time.time)
 
+    def to_json(self, **kw):
+        json_user = self.copy()
+        json_user['password'] = '******'
+        if kw.get('encrypted'):
+            json_user['email'] = '******@email.xxx'
+        return json_user
+
     async def save(self):
         self.id = next_id()
         sha1_pw = '%s:%s' % (self.id, self.password)
