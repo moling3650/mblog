@@ -38,10 +38,10 @@ async def select(sql, args, size=None):
     async with __pool.get() as conn:
         # 等待连接对象返回DictCursor可以通过dict的方式获取数据库对象，需要通过游标对象执行SQL
         async with conn.cursor(aiomysql.DictCursor) as cur:
-            await cur.execute(sql.replace('?', '%s'), args) #将sql中的'?'替换为'%s'，因为mysql语句中的占位符为%s
-            #如果传入size'
+            await cur.execute(sql.replace('?', '%s'), args)  # 将sql中的'?'替换为'%s'，因为mysql语句中的占位符为%s
+            # 如果传入size
             if size:
-                resultset = await cur.fetchmany(size) # 从数据库获取指定的行数
+                resultset = await cur.fetchmany(size)  # 从数据库获取指定的行数
             else:
                 resultset = await cur.fetchall()      # 返回所有的结果集
         logging.info('rows returned: %s' % len(resultset))
@@ -51,13 +51,13 @@ async def select(sql, args, size=None):
 async def execute(sql, args, autocommit=True):
     log(sql, args)
     async with __pool.get() as conn:
-        if not autocommit:       # 若数据库的事务为非自动提交的,则调用协程启动连接
+        if not autocommit:       # 若设置不是自动提交，则手动开启事务
             await conn.begin()
         try:
-            async with conn.cursor(aiomysql.DictCursor) as cur: # 打开一个DictCursor,它与普通游标的不同在于,以dict形式返回结果
+            async with conn.cursor(aiomysql.DictCursor) as cur:  # 打开一个DictCursor，它与普通游标的不同在于，以dict形式返回结果
                 await cur.execute(sql.replace('?', '%s'), args)
                 affected = cur.rowcount    # 返回受影响的行数
-            if not autocommit:             # 同上, 事务非自动提交型的,手动调用协程提交增删改事务
+            if not autocommit:             # 同上, 如果设置不是自动提交的话，手动提交事务
                 await conn.commit()
         except BaseException as e:
             if not autocommit:             # 出错, 回滚事务到增删改之前
@@ -66,8 +66,8 @@ async def execute(sql, args, autocommit=True):
         return affected
 
 
-# 这是一个元类,它定义了如何来构造一个类,任何定义了__metaclass__属性或指定了metaclass的都会通过元类定义的构造方法构造类
-# 任何继承自Model的类,都会自动通过ModelMetaclass扫描映射关系,并存储到自身的类属性
+# 这是一个元类，它定义了如何来构造一个类，任何定义了__metaclass__属性或指定了metaclass的都会通过元类定义的构造方法构造类
+# 任何继承自Model的类，都会自动通过ModelMetaclass扫描映射关系，并存储到自身的类属性
 class ModelMetaclass(type):
 
     def __new__(cls, name, bases, attrs):
@@ -82,24 +82,24 @@ class ModelMetaclass(type):
         table = attrs.get('__table__', name)
         logging.info('found model: %s (table: %s)' % (name, table))
         # 建立映射关系表和找到主键
-        mappings = {}          #用于保存映射关系
-        escaped_fields = []    #用于保存所有字段名
-        primary_key = None     #保存主键
+        mappings = {}          # 用于保存映射关系
+        escaped_fields = []    # 用于保存所有字段名
+        primary_key = None     # 保存主键
 
         # 遍历类的属性,找出定义的域(如StringField,字符串域)内的值,建立映射关系
         # key是属性名,val其实是定义域!请看name=StringField(ddl="varchar50")
         for key, val in attrs.copy().items():
-            #判断val是否属于Field属性类
-            if isinstance(val, Field): 
+            # 判断val是否属于Field属性类
+            if isinstance(val, Field):
                 # 把Field属性类保存在映射映射关系表，并从原属性列表中删除
-                mappings[key] = attrs.pop(key)  #pop(key)方法删除attrs中key对应的值，并返回这个值，将这个值与mappings的key对应
+                mappings[key] = attrs.pop(key)  # pop(key)方法删除attrs中key对应的值，并返回这个值，将这个值与mappings的key对应
                 logging.info('found mapping: %s ==> %s' % (key, val))
                 # 查找并检验主键是否唯一，主键初始值为None，找到一个主键后会被设置为key，若if val.primary_key: 再次为真，则会报错
                 if val.primary_key:
                     if primary_key:
                         raise KeyError('Duplicate primary key for field: %s' % key)
                     primary_key = key
-                else:                
+                else:
                     escaped_fields.append(key)                # 将非主键的属性名都保存到escaped_fields
         if not primary_key:                                   # 没有找到主键也将报错
             raise KeyError('Primary key not found.')
@@ -116,23 +116,23 @@ class ModelMetaclass(type):
 
         return type.__new__(cls, name, bases, attrs)
 
-# ORM映射基类,继承自dict,通过ModelMetaclass元类来构造类
+
+# ORM映射基类，继承自dict，通过ModelMetaclass元类来构造类
 class Model(dict, metaclass=ModelMetaclass):
 
-    # 初始化函数,调用其父类(dict)的方法
-    def __init__(self, **kw):
+    def __init__(self, **kw):    # 初始化函数,调用其父类(dict)的方法
         super(Model, self).__init__(**kw)
 
-    #增加__getattr__方法，使获取属性更加简单,即可通过"a.b"的形式
-    #__getattr__ 当调用不存在的属性时，python解释器会试图调用__getattr__(self,'attr')来尝试获得属性
-    #例如b属性不存在，当调用a.b时python会试图调用__getattr__(self,'b')来获得属性，在这里返回的是dict a[b]对应的值
+    # 增加__getattr__方法，使获取属性更加简单，即可通过"a.b"的形式
+    # __getattr__ 当调用不存在的属性时，python解释器会试图调用__getattr__(self, 'attr')来尝试获得属性
+    # 例如b属性不存在，当调用a.b时python会试图调用__getattr__(self, 'b')来获得属性，在这里返回的是a[b]对应的值
     def __getattr__(self, attr):
         try:
             return self[attr]
         except KeyError:
             raise AttributeError("'Model' object has no attribute '%s'" % attr)
 
-    # 增加__setattr__方法,使设置属性更方便,可通过"a.b=c"的形式
+    # 增加__setattr__方法，使设置属性更方便，可通过"a.b=c"的形式
     def __setattr__(self, attr, value):
         self[attr] = value
 
@@ -143,15 +143,14 @@ class Model(dict, metaclass=ModelMetaclass):
             field = self.__mappings__[key]
             if field.default is not None:
                 #如果field.default可被调用，则返回field.default()，否则返回field.default
-                value = field.default() if callable(field.default) else field.default  
+                value = field.default() if callable(field.default) else field.default
                 logging.debug('using default value for %s:%s' % (key, value))
                 # 通过default取到值之后再将其作为当前值
                 setattr(self, key, value)
         return value
 
-
     # classmethod装饰器将方法定义为类方法
-    # 对于查询相关的操作,我们都定义为类方法,就可以方便查询,而不必先创建实例再查询
+    # 对于查询相关的操作，我们都定义为类方法，就可以方便查询，而不必先创建实例再查询
     # 查找所有合乎条件的信息
     @classmethod
     async def findAll(cls, where=None, args=None, **kw):
@@ -167,7 +166,7 @@ class Model(dict, metaclass=ModelMetaclass):
         if kw.get('orderBy') is not None:
             sql.append('order by %s' % (kw['orderBy']))
         # LIMIT 是筛选结果集的关键字
-        limit = kw.get('limit')                      
+        limit = kw.get('limit')
         if limit is not None:
             if isinstance(limit, int):                           # 如果是int类型则增加占位符
                 sql.append('limit ?')
