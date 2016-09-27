@@ -15,35 +15,23 @@ from aiohttp import web
 from .errors import APIError
 
 
-# 定义各种url处理函数
-def get(path):
-    '''
-    装饰函数，函数经次函数装饰后即带上了__method__、__route__属性
-    Define decorator @get('/path')
-    '''
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            return func(*args, **kw)
-        wrapper.__method__ = 'GET'
-        wrapper.__route__ = path
-        return wrapper
-    return decorator
+# 工厂模式，生成GET、POST等请求方法的装饰器
+def request_type(method):
+    def _request(path):
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kw):
+                return func(*args, **kw)
+            wrapper.__method__ = method.upper()
+            wrapper.__route__ = path
+            return wrapper
+        return decorator
+    return _request
 
-
-def post(path):
-    '''
-    装饰函数
-    Define decorator @post('/path')
-    '''
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            return func(*args, **kw)
-        wrapper.__method__ = 'POST'
-        wrapper.__route__ = path
-        return wrapper
-    return decorator
+get = request_type('get')
+post = request_type('post')
+put = request_type('put')
+delete = request_type('delete')
 
 
 # RequestHandler目的就是从URL函数中分析其需要接收的参数，从request中获取必要的参数，
