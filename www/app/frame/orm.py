@@ -142,7 +142,7 @@ class Model(dict, metaclass=ModelMetaclass):
         if value is None:
             field = self.__mappings__[key]
             if field.default is not None:
-                #如果field.default可被调用，则返回field.default()，否则返回field.default
+                # 如果field.default可被调用，则返回field.default()，否则返回field.default
                 value = field.default() if callable(field.default) else field.default
                 logging.debug('using default value for %s:%s' % (key, value))
                 # 通过default取到值之后再将其作为当前值

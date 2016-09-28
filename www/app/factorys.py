@@ -34,7 +34,7 @@ async def auth_factory(app, handler):
 async def data_factory(app, handler):
     async def parse_data(request):
         logging.info('data_factory...')
-        if request.method == 'POST':
+        if request.method in ('POST', 'PUT'):
             if not request.content_type:
                 return web.HTTPBadRequest(text='Missing Content-Type.')
             content_type = request.content_type.lower()
