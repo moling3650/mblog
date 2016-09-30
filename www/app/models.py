@@ -106,6 +106,12 @@ class Blog(Model):
     content = TextField()
     created_at = FloatField(default=time.time)
 
+    async def remove(self):
+        comments = await Comment.findAll('blog_id = ?', [self.id])
+        for comment in comments:
+            await comment.remove()
+        await super().remove()
+
 
 # 定义评论类
 class Comment(Model):
