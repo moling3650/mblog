@@ -9,7 +9,7 @@
 此博客基本按照[廖雪峰的python3教程](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432170876125c96f6cc10717484baea0c6da9bee2be4000)实战部分来编写，经过不少简化或重构而成（基本上看不懂的地方最后弄明白再改写了），欢迎发起pull request来完善注释和功能。
 
 ## HTTP请求的生命周期
-![项目流程图](http://www.qiangtaoli.com/static/img/Process.png)
+![项目流程图](https://github.com/moling3650/mblog/blob/master/www/app/static/img/Process.png)
 
 1. 客户端（浏览器）发起请求  
 2. 路由分发请求（这个框架自动帮处理），add_routes函数就是注册路由。  
