@@ -11,27 +11,27 @@ import inspect
 import logging
 import os
 from aiohttp import web
+from functools import partial
 
 from .errors import APIError
 
 
 # 工厂模式，生成GET、POST等请求方法的装饰器
-def request_type(method):
-    def _request(path):
-        def decorator(func):
-            @functools.wraps(func)
-            def wrapper(*args, **kw):
-                return func(*args, **kw)
-            wrapper.__method__ = method.upper()
-            wrapper.__route__ = path
-            return wrapper
-        return decorator
-    return _request
+def request(path, *, method):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            return func(*args, **kw)
+        wrapper.__method__ = method
+        wrapper.__route__ = path
+        return wrapper
+    return decorator
 
-get = request_type('get')
-post = request_type('post')
-put = request_type('put')
-delete = request_type('delete')
+
+get = partial(request, method='GET')
+post = partial(request, method='POST')
+put = partial(request, method='PUT')
+delete = partial(request, method='DELETE')
 
 
 # RequestHandler目的就是从URL函数中分析其需要接收的参数，从request中获取必要的参数，
