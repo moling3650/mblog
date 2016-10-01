@@ -11,7 +11,6 @@ import inspect
 import logging
 import os
 from aiohttp import web
-from functools import partial
 
 from .errors import APIError
 
@@ -28,10 +27,10 @@ def request(path, *, method):
     return decorator
 
 
-get = partial(request, method='GET')
-post = partial(request, method='POST')
-put = partial(request, method='PUT')
-delete = partial(request, method='DELETE')
+get = functools.partial(request, method='GET')
+post = functools.partial(request, method='POST')
+put = functools.partial(request, method='PUT')
+delete = functools.partial(request, method='DELETE')
 
 
 # RequestHandler目的就是从URL函数中分析其需要接收的参数，从request中获取必要的参数，
