@@ -21,7 +21,7 @@ var blog = new Vue({
             if (! self.comment.trim()) {
                 return showAlert(self, '请输入评论内容！');
             }
-            postJSON('/api/blogs/' + self.id + '/comments', {
+            postJSON('/api/v2.0/blog/' + self.id + '/comment', {
                 content: self.comment,
                 time: (self.comments[0] && self.comments[0].created_at) || 0
             }, function (err, data) {
@@ -35,7 +35,7 @@ var blog = new Vue({
     },
     ready: function() {
         var self = this;
-        getJSON('/api/blogs/' + self.id + '/comments', function (err, data) {
+        getJSON('/api/v2.0/blog/' + self.id + '/comments', function (err, data) {
             if (err) {
                 return alert(err.message || err.data || err);
                 }
