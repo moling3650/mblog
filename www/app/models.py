@@ -13,6 +13,7 @@ import uuid
 from app import COOKIE_KEY, COOKIE_NAME
 from app.frame.fields import *
 from app.frame.orm import Model
+from app.filters import marked_filter as markdown_highlight
 
 StringField = functools.partial(StringField, ddl='varchar(50)')
 
@@ -124,6 +125,12 @@ class Comment(Model):
     user_image = StringField(ddl='varchar(500)')
     content = TextField()
     created_at = FloatField(default=time.time)
+
+    def to_json(self, **kw):
+        json_comment = self.copy()
+        if kw.get('marked'):
+            json_comment['content'] = markdown_highlight(self.content)
+        return json_comment
 
 
 class Oauth(Model):
