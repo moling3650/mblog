@@ -8,6 +8,7 @@ import logging
 
 from app.frame import get, post, put, delete
 from app.frame.halper import Page, set_valid_value, check_user, check_string
+from app.frame.errors import APIResourceNotFoundError
 from app.models import User, Blog, Comment
 
 URL_PREFIX = '/api/v2.0'
@@ -66,8 +67,26 @@ async def api_delete_item_v2(table, id, request):
         await item.remove()
     else:
         logging.warn('id: %s not exist in %s' % (id, table))
-    if table == 'blog':
-        comments = await Comment.findAll('blog_id = ?', [id])
-        for comment in comments:
-            await comment.remove()
     return dict(id=id)
+
+
+# 获取一篇博客的所有评论
+@get(URL_PREFIX + '/blog/{id}/comments')
+async def api_get_blog_comments_v2(id):
+    comments = await Comment.findAll('blog_id = ?', [id], orderBy='created_at desc')
+    return dict(comments=[c.to_json(marked=True) for c in comments])
+
+
+# 创建一个评论
+@post(URL_PREFIX + '/blog/{id}/comment')
+async def api_create_comment_v2(id, request, *, content, time):
+    user = request.__user__
+    check_user(user, check_admin=False)
+    check_string(content=content)
+    blog = await Blog.find(id)
+    if blog is None:
+        raise APIResourceNotFoundError('Blog')
+    comment = Comment(blog_id=blog.id, user_id=user.id, user_name=user.name, user_image=user.image, content=content.lstrip('\n').rstrip())
+    await comment.save()
+    comments = await Comment.findAll('blog_id = ? and created_at > ?', [id, time], orderBy='created_at desc')
+    return dict(comments=[c.to_json(marked=True) for c in comments])
