@@ -39,7 +39,7 @@ delete = functools.partial(request, method='DELETE')
 class RequestHandler(object):  # 初始化一个请求处理类
 
     def __init__(self, func):
-        self._func = func
+        self._func = asyncio.coroutine(func)
 
     async def __call__(self, request):  # 任何类，只需要定义一个__call__()方法，就可以直接对实例进行调用
         # 获取函数的参数表
@@ -88,17 +88,11 @@ def add_routes(app, module_name):
             continue
         # 获取到非'_'开头的属性或方法
         func = getattr(mod, attr)
-        # 取能调用的，说明是方法
-        if callable(func):
-            # 检测'__method__'和'__route__'属性
-            method = getattr(func, '__method__', None)
-            path = getattr(func, '__route__', None)
-            # 如果都有，说明是我们定义的处理方法，加到app对象里处理route中
-            if method and path:
-                func = asyncio.coroutine(func)
-                args = ', '.join(inspect.signature(func).parameters.keys())
-                logging.info('add route %s %s => %s(%s)' % (method, path, func.__name__, args))
-                app.router.add_route(method, path, RequestHandler(func))
+        # 获取有__method___和__route__属性的方法
+        if callable(func) and hasattr(func, '__method__') and hasattr(func, '__route__'):
+            args = ', '.join(inspect.signature(func).parameters.keys())
+            logging.info('add route %s %s => %s(%s)' % (func.__method__, func.__route__, func.__name__, args))
+            app.router.add_route(func.__method__, func.__route__, RequestHandler(func))
 
 
 # 添加静态文件夹的路径
