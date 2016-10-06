@@ -15,7 +15,6 @@ var vm = new Vue({
             'users': {'name': '名字', 'email': '电子邮箱'},
             'blogs': {'name': '标题', 'user_name': '作者'},
             'comments': {'user_name': '作者', 'content':'内容'},
-            'oauth': {'id': 'ID', 'user_id': '用户ID'}
         },
     },
     computed:{
@@ -30,7 +29,7 @@ var vm = new Vue({
 
         getItemsByPage: function  (page, size) {
             var self = this;
-            getJSON('/api/' + this.table, {
+            getJSON('/api/v2.0/' + this.table, {
                 page: page || '1',
                 size: size || '10'
             }, function (err, data) {
@@ -41,13 +40,17 @@ var vm = new Vue({
         delete_item: function (item) {
             var self = this;
             if (confirm('确认要删除“' + (item.name || item.content) + '”？删除后不可恢复！')) {
-                postJSON('/api/' + this.table + '/' + item.id + '/delete', function (err, r) {
-                    self.items.$remove(item);
-                    if (self.items.length === 0 && self.page.index > 1) {
-                        self.getItemsByPage(self.page.index - 1, self.page.limit);
-                    }
-                    else if (self.items.length < 10 && self.page.index < self.page.last) {
-                        self.getItemsByPage(self.page.index, self.page.limit);
+                $.ajax({
+                    url: '/api/v2.0/' + this.table.slice(0, -1) + '/' + item.id,
+                    type: 'DELETE',
+                    success: function() {
+                        self.items.$remove(item);
+                        if (self.items.length === 0 && self.page.index > 1) {
+                            self.getItemsByPage(self.page.index - 1, self.page.limit);
+                        }
+                        else if (self.items.length < 10 && self.page.index < self.page.last) {
+                            self.getItemsByPage(self.page.index, self.page.limit);
+                        }
                     }
                 });
             }
