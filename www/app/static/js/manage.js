@@ -26,15 +26,18 @@ var vm = new Vue({
         this.getItemsByPage(getUrlParams('page'), getUrlParams('size'));
     },
     methods: {
-
         getItemsByPage: function  (page, size) {
             var self = this;
-            getJSON('/api/v2.0/' + this.table, {
-                page: page || '1',
-                size: size || '10'
-            }, function (err, data) {
-                self.items = data.items;
-                self.page = data.page;
+            $.ajax({
+                url: '/api/v2.0/' + this.table,
+                data: {
+                    page: page || '1',
+                    size: size || '10'
+                },
+                success: function(data) {
+                    self.items = data.items;
+                    self.page = data.page;
+                }
             })
         },
         delete_item: function (item) {
