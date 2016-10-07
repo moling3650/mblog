@@ -27,7 +27,7 @@ async def api_get_items_v2(table, *, page='1', size='10'):
 
 
 # 创建一个博客
-@post(URL_PREFIX + '/blog')
+@post(URL_PREFIX + '/blog/')
 async def api_create_blog_v2(request, *, name, summary, content):
     check_user(request.__user__)
     check_string(name=name, summary=summary, content=content)

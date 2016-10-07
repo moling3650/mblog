@@ -9,7 +9,6 @@
 var vm = new Vue({
     el: '#blog',
     data: {
-        action: '/api/blogs',
         message: '',
         blog: {
             name: '',
@@ -17,22 +16,36 @@ var vm = new Vue({
             content: ''
         }
     },
+    computed: {
+        method: function() {
+            return location.pathname.slice(-5) === '/edit' ? 'PUT' : 'POST';
+        },
+        url: function () {
+            return '/api/v2.0/blog/' + ((this.method === 'PUT') ? getUrlParams('id') : '');
+        }
+    },
     ready: function () {
-        if (location.pathname.split('/').pop() === 'edit') {
-            var id = getUrlParams('id');
-            this.action = this.action + '/' + id;
-            getJSON('/api/blogs/' + id, function (err, blog) {
-                vm.blog = blog;
-            });
+        if (this.method === 'PUT') {
+            $.ajax({
+                url: this.url,
+                success: function(blog) {
+                    vm.blog = blog;
+                }
+            })
         }
     },
     methods: {
         submit: function () {
-            postJSON(this.action, this.blog, function (err, blog) {
-                if (err) {
-                    return showAlert(vm, err.message || err.data || err)
+            $.ajax({
+                url: this.url,
+                type: this.method,
+                data: this.blog,
+                success: function(data) {
+                    if (data && data.error) {
+                        return showAlert(vm, data.message || data.data || data);
+                    }
+                    return location.assign(location.pathname.split('manage')[0] + 'blog/' + data.id);
                 }
-                return location.assign(location.pathname.split('manage')[0] + 'blog/' + blog.id);
             });
         }
     }
