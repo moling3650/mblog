@@ -34,8 +34,7 @@ var blog = new Vue({
                     self.comment = '';
                     self.comments = data.comments.concat(self.comments);
                 }
-
-            })
+            });
         }
     },
     ready: function() {
@@ -45,9 +44,9 @@ var blog = new Vue({
             success: function(data) {
                 if (data.error) {
                     return alert(data.message || data.error || data);
-                    }
+                }
                 self.comments = data.comments;
             }
-        })
+        });
     }
 });

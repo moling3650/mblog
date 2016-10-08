@@ -23,7 +23,7 @@ async def api_get_items_v2(table, *, page='1', size='10'):
     if num == 0:
         return dict(page=page, items=[])
     items = await models[table].findAll(orderBy='created_at desc', limit=(page.offset, page.limit + num % page.limit))
-    return dict(page=page, items=[item.to_json() for item in items])
+    return dict(page=page, items=[item.to_json(encrypted=True) for item in items])
 
 
 # 创建一个博客

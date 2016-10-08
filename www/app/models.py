@@ -7,6 +7,7 @@
 
 import functools
 import hashlib
+import re
 import time
 import uuid
 
@@ -38,7 +39,7 @@ class User(Model):
         json_user = self.copy()
         json_user['password'] = '******'
         if kw.get('encrypted'):
-            json_user['email'] = '******@email.xxx'
+            json_user['email'] = re.sub('.@.+?\.', '***@xxx.', json_user['email'])
         return json_user
 
     async def save(self):
