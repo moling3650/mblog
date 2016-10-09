@@ -32,8 +32,8 @@ class HighlightRenderer(mistune.Renderer):
         guess = 'python3'
         if code.lstrip().startswith('<?php'):
             guess = 'php'
-        elif code.lstrip().startswith('<'):
-            guess = 'html'
+        elif code.lstrip().startswith(('<', '{%')):
+            guess = 'html+jinja'
         elif code.lstrip().startswith(('function', 'var', '$')):
             guess = 'javascript'
 
