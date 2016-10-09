@@ -42,7 +42,7 @@ img {
     margin-bottom: 35px;
 }
 
-#tags a{
+#tags a, #project-list a{
     border: 1px solid #ebebeb;
     padding: 2px 7px;
     color: #959595;
@@ -53,7 +53,7 @@ img {
     transition: all 0.2s ease;
 }
 
-#tags a:hover
+#tags a, #project-list a:hover
 {
     background-color:#ffba5e;
     color: #ffffff;
@@ -93,11 +93,26 @@ color: #999;
     padding-top: 20px;
 }
 
+#footer > div {
+    width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+#about {
+    border: 1px solid #000;
+    margin: 30px auto;
+    padding: 0 30px;
+}
+
 
 
 /* 小屏幕（平板，大于等于768像素） */
 @media (min-width: 768px) {
-
+    #about {
+        width: 90%;
+    }
 
 }
 
@@ -108,10 +123,17 @@ color: #999;
         margin-bottom: 35px;
     }
 
+    #about {
+        width: 80%;
+    }
+
 }
 
 /*  大屏幕（大桌面显示器，大于等于1200像素） */
 @media (min-width: 1200px) {
+    #about {
+        width: 60%;
+    }
 
 }
 

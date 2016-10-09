@@ -10,10 +10,10 @@ from app.models import Blog
 
 
 # 测试
-@get('/test')
-async def test():
+@get('/about')
+async def about():
     return {
-        '__template__': 'test.html'
+        '__template__': 'about.html'
     }
 
 
