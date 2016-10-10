@@ -7,6 +7,7 @@
 
 import functools
 import hashlib
+import logging
 import re
 import time
 import uuid
