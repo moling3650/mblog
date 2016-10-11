@@ -23,6 +23,7 @@ var blog = new Vue({
             }
             $.ajax({
                 url: '/api/v2.0/blog/' + self.id + '/comment',
+                type: 'POST',
                 data: {
                     content: self.comment,
                     time: (self.comments[0] && self.comments[0].created_at) || 0
