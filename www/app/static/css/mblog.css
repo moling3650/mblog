@@ -53,7 +53,7 @@ img {
     transition: all 0.2s ease;
 }
 
-#tags a, #project-list a:hover
+#tags a:hover, #project-list a:hover
 {
     background-color:#ffba5e;
     color: #ffffff;

@@ -27,7 +27,7 @@
             {% if page.index == 1 %}
                 <li class="uk-active"><span>1</span></li>
             {% else %}
-                <li><a href="?tag={{tag}}&page=1&size={{page.limit}}" >1</a></li>
+                <li><a href="?tag={{tag}}&amp;page=1&amp;size={{page.limit}}" >1</a></li>
             {% endif %}
             {% if (page.index - 1) > 3 %}
                 <li class="disabled"><span>...</span></li>
@@ -36,7 +36,7 @@
                 {% if page.index == index %}
                     <li class="uk-active"><span>{{index}}</span></li>
                 {% else %}
-                    <li><a href="?tag={{tag}}&page={{index}}&size={{page.limit}}" >{{index}}</a></li>
+                    <li><a href="?tag={{tag}}&amp;page={{index}}&amp;size={{page.limit}}" >{{index}}</a></li>
                 {% endif %}
             {% endfor %}
             {% if (page.last - page.index) > 3 %}
@@ -45,7 +45,7 @@
             {% if page.last > 1 and page.index == page.last %}
                 <li class="uk-active"><span>{{page.last}}</span></li>
             {% elif page.last > 1 %}
-                <li><a href="?tag={{tag}}&page={{page.last}}&size={{page.limit}}" >{{page.last}}</a></li>
+                <li><a href="?tag={{tag}}&amp;page={{page.last}}&amp;size={{page.limit}}" >{{page.last}}</a></li>
             {% endif %}
         </ul>
     </nav>
