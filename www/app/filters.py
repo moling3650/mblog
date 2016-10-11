@@ -45,4 +45,4 @@ markdown = mistune.Markdown(renderer=HighlightRenderer(), hard_wrap=True)
 
 
 def marked_filter(content):
-    return markdown(content)
+    return markdown(content) if isinstance(content, (str, bytes)) else ''

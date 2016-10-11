@@ -31,9 +31,9 @@ def set_valid_value(num_str, value=1):
 
 # 检查用户
 def check_user(user, check_admin=True):
-    if not check_admin and user is None:
+    if user is None:
         raise APIPermissionError('Please signin first.')
-    if user is None or not user.admin:
+    elif check_admin and not user.admin:
         raise APIPermissionError('admin only')
 
 

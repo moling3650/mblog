@@ -83,9 +83,9 @@ class User(Model):
             if int(expires) < time.time():
                 return None
             user = await cls.find(uid)
-            if user is None:
+            if not user:
                 return None
-            s = '%s-%s-%s-%s' % (uid, user.password, expires, COOKIE_KEY)
+            s = '%s-%s-%s-%s' % (uid, user.get('password'), expires, COOKIE_KEY)
             if sha1 != hashlib.sha1(s.encode('utf-8')).hexdigest():
                 logging.info('invalid sha1')
                 return None
