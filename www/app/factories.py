@@ -3,7 +3,7 @@
 # @Date    : 2016-05-06 01:25:33
 # @Author  : moling (365024424@qq.com)
 # @Link    : #
-# @Version : 0.1
+# @Version : 1
 
 import logging
 import json

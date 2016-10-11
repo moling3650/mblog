@@ -12,7 +12,7 @@ from jinja2 import Environment, FileSystemLoader
 from config import COOKIE_NAME, COOKIE_KEY
 from app.frame import add_routes, add_static
 from app.frame.orm import create_pool
-from app.factorys import logger_factory, auth_factory, data_factory, response_factory
+from app.factories import logger_factory, auth_factory, data_factory, response_factory
 from app.filters import datetime_filter, marked_filter
 
 logging.basicConfig(level=logging.INFO)
